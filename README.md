@@ -1,3 +1,5 @@
+<img src="src/client/resources/icon.ico">
+
 # What is <span style="color: #f97316">B</span><span style="color: #ec511c">O</span><span style="color: #e53f21">I</span><span style="color: #e23623">I</span><span style="color: #dc2626">I</span> <span style="color:white">ReImagined</span>
 
 <span style="color: #f97316">B</span><span style="color: #ec511c">O</span><span style="color: #e53f21">I</span><span style="color: #e23623">I</span><span style="color: #dc2626">I</span> <span style="color: white">ReImagined</span> is a game modification for Call of Duty: Black Ops 3.
