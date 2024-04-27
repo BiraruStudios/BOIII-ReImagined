@@ -1,3 +1,4 @@
+# CPP, HPP files
 [*.{cpp,hpp}]
 end_of_line = crlf
 insert_final_newline = true
@@ -8,3 +9,19 @@ charset = utf-8
 brace_style = next_line
 namespace_indentation = all
 cpp_indent_namespace_contents = true
+
+# HTML files
+[*.html]
+indent_size = 2
+
+# CSS files
+[*.css]
+indent_size = 2
+
+# JavaScript files
+[*.js]
+indent_size = 2
+
+# Markdown files
+[*.md]
+indent_size = 2
