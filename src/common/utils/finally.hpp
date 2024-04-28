@@ -33,7 +33,6 @@ namespace utils
 			if (invoke_) f_();
 		}
 
-		// Added by momo5502
 		void cancel()
 		{
 			invoke_ = false;
