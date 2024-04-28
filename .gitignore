@@ -3,3 +3,7 @@
 .idea
 build/
 usergenerate.bat
+
+deps/*/*
+!deps/premake/
+!deps/extra/*
