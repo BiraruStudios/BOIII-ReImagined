@@ -45,7 +45,7 @@ jobs:
         run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/boiii.sln
 
       - name: Upload ${{matrix.configuration}} symbols
-        if: matrix.configuration == 'Release' && github.repository_owner == 'momo5502' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        if: matrix.configuration == 'Release' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         uses: actions/upload-artifact@v3.1.2
         with:
           name: ${{matrix.configuration}} Symbols
@@ -53,7 +53,7 @@ jobs:
             build/bin/x64/${{matrix.configuration}}/boiii.pdb
 
       - name: Upload ${{matrix.configuration}} binary
-        if: matrix.configuration == 'Release' && github.repository_owner == 'momo5502' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        if: matrix.configuration == 'Release' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         uses: actions/upload-artifact@v3.1.2
         with:
           name: ${{matrix.configuration}} Binary
@@ -61,7 +61,7 @@ jobs:
             build/bin/x64/${{matrix.configuration}}/boiii.exe
 
       - name: Upload ${{matrix.configuration}} data artifacts
-        if: matrix.configuration == 'Release' && github.repository_owner == 'momo5502' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        if: matrix.configuration == 'Release' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         uses: actions/upload-artifact@v3.1.2
         with:
           name: ${{matrix.configuration}} data artifacts
@@ -72,7 +72,7 @@ jobs:
     name: Deploy artifacts
     needs: build
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'momo5502' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
     steps:
       - name: Setup environment
         run: echo "BOIII_MASTER_PATH=${{ secrets.BOIII_MASTER_SSH_PATH }}" >> $GITHUB_ENV
