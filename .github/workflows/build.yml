@@ -109,7 +109,7 @@ jobs:
         run: echo "${{ secrets.BOIII_MASTER_SSH_PASSWORD }}"
 
       - name: Debug SSH Connection
-        run: ssh -v ${{ secrets.BOIII_MASTER_SSH_USER }}@${{ secrets.BOIII_MASTER_SSH_ADDRESS }} "echo Hello"
+        run: ssh ${{ secrets.BOIII_MASTER_SSH_USER }}@${{ secrets.BOIII_MASTER_SSH_ADDRESS }} "echo Hello"
 
       - name: Remove old data files
         run: ssh ${{ secrets.BOIII_MASTER_SSH_USER }}@${{ secrets.BOIII_MASTER_SSH_ADDRESS }} rm -rf ${{ env.BOIII_MASTER_PATH }}/boiii/data/*
