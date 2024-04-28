@@ -7,3 +7,4 @@ usergenerate.bat
 deps/*/*
 !deps/premake/
 !deps/extra/*
+**/.git
