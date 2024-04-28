@@ -103,7 +103,7 @@ jobs:
           known_hosts: "just-a-placeholder-so-we-dont-get-errors"
 
       - name: Add known hosts
-        run: ssh-keyscan -p 80 ${{ secrets.BOIII_MASTER_SSH_ADDRESS }} >> ~/.ssh/known_hosts
+        run: ssh-keyscan -h ${{ secrets.BOIII_MASTER_SSH_ADDRESS }} >> ~/.ssh/known_hosts
 
       - name: Remove old data files
         run: ssh ${{ secrets.BOIII_MASTER_SSH_USER }}@${{ secrets.BOIII_MASTER_SSH_ADDRESS }} rm -rf ${{ env.BOIII_MASTER_PATH }}/boiii/data/*
