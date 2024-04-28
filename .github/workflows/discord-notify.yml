@@ -9,7 +9,7 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'momo5502'
+    if: github.repository_owner == 'BiraruYT'
     steps:
       - name: Send notification to Discord
         uses: Ilshidur/action-discord@master
