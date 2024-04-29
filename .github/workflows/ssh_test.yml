@@ -63,6 +63,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.BOIII_MASTER_SSH_PASSWORD }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          chmod -R 400 ~/.ssh
           ssh-keyscan -p 22 ${{ secrets.BOIII_MASTER_SSH_ADDRESS }} >> ~/.ssh/known_hosts
           sudo apt-get install sshpass
 
