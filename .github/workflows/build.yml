@@ -68,3 +68,60 @@ jobs:
           name: ${{matrix.configuration}} data artifacts
           path: |
             data/*
+
+  deploy:
+    name: Deploy artifacts
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'BiraruYT' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    steps:
+      - name: Setup environment
+        run: echo "BOIII_MASTER_PATH=${{ secrets.BOIII_MASTER_SSH_PATH }}" >> $GITHUB_ENV
+
+      #- name: Setup main environment
+      # if: github.ref == 'refs/heads/main'
+      #  run: echo "BOIII_MASTER_PATH=${{ secrets.BOIII_MASTER_SSH_PATH }}" >> $GITHUB_ENV
+
+      #- name: Setup develop environment
+      #  if: github.ref == 'refs/heads/develop'
+      #  run: echo "BOIII_MASTER_PATH=${{ secrets.BOIII_MASTER_SSH_PATH_DEV }}" >> $GITHUB_ENV
+
+      - name: Download Release binaries
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: Release Binary
+
+      - name: Download Release data artifacts
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: Release data artifacts
+          path: data
+
+      - name: Zips data files
+        run: zip -r data.zip ./data/
+
+      - name: Upload BOIII binary
+        uses: sinshutu/upload-to-discord@v2.0.0
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_CI_BOT_WEBHOOK }}
+        with:
+          args: boiii.exe
+
+      - name: Upload data zip
+        uses: sinshutu/upload-to-discord@v2.0.0
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_CI_BOT_WEBHOOK }}
+        with:
+          args: boiii.exe
+
+      - name: Prepare cleanup
+        run: echo "" > boiii.exe
+
+      - name: Cleanup
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: Release Binary
+          retention-days: 1
+          path: |
+            boiii.exe
+
