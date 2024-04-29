@@ -97,17 +97,19 @@ jobs:
           name: Release data artifacts
           path: data
 
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2.5.1
-        with:
-          key: ${{ secrets.BOIII_MASTER_SSH_PASSWORD }}
-          known_hosts: "just-we-dont-get-error"
+      #- name: Install SSH key
+        #uses: shimataro/ssh-key-action@v2.5.1
+        #with:
+          #key: ${{ secrets.BOIII_MASTER_SSH_PASSWORD }}
+          #known_hosts: "just-we-dont-get-error"
 
-      - name: Add known hosts
-        run: ssh-keyscan -H ${{ secrets.BOIII_MASTER_SSH_ADDRESS }} >> ~/.ssh/known_hosts
+      #- name: Add known hosts
+        #run: ssh-keyscan -H ${{ secrets.BOIII_MASTER_SSH_ADDRESS }} >> ~/.ssh/known_hosts
         
       - name: Debug SSH Connection
-        run: ssh ${{ secrets.BOIII_MASTER_SSH_USER }}@${{ secrets.BOIII_MASTER_SSH_ADDRESS }} "echo Hello"
+        run: |
+          sshpass -p ${{ secrets.BOIII_MASTER_SSH_PASSWORD }}
+          ssh ${{ secrets.BOIII_MASTER_SSH_USER }}@${{ secrets.BOIII_MASTER_SSH_ADDRESS }} "echo Hello"
 
       - name: Remove old data files
         run: ssh ${{ secrets.BOIII_MASTER_SSH_USER }}@${{ secrets.BOIII_MASTER_SSH_ADDRESS }} rm -rf ${{ env.BOIII_MASTER_PATH }}/boiii/data/*
