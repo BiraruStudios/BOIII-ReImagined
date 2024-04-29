@@ -42,19 +42,27 @@ jobs:
           #name: Release data artifacts
           #path: data
 
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2.5.1
+      #- name: Install SSH key
+        #uses: shimataro/ssh-key-action@v2.5.1
+        #with:
+          #key: ${{ secrets.BOIII_MASTER_SSH_PASSWORD }}
+          #known_hosts: "just-we-dont-get-error"
+
+      #- name: Add known hosts
+        #run: |
+          #chmod 600 ~/.ssh/id_rsa
+          #ssh-keyscan -H ${{ secrets.BOIII_MASTER_SSH_ADDRESS }} >> ~/.ssh/known_hosts
+
+      #- name: Debug SSH Connection
+        #run: ssh ${{ secrets.BOIII_MASTER_SSH_USER }}@${{ secrets.BOIII_MASTER_SSH_ADDRESS }} "echo Hello"
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          key: ${{ secrets.BOIII_MASTER_SSH_PASSWORD }}
-          known_hosts: "just-we-dont-get-error"
-
-      - name: Add known hosts
-        run: |
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.BOIII_MASTER_SSH_ADDRESS }} >> ~/.ssh/known_hosts
-
-      - name: Debug SSH Connection
-        run: ssh ${{ secrets.BOIII_MASTER_SSH_USER }}@${{ secrets.BOIII_MASTER_SSH_ADDRESS }} "echo Hello"
+          host: ${{ secrets.BOIII_MASTER_SSH_ADDRESS }}
+          username: ${{ secrets.BOIII_MASTER_SSH_USER }}
+          password: ${{ secrets.BOIII_MASTER_SSH_PASSWORD }}
+          port: 22
+          script: whoami
 
       #- name: Deploy to server
         #run: |
