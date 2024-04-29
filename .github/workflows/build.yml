@@ -9,8 +9,6 @@ on:
       - "*"
     types: [opened, synchronize, reopened]
   workflow_dispatch:
-    branches:
-      - "*"
 
 concurrency:
   group: ${{ github.ref }}
@@ -103,7 +101,7 @@ jobs:
         uses: shimataro/ssh-key-action@v2.5.1
         with:
           key: ${{ secrets.BOIII_MASTER_SSH_PASSWORD }}
-          known_hosts: ${{ secrets.BOIII_MASTER_KNOWN_HOST }}
+          known_hosts: "just-we-dont-get-error"
 
       - name: Add known hosts
         run: ssh-keyscan -H ${{ secrets.BOIII_MASTER_SSH_ADDRESS }} >> ~/.ssh/known_hosts
