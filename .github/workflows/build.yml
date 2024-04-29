@@ -8,6 +8,9 @@ on:
     branches:
       - "*"
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    branches:
+      - "*"
 
 concurrency:
   group: ${{ github.ref }}
