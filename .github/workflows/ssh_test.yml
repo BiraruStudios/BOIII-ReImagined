@@ -56,7 +56,7 @@ jobs:
       #- name: Debug SSH Connection
         #run: ssh ${{ secrets.BOIII_MASTER_SSH_USER }}@${{ secrets.BOIII_MASTER_SSH_ADDRESS }} "echo Hello"
       - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.BOIII_MASTER_SSH_ADDRESS }}
           username: ${{ secrets.BOIII_MASTER_SSH_USER }}
