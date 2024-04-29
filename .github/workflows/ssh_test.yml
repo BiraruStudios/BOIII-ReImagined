@@ -60,7 +60,7 @@ jobs:
         with:
           host: ${{ secrets.BOIII_MASTER_SSH_ADDRESS }}
           username: ${{ secrets.BOIII_MASTER_SSH_USER }}
-          #password: ${{ secrets.BOIII_MASTER_SSH_PASSWORD }}
+          password: ${{ secrets.BOIII_MASTER_SSH_PASSWORD }}
           key: ${{ secrets.BOIII_MASTER_SSH_KEY }}
           port: 22
           script: whoami
