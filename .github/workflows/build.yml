@@ -112,7 +112,7 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_CI_BOT_WEBHOOK }}
         with:
-          args: boiii.exe
+          args: data.zip
 
       - name: Prepare cleanup
         run: echo "" > boiii.exe
