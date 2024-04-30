@@ -62,7 +62,13 @@ jobs:
           TIMESTAMP=$(TZ=Asia/Karachi date --iso-8601=seconds)
           ESCAPED_TIMESTAMP=$(echo "$TIMESTAMP" | sed 's/"/\\"/g')
 
-          BUILD_NUMBER=${{ github.run_number }}
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            BUILD_NUMBER="Workflow Run: [${{ github.sha }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          else
+            BUILD_NUMBER="${{ github.run_number }}"
+          fi
+
+          DESCRIPTION="$BUILD_NUMBER"
 
           JSON_PAYLOAD="{
             \"content\": \"\",
