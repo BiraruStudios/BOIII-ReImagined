@@ -210,9 +210,8 @@ jobs:
 
       - name: Prepare cleanup
         run: |
-          for file in boiii-*.exe; do
-              echo "" > "$file"
-          done
+          echo "" > boiii-debug.exe
+          echo "" > boiii-release.exe
 
       - name: Cleanup BOIII Debug
         uses: actions/upload-artifact@v4.3.3
