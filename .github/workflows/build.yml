@@ -26,7 +26,7 @@ jobs:
           - Release
     steps:
       - name: Check out files
-        uses: actions/checkout@v3.5.2
+        uses: actions/checkout@v4.1.7
         with:
           submodules: true
           fetch-depth: 0
@@ -53,11 +53,11 @@ jobs:
       
       - name: Rename Symbols
         run: |
-          move build\bin\x64\${{ matrix.configuration }}/boiii.pdb "boiii-${{ steps.config-lowercase.outputs.lowercase }}.pdb"
+          move build\bin\x64\${{ matrix.configuration }}\boiii.pdb "boiii-${{ steps.config-lowercase.outputs.lowercase }}.pdb"
       
       - name: Rename binary
         run: |
-          move build\bin\x64\${{ matrix.configuration }}/boiii.exe "boiii-${{ steps.config-lowercase.outputs.lowercase }}.exe"
+          move build\bin\x64\${{ matrix.configuration }}\boiii.exe "boiii-${{ steps.config-lowercase.outputs.lowercase }}.exe"
       
       - name: Rename data artifacts
         run: |
@@ -65,7 +65,7 @@ jobs:
       
       - name: Upload ${{matrix.configuration}} symbols
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4.1.7
         with:
           name: ${{matrix.configuration}} Symbols
           path: |
@@ -73,15 +73,15 @@ jobs:
       
       - name: Upload ${{matrix.configuration}} binary
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4.1.7
         with:
           name: ${{matrix.configuration}} Binary
           path: |
             boiii-${{ steps.config-lowercase.outputs.lowercase }}.exe
-      
+            
       - name: Upload ${{matrix.configuration}} data artifacts
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4.1.7
         with:
           name: ${{matrix.configuration}} data artifacts
           path: |
@@ -94,25 +94,25 @@ jobs:
     if: github.repository_owner == 'BiraruYT' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
     steps:
       - name: Download Debug binaries
-        uses: actions/download-artifact@v3.0.2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: Debug Binary
-          path: boiii-debug.exe
+          path: boiii-debug
     
       - name: Download Debug data artifacts
-        uses: actions/download-artifact@v3.0.2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: Debug data artifacts
           path: data-debug
     
       - name: Download Release binaries
-        uses: actions/download-artifact@v3.0.2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: Release Binary
-          path: boiii-release.exe
+          path: boiii-release
 
       - name: Download Release data artifacts
-        uses: actions/download-artifact@v3.0.2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: Release data artifacts
           path: data-release
@@ -217,7 +217,7 @@ jobs:
           done
 
       - name: Cleanup BOIII Debug
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4.1.7
         with:
           name: Debug Binary
           retention-days: 1
@@ -225,7 +225,7 @@ jobs:
             boiii-debug.exe
 
       - name: Cleanup BOIII Release
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4.1.7
         with:
           name: Release Binary
           retention-days: 1
