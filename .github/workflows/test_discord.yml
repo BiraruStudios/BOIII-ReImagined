@@ -59,6 +59,19 @@ jobs:
 
       - name: Upload Test
         run: |
+          FILE_NAMES=$(ls -1 *.exe *.zip 2>/dev/null || true)
+
+          FILE_TABLE=""
+          if [ -n "$FILE_NAMES" ]; then
+            FILE_TABLE="File Name | \n"
+            FILE_TABLE+="--- | --- \n"
+            for FILE in $FILE_NAMES; do
+              FILE_TABLE+="$FILE | \n"
+            done
+          else
+            FILE_TABLE="No files attached"
+          fi
+          
           TIMESTAMP=$(TZ=Asia/Karachi date --iso-8601=seconds)
           ESCAPED_TIMESTAMP=$(echo "$TIMESTAMP" | sed 's/"/\\"/g')
 
@@ -79,7 +92,7 @@ jobs:
                 \"fields\": [
                   {
                     \"name\": \"Files Attached:\",
-                    \"value\": \"BOIII.exe\\ndata.zip\"
+                    \"value\": \"\`\`\`yaml\n$FILE_TABLE\`\`\`\"
                   }
                 ],
                 \"title\": \"Build:\",
