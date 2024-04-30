@@ -69,6 +69,9 @@ jobs:
           path: |
             data/*
 
+      - name: LS
+        run: ls -a
+
   deploy:
     name: Deploy artifacts
     needs: build
