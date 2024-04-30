@@ -44,19 +44,15 @@ jobs:
 
       - name: Build ${{matrix.configuration}}
         run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/boiii.sln
-        
-      - name: Convert matrix configuration to lowercase
-        id: lowercase_config
-        run: echo "${{ matrix.configuration }}" | tr '[:upper:]' '[:lower:]'
       
       - name: Rename symbols
-        run: move build\bin\x64\${{matrix.configuration}}\boiii.pdb "boiii-${{ steps.lowercase_config.outputs.stdout }}.pdb"
+        run: move build\bin\x64\${{matrix.configuration}}\boiii.pdb "boiii-${{ matrix.configuration | lower }}.pdb"
       
       - name: Rename binary
-        run: move build\bin\x64\${{matrix.configuration}}\boiii.exe "boiii-${{ steps.lowercase_config.outputs.stdout }}.exe"
+        run: move build\bin\x64\${{matrix.configuration}}\boiii.exe "boiii-${{ matrix.configuration | lower }}.exe"
       
       - name: Rename data artifacts
-        run: move data "data-${{ steps.lowercase_config.outputs.stdout }}"
+        run: move data "data-${{ matrix.configuration | lower }}"
         
       - name: Upload ${{matrix.configuration}} symbols
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
@@ -64,7 +60,7 @@ jobs:
         with:
           name: ${{matrix.configuration}} Symbols
           path: |
-            boiii-${{ steps.lowercase_config.outputs.stdout }}.pdb
+            boiii-${{ matrix.configuration | lower }}.pdb
 
       - name: Upload ${{matrix.configuration}} binary
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
@@ -72,7 +68,7 @@ jobs:
         with:
           name: ${{matrix.configuration}} Binary
           path: |
-            boiii-${{ steps.lowercase_config.outputs.stdout }}.exe
+            boiii-${{ matrix.configuration | lower }}.exe
 
       - name: Upload ${{matrix.configuration}} data artifacts
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
@@ -80,7 +76,7 @@ jobs:
         with:
           name: ${{matrix.configuration}} data artifacts
           path: |
-            data-${{ steps.lowercase_config.outputs.stdout }}/*
+            data-${{ matrix.configuration | lower }}/*
             
   deploy:
     name: Deploy artifacts
