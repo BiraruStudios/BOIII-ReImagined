@@ -45,14 +45,20 @@ jobs:
       - name: Build ${{matrix.configuration}}
         run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/boiii.sln
       
-      - name: Rename symbols
-        run: move build\bin\x64\${{matrix.configuration}}\boiii.pdb "boiii-${{ matrix.configuration | lower }}.pdb"
+      - name: Rename Symbols
+        run: |
+          lowercase_config=$(echo "${{ matrix.configuration }}" | tr '[:upper:]' '[:lower:]')
+          move build\bin\x64\${{ matrix.configuration }}/boiii.pdb "boiii-${lowercase_config}.pdb"
       
       - name: Rename binary
-        run: move build\bin\x64\${{matrix.configuration}}\boiii.exe "boiii-${{ matrix.configuration | lower }}.exe"
-      
+        run: |
+          lowercase_config=$(echo "${{ matrix.configuration }}" | tr '[:upper:]' '[:lower:]')
+          move build\bin\x64\${{ matrix.configuration }}/boiii.exe "boiii-${lowercase_config}.exe"
+          
       - name: Rename data artifacts
-        run: move data "data-${{ matrix.configuration | lower }}"
+        run: |
+          lowercase_config=$(echo "${{matrix.configuration}}" | tr '[:upper:]' '[:lower:]')
+          move data "data-${{lowercase_config}}"
         
       - name: Upload ${{matrix.configuration}} symbols
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
@@ -60,7 +66,8 @@ jobs:
         with:
           name: ${{matrix.configuration}} Symbols
           path: |
-            boiii-${{ matrix.configuration | lower }}.pdb
+            lowercase_config=$(echo "${{matrix.configuration}}" | tr '[:upper:]' '[:lower:]')
+            boiii-${{lowercase_config}}.pdb
 
       - name: Upload ${{matrix.configuration}} binary
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
@@ -68,7 +75,8 @@ jobs:
         with:
           name: ${{matrix.configuration}} Binary
           path: |
-            boiii-${{ matrix.configuration | lower }}.exe
+            lowercase_config=$(echo "${{matrix.configuration}}" | tr '[:upper:]' '[:lower:]')
+            boiii-${{lowercase_config}}.exe
 
       - name: Upload ${{matrix.configuration}} data artifacts
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
@@ -76,7 +84,8 @@ jobs:
         with:
           name: ${{matrix.configuration}} data artifacts
           path: |
-            data-${{ matrix.configuration | lower }}/*
+            lowercase_config=$(echo "${{matrix.configuration}}" | tr '[:upper:]' '[:lower:]')
+            data-${{lowercase_config}}/*
             
   deploy:
     name: Deploy artifacts
