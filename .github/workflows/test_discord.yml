@@ -75,7 +75,7 @@ jobs:
           ESCAPED_TIMESTAMP=$(echo "$TIMESTAMP" | sed 's/"/\\"/g')
 
           COMMIT_HASH=$(echo "${{ github.sha }}" | cut -c1-7)
-          BUILD_NUMBER="[Workflow Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}):\n\`${{ github.sha }}\`\nCommit:\n\`$COMMIT_HASH\`"
+          BUILD_NUMBER="[Workflow Run:](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\`${{ github.sha }}\`\n[Commit:](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\n\`$COMMIT_HASH\`"
           DESCRIPTION="$BUILD_NUMBER"
 
           JSON_PAYLOAD="{
