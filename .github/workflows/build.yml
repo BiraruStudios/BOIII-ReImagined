@@ -213,6 +213,9 @@ jobs:
           echo "" > boiii-debug.exe
           echo "" > boiii-release.exe
 
+      - name: LS
+        run: ls -a
+
       - name: Cleanup BOIII Debug
         uses: actions/upload-artifact@v4.3.3
         with:
@@ -220,6 +223,7 @@ jobs:
           retention-days: 1
           path: |
             boiii-debug.exe
+          overwrite: true
 
       - name: Cleanup BOIII Release
         uses: actions/upload-artifact@v4.3.3
@@ -228,3 +232,4 @@ jobs:
           retention-days: 1
           path: |
             boiii-release.exe
+          overwrite: true
