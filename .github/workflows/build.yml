@@ -49,7 +49,7 @@ jobs:
         id: lowercase_config
         run: echo "${{ matrix.configuration }}" | tr '[:upper:]' '[:lower:]'
       
-      - name: Rename Symbols
+      - name: Rename symbols
         run: move build\bin\x64\${{matrix.configuration}}\boiii.pdb "boiii-${{ steps.lowercase_config.outputs.stdout }}.pdb"
       
       - name: Rename binary
@@ -86,7 +86,7 @@ jobs:
     name: Deploy artifacts
     needs: build
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'BiraruYT' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    if: github.repository_owner == 'BiraruYT' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
     steps:
       - name: Download Debug binaries
         uses: actions/download-artifact@v3.0.2
@@ -206,7 +206,10 @@ jobs:
           args: data-release.zip
 
       - name: Prepare cleanup
-        run: echo "" > boiii-*.exe
+        run: |
+          for file in boiii-*.exe; do
+              echo "" > "$file"
+          done
 
       - name: Cleanup BOIII Debug
         uses: actions/upload-artifact@v3.1.2
