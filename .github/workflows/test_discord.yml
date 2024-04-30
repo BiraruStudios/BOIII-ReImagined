@@ -78,6 +78,14 @@ jobs:
           BUILD_NUMBER="[Workflow Run:](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\`${{ github.sha }}\`\n[Commit:](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\n\`$COMMIT_HASH\`"
           DESCRIPTION="$BUILD_NUMBER"
 
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            TRIGGER_TYPE="Manually Triggered: True\nPull Request: False\nCommit: False"
+          elif [ "${{ github.event_name }}" == "pull_request" ]; then
+            TRIGGER_TYPE="Manually Triggered: False\nPull Request: True\nCommit: False"
+          else
+            TRIGGER_TYPE="Manually Triggered: False\nPull Request: False\nCommit: True"
+          fi
+
           JSON_PAYLOAD="{
             \"content\": \"\",
             \"tts\": false,
@@ -88,6 +96,11 @@ jobs:
                   {
                     \"name\": \"Files Attached:\",
                     \"value\": \"\`\`\`yaml\n$FILE_TABLE\`\`\`\"
+                  }
+                  {
+                    \"id"\: 370131057,
+                    \"name"\: \"Info:\",
+                    \"value"\: \"\`n$TRIGGER_TYPE\`\"
                   }
                 ],
                 \"title\": \"Build:\",
