@@ -24,33 +24,69 @@ jobs:
       #  if: github.ref == 'refs/heads/develop'
       #  run: echo "BOIII_MASTER_PATH=${{ secrets.BOIII_MASTER_SSH_PATH_DEV }}" >> $GITHUB_ENV
 
-      - name: Download Release binaries
-        uses: actions/download-artifact@v3.0.2
-        with:
-          name: Release Binary
+      #- name: Download Release binaries
+        #uses: actions/download-artifact@v3.0.2
+        #with:
+          #name: Release Binary
 
-      - name: Download Release data artifacts
-        uses: actions/download-artifact@v3.0.2
-        with:
-          name: Release data artifacts
-          path: data
+      #- name: Download Release data artifacts
+        #uses: actions/download-artifact@v3.0.2
+        #with:
+          #name: Release data artifacts
+          #path: data
 
-      - name: Zips data files
-        run: zip -r data.zip ./data/
+      #- name: Zips data files
+        #run: zip -r data.zip ./data/
 
-      - name: Upload BOIII binary
-        uses: sinshutu/upload-to-discord@v2.0.0
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_CI_BOT_WEBHOOK }}
-        with:
-          args: boiii.exe
+      #- name: Upload BOIII binary
+        #uses: sinshutu/upload-to-discord@v2.0.0
+        #env:
+          #DISCORD_WEBHOOK: ${{ secrets.DISCORD_CI_BOT_WEBHOOK }}
+        #with:
+          #args: boiii.exe
 
-      - name: Upload data zip
-        uses: sinshutu/upload-to-discord@v2.0.0
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_CI_BOT_WEBHOOK }}
-        with:
-          args: data.zip
+      #- name: Upload data zip
+        #uses: sinshutu/upload-to-discord@v2.0.0
+        #env:
+          #DISCORD_WEBHOOK: ${{ secrets.DISCORD_CI_BOT_WEBHOOK }}
+        #with:
+          #args: data.zip
+
+      - name: Make Test
+        run: |
+          mkdir scp/
+          touch scp/test.txt
+
+      - name: Upload Test
+        run: |
+          TIMESTAMP=$(TZ=Asia/Karachi date --iso-8601=seconds)
+
+          JSON_PAYLOAD='{
+            "content": "",
+            "tts": false,
+            "embeds": [
+              {
+                "description": "e123",
+                "fields": [
+                  {
+                    "name": "Files Attached:",
+                    "value": "BOIII.exe\ndata.zip"
+                  }
+                ],
+                "title": "Build:",
+                "color": 16777215,
+                "footer": {
+                  "text": "Biraru Studio's"
+                },
+                "timestamp": "'"$TIMESTAMP"'"
+              }
+            ],
+            "components": [],
+            "actions": {},
+            "username": "Builds"
+          }'
+
+          curl -H "Content-Type: application/json" -X POST -d "$JSON_PAYLOAD" ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
 
       - name: Prepare cleanup
         run: echo "" > boiii.exe
