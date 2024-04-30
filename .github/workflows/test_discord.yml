@@ -11,7 +11,7 @@ jobs:
   deploy:
     name: Deploy artifacts
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'BiraruYT' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    if: github.repository_owner == 'BiraruYT' && github.event_name == 'workflow_dispatch' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
     steps:
       - name: Setup environment
         run: echo "BOIII_MASTER_PATH=${{ secrets.BOIII_MASTER_SSH_PATH }}" >> $GITHUB_ENV
