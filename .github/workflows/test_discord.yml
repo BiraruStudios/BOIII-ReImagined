@@ -62,12 +62,14 @@ jobs:
           TIMESTAMP=$(TZ=Asia/Karachi date --iso-8601=seconds)
           ESCAPED_TIMESTAMP=$(echo "$TIMESTAMP" | sed 's/"/\\"/g')
 
+          BUILD_NUMBER=${{ github.run_number }}
+
           JSON_PAYLOAD="{
             \"content\": \"\",
             \"tts\": false,
             \"embeds\": [
               {
-                \"description\": \"e123\",
+                \"description\": \"$DESCRIPTION\",
                 \"fields\": [
                   {
                     \"name\": \"Files Attached:\",
