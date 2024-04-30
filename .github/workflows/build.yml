@@ -44,27 +44,24 @@ jobs:
 
       - name: Build ${{matrix.configuration}}
         run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/boiii.sln
+
+      - name: Convert Matrix configuration to lowercase
+        uses: vishalmamidi/lowercase-action@v1
+        id: config-lowercase
+        with:
+          text: ${{ matrix.configuration }}
       
       - name: Rename Symbols
-        id: rename_symbols
         run: |
-          lowercase_config=$(echo "${{ matrix.configuration }}" | tr '[:upper:]' '[:lower:]')
-          move build\bin\x64\${{ matrix.configuration }}/boiii.pdb "boiii-${lowercase_config}.pdb"
-          echo "::set-output name=lowercase_config::${lowercase_config}"
+          move build\bin\x64\${{ matrix.configuration }}/boiii.pdb "boiii-${{ steps.config-lowercase.outputs.lowercase }}.pdb"
       
       - name: Rename binary
-        id: rename_binary
         run: |
-          lowercase_config=$(echo "${{ matrix.configuration }}" | tr '[:upper:]' '[:lower:]')
-          move build\bin\x64\${{ matrix.configuration }}/boiii.exe "boiii-${lowercase_config}.exe"
-          echo "::set-output name=lowercase_config::${lowercase_config}"
+          move build\bin\x64\${{ matrix.configuration }}/boiii.exe "boiii-${{ steps.config-lowercase.outputs.lowercase }}.exe"
       
       - name: Rename data artifacts
-        id: rename_data
         run: |
-          lowercase_config=$(echo "${{ matrix.configuration }}" | tr '[:upper:]' '[:lower:]')
-          move data "data-${lowercase_config}"
-          echo "::set-output name=lowercase_config::${lowercase_config}"
+          move data "data-${{ steps.config-lowercase.outputs.lowercase }}"
       
       - name: Upload ${{matrix.configuration}} symbols
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
@@ -72,7 +69,7 @@ jobs:
         with:
           name: ${{matrix.configuration}} Symbols
           path: |
-            boiii-${{ steps.rename_symbols.outputs.lowercase_config }}.pdb
+            boiii-${{ steps.config-lowercase.outputs.lowercase }}.pdb
       
       - name: Upload ${{matrix.configuration}} binary
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
@@ -80,7 +77,7 @@ jobs:
         with:
           name: ${{matrix.configuration}} Binary
           path: |
-            boiii-${{ steps.rename_binary.outputs.lowercase_config }}.exe
+            boiii-${{ steps.config-lowercase.outputs.lowercase }}.exe
       
       - name: Upload ${{matrix.configuration}} data artifacts
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
@@ -88,7 +85,7 @@ jobs:
         with:
           name: ${{matrix.configuration}} data artifacts
           path: |
-            data-${{ steps.rename_data.outputs.lowercase_config }}/*
+            data-${{ steps.config-lowercase.outputs.lowercase }}/*
             
   deploy:
     name: Deploy artifacts
