@@ -97,7 +97,6 @@ jobs:
         uses: actions/download-artifact@v4.1.7
         with:
           name: Debug Binary
-          path: boiii-debug
     
       - name: Download Debug data artifacts
         uses: actions/download-artifact@v4.1.7
@@ -109,7 +108,6 @@ jobs:
         uses: actions/download-artifact@v4.1.7
         with:
           name: Release Binary
-          path: boiii-release
 
       - name: Download Release data artifacts
         uses: actions/download-artifact@v4.1.7
