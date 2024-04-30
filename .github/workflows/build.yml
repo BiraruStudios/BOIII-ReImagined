@@ -70,7 +70,7 @@ jobs:
             data/*
 
       - name: LS
-        run: ls -a
+        run: Get-ChildItem -Force
 
   deploy:
     name: Deploy artifacts
