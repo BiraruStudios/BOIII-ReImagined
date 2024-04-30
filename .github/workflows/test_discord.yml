@@ -96,11 +96,11 @@ jobs:
                   {
                     \"name\": \"Files Attached:\",
                     \"value\": \"\`\`\`yaml\n$FILE_TABLE\`\`\`\"
-                  }
+                  },
                   {
-                    \"id"\: 370131057,
-                    \"name"\: \"Info:\",
-                    \"value"\: \"\`n$TRIGGER_TYPE\`\"
+                    "id": 370131057,
+                    "name": "Info:",
+                    "value": "```\n$TRIGGER_TYPE\n```"
                   }
                 ],
                 \"title\": \"Build:\",
