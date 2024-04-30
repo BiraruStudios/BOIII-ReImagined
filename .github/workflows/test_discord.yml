@@ -1,3 +1,64 @@
+      - name: Send Embed
+        run: |
+          FILE_NAMES=$(ls -1 *.txt *.zip 2>/dev/null || true)
+
+          FILE_TABLE=""
+          if [ -n "$FILE_NAMES" ]; then
+            FILE_TABLE="File Name | \n"
+            FILE_TABLE+="--- | --- \n"
+            for FILE in $FILE_NAMES; do
+              FILE_TABLE+="$FILE | \n"
+            done
+          else
+            FILE_TABLE="No files attached"
+          fi
+          
+          TIMESTAMP=$(TZ=Asia/Karachi date --iso-8601=seconds)
+          ESCAPED_TIMESTAMP=$(echo "$TIMESTAMP" | sed 's/"/\\"/g')
+
+          COMMIT_HASH=$(echo "${{ github.sha }}" | cut -c1-7)
+          BUILD_NUMBER="[Workflow Run:](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\`${{ github.sha }}\`\n[Commit:](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\n\`$COMMIT_HASH\`"
+          DESCRIPTION="$BUILD_NUMBER"
+
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            TRIGGER_TYPE="Manually Triggered: True\nPull Request: False\nCommit: False"
+          elif [ "${{ github.event_name }}" == "pull_request" ]; then
+            TRIGGER_TYPE="Manually Triggered: False\nPull Request: True\nCommit: False"
+          else
+            TRIGGER_TYPE="Manually Triggered: False\nPull Request: False\nCommit: True"
+          fi
+
+          JSON_PAYLOAD="{
+            \"content\": \"\",
+            \"tts\": false,
+            \"embeds\": [
+              {
+                \"description\": \"$DESCRIPTION\",
+                \"fields\": [
+                  {
+                    \"name\": \"Files Attached:\",
+                    \"value\": \"\`\`\`yaml\n$FILE_TABLE\`\`\`\"
+                  },
+                  {
+                    "id": 370131057,
+                    "name": "Info:",
+                    "value": \"\`$TRIGGER_TYPE\`\"
+                  }
+                ],
+                \"title\": \"Build:\",
+                \"color\": 16777215,
+                \"footer\": {
+                  \"text\": \"Biraru Studio's\"
+                },
+                \"timestamp\": \"$ESCAPED_TIMESTAMP\"
+              }
+            ],
+            \"components\": [],
+            \"actions\": {},
+            \"username\": \"Builds\"
+          }"
+
+          curl -H "Content-Type: application/json" -X POST -d "$JSON_PAYLOAD" ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
 name: Test Discord
 
 on:
@@ -78,14 +139,6 @@ jobs:
           BUILD_NUMBER="[Workflow Run:](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\`${{ github.sha }}\`\n[Commit:](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\n\`$COMMIT_HASH\`"
           DESCRIPTION="$BUILD_NUMBER"
 
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            TRIGGER_TYPE="Manually Triggered: True\nPull Request: False\nCommit: False"
-          elif [ "${{ github.event_name }}" == "pull_request" ]; then
-            TRIGGER_TYPE="Manually Triggered: False\nPull Request: True\nCommit: False"
-          else
-            TRIGGER_TYPE="Manually Triggered: False\nPull Request: False\nCommit: True"
-          fi
-
           JSON_PAYLOAD="{
             \"content\": \"\",
             \"tts\": false,
@@ -97,10 +150,9 @@ jobs:
                     \"name\": \"Files Attached:\",
                     \"value\": \"\`\`\`yaml\n$FILE_TABLE\`\`\`\"
                   },
-                  {
-                    "id": 370131057,
-                    "name": "Info:",
-                    "value": \"\`$TRIGGER_TYPE\`\"
+                    \"id\": 370131057,
+                    \"name\": \"Info:\",
+                    \"value\": \"\`$TRIGGER_TYPE\`\"
                   }
                 ],
                 \"title\": \"Build:\",
