@@ -75,8 +75,10 @@ jobs:
           TIMESTAMP=$(TZ=Asia/Karachi date --iso-8601=seconds)
           ESCAPED_TIMESTAMP=$(echo "$TIMESTAMP" | sed 's/"/\\"/g')
 
+          COMMIT_HASH=$(echo "${{ github.sha }}" | cut -c1-7)
+
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-          BUILD_NUMBER="Workflow Run:\n\`[${{ github.sha }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\`\nCommit:\n\`${{ github.sha }}\`"
+          BUILD_NUMBER="Workflow Run:\n[${{ github.sha }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\nCommit:\n\`$COMMIT_HASH\`"
           else
             BUILD_NUMBER="\`${{ github.run_number }}\`"
           fi
