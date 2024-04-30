@@ -76,9 +76,9 @@ jobs:
           ESCAPED_TIMESTAMP=$(echo "$TIMESTAMP" | sed 's/"/\\"/g')
 
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            BUILD_NUMBER="```Workflow Run: [${{ github.sha }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})```"
+            BUILD_NUMBER="Workflow Run: [${{ github.sha }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
           else
-            BUILD_NUMBER="```${{ github.run_number }}```"
+            BUILD_NUMBER="${{ github.run_number }}"
           fi
 
           DESCRIPTION="$BUILD_NUMBER"
