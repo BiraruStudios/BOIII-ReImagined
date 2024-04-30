@@ -19,7 +19,7 @@ namespace discord
 			ZeroMemory(&discord_presence, sizeof(discord_presence));
 
 			discord_presence.instance = 1;
-			//discord_presence.state = "BOIII";
+			discord_presence.state = "BOIII ReImagined";
 
 			discord_presence.partySize = 0;
 			discord_presence.partyMax = 0;

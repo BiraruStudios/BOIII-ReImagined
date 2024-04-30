@@ -127,23 +127,23 @@ namespace client_patches
 		game::fileHandle_t fs_f_open_file_write_to_dir_stub(const char* filename, [[maybe_unused]] const char* dir,
 		                                                    const char* os_base_path)
 		{
-			return game::FS_FOpenFileWriteToDir(filename, "boiii_players", os_base_path);
+			return game::FS_FOpenFileWriteToDir(filename, "boiii_reimagined/players", os_base_path);
 		}
 
 		game::fileHandle_t fs_f_open_file_read_from_dir_stub(const char* filename, [[maybe_unused]] const char* dir,
 		                                                     const char* os_base_path)
 		{
-			return game::FS_FOpenFileReadFromDir(filename, "boiii_players", os_base_path);
+			return game::FS_FOpenFileReadFromDir(filename, "boiii_reimagined/players", os_base_path);
 		}
 
 		int i_stricmp_stub(const char* s0, [[maybe_unused]] const char* s1)
 		{
-			return game::I_stricmp(s0, "boiii_players");
+			return game::I_stricmp(s0, "boiii_reimagined/players");
 		}
 
 		void fs_add_game_directory_stub(const char* path, [[maybe_unused]] const char* dir)
 		{
-			utils::hook::invoke<void>(0x1422A2AF0_g, path, "boiii_players");
+			utils::hook::invoke<void>(0x1422A2AF0_g, path, "boiii_reimagined/players");
 		}
 
 		// TODO: Remove me after some time
@@ -158,14 +158,14 @@ namespace client_patches
 			}
 
 			// Folder does exist. Already migrated
-			if (std::filesystem::is_directory("boiii_players", e))
+			if (std::filesystem::is_directory("boiii_reimagined/players", e))
 			{
 				return;
 			}
 
-			utils::io::create_directory("boiii_players");
+			utils::io::create_directory("boiii_reimagined/players");
 
-			std::filesystem::copy("players", "boiii_players", std::filesystem::copy_options::recursive, e);
+			std::filesystem::copy("players", "boiii_reimagined/players", std::filesystem::copy_options::recursive, e);
 		}
 
 		void patch_players_folder_name()

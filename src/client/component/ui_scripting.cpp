@@ -215,7 +215,7 @@ namespace ui_scripting
 			const utils::nt::library host{};
 			const auto folder = game::is_server() ? "lobby_scripts/" : "ui_scripts/";
 			load_scripts((game::get_appdata_path() / "data" / folder).string());
-			load_scripts((host.get_folder() / "boiii" / folder).string());
+			load_scripts((host.get_folder() / "boiii_reimagined" / folder).string());
 		}
 
 		void try_start()
@@ -251,7 +251,7 @@ namespace ui_scripting
 				doneFirstSnapshot = false;
 
 				load_local_script_files((game::get_appdata_path() / "data/ui_scripts/").string());
-				load_local_script_files((host.get_folder() / "boiii/ui_scripts/").string());
+				load_local_script_files((host.get_folder() / "boiii_reimagined/ui_scripts/").string());
 				return;
 			}
 			try_start();

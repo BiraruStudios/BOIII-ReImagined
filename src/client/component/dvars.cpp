@@ -104,7 +104,7 @@ namespace dvars
 
 		std::string get_config_file_path()
 		{
-			return "boiii_players/user/config.cfg";
+			return "boiii_reimagined/players/user/config.cfg";
 		}
 
 		bool is_archive_dvar(const game::dvar_t* dvar)
@@ -113,7 +113,7 @@ namespace dvars
 			{
 				return false;
 			}
-			
+
 			return (dvar->flags & game::DVAR_ARCHIVE);
 		}
 

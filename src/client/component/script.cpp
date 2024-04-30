@@ -34,7 +34,7 @@ namespace script
 		void load_script(std::string& name, const std::string& data, const bool is_custom)
 		{
 			const auto appdata_path = (game::get_appdata_path() / "data/").generic_string();
-			const auto host_path = (utils::nt::library{}.get_folder() / "boiii/").generic_string();
+			const auto host_path = (utils::nt::library{}.get_folder() / "boiii_reimagined/").generic_string();
 
 			auto i = name.find(appdata_path);
 			if (i != std::string::npos)
@@ -133,7 +133,7 @@ namespace script
 			const utils::nt::library host{};
 
 			const auto data_folder = game::get_appdata_path() / "data";
-			const auto boiii_folder = host.get_folder() / "boiii";
+			const auto boiii_folder = host.get_folder() / "boiii_reimagined";
 
 			const auto load = [&data_folder, &boiii_folder](const std::filesystem::path& folder, const bool is_custom)
 			{

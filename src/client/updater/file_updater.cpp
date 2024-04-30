@@ -12,10 +12,10 @@
 
 #define UPDATE_SERVER "https://updater.xlabs.dev/"
 
-#define UPDATE_FILE_MAIN UPDATE_SERVER "boiii.json"
-#define UPDATE_FOLDER_MAIN UPDATE_SERVER "boiii/"
+#define UPDATE_FILE_MAIN UPDATE_SERVER "boiii_reimagined.json"
+#define UPDATE_FOLDER_MAIN UPDATE_SERVER "boiii_reimagined/"
 
-#define UPDATE_HOST_BINARY "boiii.exe"
+#define UPDATE_HOST_BINARY "boiii-reimagined.exe"
 
 namespace updater
 {
