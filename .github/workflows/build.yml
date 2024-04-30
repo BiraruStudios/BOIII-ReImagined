@@ -103,6 +103,9 @@ jobs:
       - name: Zips data files
         run: zip -r data.zip ./data/
 
+      - name: LS
+        run: ls -a
+
       - name: Send Embed
         run: |
           FILE_NAMES=$(ls -1 boiii.exe *.zip 2>/dev/null || true)
