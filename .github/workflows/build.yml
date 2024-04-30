@@ -44,71 +44,76 @@ jobs:
 
       - name: Build ${{matrix.configuration}}
         run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/boiii.sln
+        
+      - name: Rename Symbols
+        run: mv build/bin/x64/${{matrix.configuration}}/boiii.pdb "boiii-${{matrix.configuration}}.pdb"
+        
+      - name: Rename binary
+        run: mv build/bin/x64/${{matrix.configuration}}/boiii.exe "boiii-${{matrix.configuration}}.exe"
+
+      - name: Rename data artifacts
+        run: mv data "data-${{matrix.configuration}}"
 
       - name: Upload ${{matrix.configuration}} symbols
-        if: matrix.configuration == 'Release' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         uses: actions/upload-artifact@v3.1.2
         with:
           name: ${{matrix.configuration}} Symbols
           path: |
-            build/bin/x64/${{matrix.configuration}}/boiii.pdb
+            build/bin/x64/${{matrix.configuration}}/boiii-${{matrix.configuration}}.pdb
 
       - name: Upload ${{matrix.configuration}} binary
-        if: matrix.configuration == 'Release' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         uses: actions/upload-artifact@v3.1.2
         with:
           name: ${{matrix.configuration}} Binary
           path: |
-            build/bin/x64/${{matrix.configuration}}/boiii.exe
+            build/bin/x64/${{matrix.configuration}}/boiii-${{matrix.configuration}}.exe
 
       - name: Upload ${{matrix.configuration}} data artifacts
-        if: matrix.configuration == 'Release' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         uses: actions/upload-artifact@v3.1.2
         with:
           name: ${{matrix.configuration}} data artifacts
           path: |
-            data/*
-
-      - name: LS
-        run: Get-ChildItem -Force
-
+            data-${{matrix.configuration}}/*
+            
   deploy:
     name: Deploy artifacts
     needs: build
     runs-on: ubuntu-latest
     if: github.repository_owner == 'BiraruYT' && github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
     steps:
-      - name: Setup environment
-        run: echo "BOIII_MASTER_PATH=${{ secrets.BOIII_MASTER_SSH_PATH }}" >> $GITHUB_ENV
-
-      #- name: Setup main environment
-      # if: github.ref == 'refs/heads/main'
-      #  run: echo "BOIII_MASTER_PATH=${{ secrets.BOIII_MASTER_SSH_PATH }}" >> $GITHUB_ENV
-
-      #- name: Setup develop environment
-      #  if: github.ref == 'refs/heads/develop'
-      #  run: echo "BOIII_MASTER_PATH=${{ secrets.BOIII_MASTER_SSH_PATH_DEV }}" >> $GITHUB_ENV
-
+      - name: Download Debug binaries
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: Debug Binary
+          path: boiii-debug.exe
+    
+      - name: Download Debug data artifacts
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: Debug data artifacts
+          path: data-debug
+    
       - name: Download Release binaries
         uses: actions/download-artifact@v3.0.2
         with:
           name: Release Binary
+          path: boiii-release.exe
 
       - name: Download Release data artifacts
         uses: actions/download-artifact@v3.0.2
         with:
           name: Release data artifacts
-          path: data
+          path: data-release
 
       - name: Zips data files
-        run: zip -r data.zip ./data/
-
-      - name: LS
-        run: ls -a
-
+        run: find . -type d -name "data-*" -exec sh -c 'zip -r "{}.zip" "{}"' \;
+        
       - name: Send Embed
         run: |
-          FILE_NAMES=$(ls -1 boiii.exe *.zip 2>/dev/null || true)
+          FILE_NAMES=$(ls -1 *.exe *.zip 2>/dev/null || true)
 
           FILE_TABLE=""
           if [ -n "$FILE_NAMES" ]; then
@@ -168,28 +173,49 @@ jobs:
 
           curl -H "Content-Type: application/json" -X POST -d "$JSON_PAYLOAD" ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
 
-      - name: Upload BOIII binary
+      - name: Upload BOIII Debug binary
         uses: sinshutu/upload-to-discord@v2.0.0
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_CI_BOT_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
         with:
-          args: boiii.exe
+          args: boiii-debug.exe
 
-      - name: Upload data zip
+      - name: Upload BOIII Release binary
         uses: sinshutu/upload-to-discord@v2.0.0
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_CI_BOT_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
         with:
-          args: data.zip
+          args: boiii-release.exe
+
+      - name: Upload Debug data zip
+        uses: sinshutu/upload-to-discord@v2.0.0
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
+        with:
+          args: data-debug.zip
+
+      - name: Upload Release data zip
+        uses: sinshutu/upload-to-discord@v2.0.0
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
+        with:
+          args: data-release.zip
 
       - name: Prepare cleanup
-        run: echo "" > boiii.exe
+        run: echo "" > boiii-*.exe
 
-      - name: Cleanup
+      - name: Cleanup BOIII Debug
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: Debug Binary
+          retention-days: 1
+          path: |
+            boiii-debug.exe
+
+      - name: Cleanup BOIII Release
         uses: actions/upload-artifact@v3.1.2
         with:
           name: Release Binary
           retention-days: 1
           path: |
-            boiii.exe
-
+            boiii-release.exe
