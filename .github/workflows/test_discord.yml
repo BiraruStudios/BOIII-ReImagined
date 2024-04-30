@@ -59,7 +59,7 @@ jobs:
 
       - name: Upload Test
         run: |
-          FILE_NAMES=$(ls -1 *.exe *.zip 2>/dev/null || true)
+          FILE_NAMES=$(ls -1 *.txt *.zip 2>/dev/null || true)
 
           FILE_TABLE=""
           if [ -n "$FILE_NAMES" ]; then
@@ -76,11 +76,11 @@ jobs:
           ESCAPED_TIMESTAMP=$(echo "$TIMESTAMP" | sed 's/"/\\"/g')
 
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            BUILD_NUMBER="Workflow Run: [${{ github.sha }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          BUILD_NUMBER="Workflow Run:\n\`[${{ github.sha }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\`\nCommit:\n\`${{ github.sha }}\`"
           else
-            BUILD_NUMBER="${{ github.run_number }}"
+            BUILD_NUMBER="\`${{ github.run_number }}\`"
           fi
-
+          
           DESCRIPTION="$BUILD_NUMBER"
 
           JSON_PAYLOAD="{
