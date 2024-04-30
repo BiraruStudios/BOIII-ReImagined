@@ -50,10 +50,10 @@ jobs:
         run: echo "${{ matrix.configuration }}" | tr '[:upper:]' '[:lower:]'
       
       - name: Rename Symbols
-        run: move build\bin\x64\${{ steps.lowercase_config.outputs.stdout }}\boiii.pdb "boiii-${{ steps.lowercase_config.outputs.stdout }}.pdb"
+        run: move build\bin\x64\${{matrix.configuration}}\boiii.pdb "boiii-${{ steps.lowercase_config.outputs.stdout }}.pdb"
       
       - name: Rename binary
-        run: move build\bin\x64\${{ steps.lowercase_config.outputs.stdout }}\boiii.exe "boiii-${{ steps.lowercase_config.outputs.stdout }}.exe"
+        run: move build\bin\x64\${{matrix.configuration}}\boiii.exe "boiii-${{ steps.lowercase_config.outputs.stdout }}.exe"
       
       - name: Rename data artifacts
         run: move data "data-${{ steps.lowercase_config.outputs.stdout }}"
