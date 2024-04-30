@@ -60,31 +60,32 @@ jobs:
       - name: Upload Test
         run: |
           TIMESTAMP=$(TZ=Asia/Karachi date --iso-8601=seconds)
+          ESCAPED_TIMESTAMP=$(echo "$TIMESTAMP" | sed 's/"/\\"/g')
 
-          JSON_PAYLOAD='{
-            "content": "",
-            "tts": false,
-            "embeds": [
+          JSON_PAYLOAD="{
+            \"content\": \"\",
+            \"tts\": false,
+            \"embeds\": [
               {
-                "description": "e123",
-                "fields": [
+                \"description\": \"e123\",
+                \"fields\": [
                   {
-                    "name": "Files Attached:",
-                    "value": "BOIII.exe\ndata.zip"
+                    \"name\": \"Files Attached:\",
+                    \"value\": \"BOIII.exe\\ndata.zip\"
                   }
                 ],
-                "title": "Build:",
-                "color": 16777215,
-                "footer": {
-                  "text": "Biraru Studio's"
+                \"title\": \"Build:\",
+                \"color\": 16777215,
+                \"footer\": {
+                  \"text\": \"Biraru Studio's\"
                 },
-                "timestamp": "'"$TIMESTAMP"'"
+                \"timestamp\": \"$ESCAPED_TIMESTAMP\"
               }
             ],
-            "components": [],
-            "actions": {},
-            "username": "Builds"
-          }'
+            \"components\": [],
+            \"actions\": {},
+            \"username\": \"Builds\"
+          }"
 
           curl -H "Content-Type: application/json" -X POST -d "$JSON_PAYLOAD" ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
 
