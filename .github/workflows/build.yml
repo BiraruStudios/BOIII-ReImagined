@@ -49,7 +49,7 @@ jobs:
         uses: vishalmamidi/lowercase-action@v1
         id: config-lowercase
         with:
-          text: '${{ matrix.configuration }}'
+          string: ${{ matrix.configuration }}
       
       - name: Rename Symbols
         run: |
