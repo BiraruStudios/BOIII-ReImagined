@@ -97,6 +97,7 @@ jobs:
                     \"name\": \"Files Attached:\",
                     \"value\": \"\`\`\`$FILE_TABLE\`\`\`\"
                   },
+                  {
                     \"id\": 370131057,
                     \"name\": \"Info:\",
                     \"value\": \"\`$TRIGGER_TYPE\`\"
