@@ -26,7 +26,7 @@ jobs:
           - Release
     steps:
       - name: Check out files
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.1.4
         with:
           submodules: true
           fetch-depth: 0
@@ -65,7 +65,7 @@ jobs:
       
       - name: Upload ${{matrix.configuration}} symbols
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        uses: actions/upload-artifact@v4.1.7
+        uses: actions/upload-artifact@v4.3.3
         with:
           name: ${{matrix.configuration}} Symbols
           path: |
@@ -73,7 +73,7 @@ jobs:
       
       - name: Upload ${{matrix.configuration}} binary
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        uses: actions/upload-artifact@v4.1.7
+        uses: actions/upload-artifact@v4.3.3
         with:
           name: ${{matrix.configuration}} Binary
           path: |
@@ -81,7 +81,7 @@ jobs:
             
       - name: Upload ${{matrix.configuration}} data artifacts
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-        uses: actions/upload-artifact@v4.1.7
+        uses: actions/upload-artifact@v4.3.3
         with:
           name: ${{matrix.configuration}} data artifacts
           path: |
@@ -217,7 +217,7 @@ jobs:
           done
 
       - name: Cleanup BOIII Debug
-        uses: actions/upload-artifact@v4.1.7
+        uses: actions/upload-artifact@v4.3.3
         with:
           name: Debug Binary
           retention-days: 1
@@ -225,7 +225,7 @@ jobs:
             boiii-debug.exe
 
       - name: Cleanup BOIII Release
-        uses: actions/upload-artifact@v4.1.7
+        uses: actions/upload-artifact@v4.3.3
         with:
           name: Release Binary
           retention-days: 1
