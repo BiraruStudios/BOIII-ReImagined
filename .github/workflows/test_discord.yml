@@ -100,7 +100,7 @@ jobs:
                   {
                     \"id\": 370131057,
                     \"name\": \"Info:\",
-                    \"value\": \"\`$TRIGGER_TYPE\`\"
+                    \"value\": \"\```$TRIGGER_TYPE\```\"
                   }
                 ],
                 \"title\": \"Build:\",
