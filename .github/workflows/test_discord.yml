@@ -56,7 +56,7 @@ jobs:
         run: |
           touch test.txt
 
-      - name: Upload Test
+      - name: Send Embed
         run: |
           FILE_NAMES=$(ls -1 *.txt *.zip 2>/dev/null || true)
 
@@ -104,6 +104,13 @@ jobs:
           }"
 
           curl -H "Content-Type: application/json" -X POST -d "$JSON_PAYLOAD" ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
+
+      - name: Upload Test
+        uses: sinshutu/upload-to-discord@v2.0.0
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
+        with:
+          args: test.txt
 
       - name: Prepare cleanup
         run: echo "" > boiii.exe
