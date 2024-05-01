@@ -53,7 +53,7 @@ jobs:
       
       - name: Rename Symbols
         run: |
-          move build\bin\x64\${{ matrix.configuration }}\boiii-reimagined.pdb "boiii-reimagined-${{ steps.config-lowercase.outputs.lowercase }}.pdb"
+          move build\bin\x64\${{ matrix.configuration }}\boiii.pdb "boiii-reimagined-${{ steps.config-lowercase.outputs.lowercase }}.pdb"
       
       - name: Rename binary
         run: |
