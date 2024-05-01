@@ -57,7 +57,7 @@ jobs:
       
       - name: Rename binary
         run: |
-          move build\bin\x64\${{ matrix.configuration }}\boiii-reimagined.exe "boiii-reimagined-${{ steps.config-lowercase.outputs.lowercase }}.exe"
+          move build\bin\x64\${{ matrix.configuration }}\boiii.exe "boiii-reimagined-${{ steps.config-lowercase.outputs.lowercase }}.exe"
       
       - name: Rename data artifacts
         run: |
