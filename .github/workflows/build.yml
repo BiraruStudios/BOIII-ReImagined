@@ -64,7 +64,7 @@ jobs:
           move data "data-${{ steps.config-lowercase.outputs.lowercase }}"
       
       - name: Upload ${{matrix.configuration}} symbols
-        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
         uses: actions/upload-artifact@v4.3.3
         with:
           name: ${{matrix.configuration}} Symbols
@@ -72,7 +72,7 @@ jobs:
             boiii-reimagined-${{ steps.config-lowercase.outputs.lowercase }}.pdb
       
       - name: Upload ${{matrix.configuration}} binary
-        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
         uses: actions/upload-artifact@v4.3.3
         with:
           name: ${{matrix.configuration}} Binary
@@ -80,7 +80,7 @@ jobs:
             boiii-reimagined-${{ steps.config-lowercase.outputs.lowercase }}.exe
             
       - name: Upload ${{matrix.configuration}} data artifacts
-        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
         uses: actions/upload-artifact@v4.3.3
         with:
           name: ${{matrix.configuration}} data artifacts
@@ -91,7 +91,7 @@ jobs:
     name: Deploy artifacts
     needs: build
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'BiraruStudios' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    if: github.repository_owner == 'BiraruStudios' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
     steps:
       - name: Download Debug binaries
         uses: actions/download-artifact@v4.1.7
