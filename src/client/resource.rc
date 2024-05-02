@@ -75,7 +75,7 @@ BEGIN
             VALUE "FileVersion", VERSION_FILE
             VALUE "InternalName", "BOIII ReImagined"
             VALUE "LegalCopyright", "Copyright (C) 2024 Biraru Studio's. All rights reserved."
-            VALUE "OriginalFilename", "boiii.exe"
+            VALUE "OriginalFilename", "boiii-reimagined.exe"
             VALUE "ProductName", "BOIII ReImagined"
             VALUE "ProductVersion", VERSION_PRODUCT
         END
