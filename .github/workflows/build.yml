@@ -97,7 +97,7 @@ jobs:
         uses: actions/download-artifact@v4.1.7
         with:
           name: Release symbols
-          path: debug
+          path: release
     
       - name: Download Release binaries
         uses: actions/download-artifact@v4.1.7
@@ -198,11 +198,6 @@ jobs:
           find release/ -type f -exec sh -c 'echo "" > "$1"' _ {} \;
           echo "" > debug.zip
           echo "" > release.zip
-          
-      - name: LS
-        run: |
-          ls -l debug/
-          ls -l release/
           
       - name: Cleanup Debug symbols
         uses: actions/upload-artifact@v4.3.3
