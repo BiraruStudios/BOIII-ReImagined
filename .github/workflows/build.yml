@@ -51,7 +51,7 @@ jobs:
         with:
           name: ${{matrix.configuration}} symbols
           path: |
-            boiii-reimagined.pdb
+            build\bin\x64\${{ matrix.configuration }}\boiii-reimagined.pdb
       
       - name: Upload ${{matrix.configuration}} binary
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
@@ -59,7 +59,7 @@ jobs:
         with:
           name: ${{matrix.configuration}} binary
           path: |
-            boiii-reimagined.exe
+            build\bin\x64\${{ matrix.configuration }}\boiii-reimagined.exe
             
       - name: Upload ${{matrix.configuration}} data artifacts
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
