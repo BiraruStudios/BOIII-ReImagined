@@ -194,8 +194,8 @@ jobs:
 
       - name: Prepare cleanup
         run: |
-          echo "" > debug/*
-          echo "" > release/*
+          find debug/ -type f -exec sh -c 'echo "" > "$1"' _ {} \;
+          find release/ -type f -exec sh -c 'echo "" > "$1"' _ {} \;
           echo "" > debug.zip
           echo "" > release.zip
           
