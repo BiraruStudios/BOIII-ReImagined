@@ -48,7 +48,7 @@ jobs:
       - name: Zip files
         run: |
           ZIP_PATH="build\bin\x64\${{matrix.configuration}}"
-          zip -r BOIII-ReImagined-${{matrix.configuration}}.zip $ZIP_PATH/boiii.pdb $ZIP_PATH/boiii.pdb data
+          zip -r BOIII-ReImagined-${{matrix.configuration}}.zip ${ZIP_PATH}/boiii.pdb ${ZIP_PATH}/boiii.pdb data
           
       - name: Upload ${{matrix.configuration}} ZIP
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
