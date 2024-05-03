@@ -44,48 +44,19 @@ jobs:
 
       - name: Build ${{matrix.configuration}}
         run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/boiii-reimagined.sln
-
-      - name: Convert Matrix configuration to lowercase
-        uses: vishalmamidi/lowercase-action@v1
-        id: config-lowercase
-        with:
-          string: ${{ matrix.configuration }}
-      
-      - name: Rename Symbols
+        
+      - name: Zip files
         run: |
-          move build\bin\x64\${{ matrix.configuration }}\boiii.pdb "boiii-reimagined-${{ steps.config-lowercase.outputs.lowercase }}.pdb"
-      
-      - name: Rename binary
-        run: |
-          move build\bin\x64\${{ matrix.configuration }}\boiii.exe "boiii-reimagined-${{ steps.config-lowercase.outputs.lowercase }}.exe"
-      
-      - name: Rename data artifacts
-        run: |
-          move data "data-${{ steps.config-lowercase.outputs.lowercase }}"
-      
-      - name: Upload ${{matrix.configuration}} symbols
+          ZIP_PATH="build\bin\x64\${{matrix.configuration}}"
+          zip -r BOIII-ReImagined-${{matrix.configuration}}.zip ${{ZIP_PATH}}/boiii.pdb ${{ZIP_PATH}}/boiii.pdb data
+          
+      - name: Upload ${{matrix.configuration}} ZIP
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
         uses: actions/upload-artifact@v4.3.3
         with:
-          name: ${{matrix.configuration}} Symbols
+          name: ${{matrix.configuration}} zip
           path: |
-            boiii-reimagined-${{ steps.config-lowercase.outputs.lowercase }}.pdb
-      
-      - name: Upload ${{matrix.configuration}} binary
-        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
-        uses: actions/upload-artifact@v4.3.3
-        with:
-          name: ${{matrix.configuration}} Binary
-          path: |
-            boiii-reimagined-${{ steps.config-lowercase.outputs.lowercase }}.exe
-            
-      - name: Upload ${{matrix.configuration}} data artifacts
-        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
-        uses: actions/upload-artifact@v4.3.3
-        with:
-          name: ${{matrix.configuration}} data artifacts
-          path: |
-            data-${{ steps.config-lowercase.outputs.lowercase }}/*
+            BOIII-ReImagined-${{matrix.configuration}}.zip
             
   deploy:
     name: Deploy artifacts
@@ -93,30 +64,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'BiraruStudios' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
     steps:
-      - name: Download Debug binaries
+      - name: Download ZIP artifact
         uses: actions/download-artifact@v4.1.7
         with:
-          name: Debug Binary
-    
-      - name: Download Debug data artifacts
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: Debug data artifacts
-          path: data-debug
-    
-      - name: Download Release binaries
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: Release Binary
-
-      - name: Download Release data artifacts
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: Release data artifacts
-          path: data-release
-
-      - name: Zips data files
-        run: find . -type d -name "data-*" -exec sh -c 'zip -r "{}.zip" "{}"' \;
+          name: ${{matrix.configuration}} zip
         
       - name: Send Embed
         run: |
@@ -179,54 +130,22 @@ jobs:
           }"
 
           curl -H "Content-Type: application/json" -X POST -d "$JSON_PAYLOAD" ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
-
-      - name: Upload BOIII Debug binary
+      - name: Upload BOIII ZIP file
         uses: sinshutu/upload-to-discord@v2.0.0
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
         with:
-          args: boiii-reimagined-debug.exe
-
-      - name: Upload BOIII Release binary
-        uses: sinshutu/upload-to-discord@v2.0.0
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
-        with:
-          args: boiii-reimagined-release.exe
-
-      - name: Upload Debug data zip
-        uses: sinshutu/upload-to-discord@v2.0.0
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
-        with:
-          args: data-debug.zip
-
-      - name: Upload Release data zip
-        uses: sinshutu/upload-to-discord@v2.0.0
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
-        with:
-          args: data-release.zip
+          args: BOIII-ReImagined-${{matrix.configuration}}.zip
 
       - name: Prepare cleanup
         run: |
-          echo "" > boiii-reimagined-debug.exe
-          echo "" > boiii-reimagined-release.exe
+          echo "" > BOIII-ReImagined-${{matrix.configuration}}.zip
           
-      - name: Cleanup BOIII Debug
+      - name: Cleanup BOIII ZIP file
         uses: actions/upload-artifact@v4.3.3
         with:
-          name: Debug Binary
+          name: ${{matrix.configuration}} zip
           retention-days: 1
           path: |
-            boiii-reimagined-debug.exe
-          overwrite: true
-
-      - name: Cleanup BOIII Release
-        uses: actions/upload-artifact@v4.3.3
-        with:
-          name: Release Binary
-          retention-days: 1
-          path: |
-            boiii-reimagined-release.exe
+            BOIII-ReImagined-${{matrix.configuration}}.zip
           overwrite: true
