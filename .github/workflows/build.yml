@@ -43,41 +43,23 @@ jobs:
         uses: ammaraskar/msvc-problem-matcher@master
 
       - name: Build ${{matrix.configuration}}
-        run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/boiii.sln
-
-      - name: Convert Matrix configuration to lowercase
-        uses: vishalmamidi/lowercase-action@v1
-        id: config-lowercase
-        with:
-          string: ${{ matrix.configuration }}
-      
-      - name: Rename Symbols
-        run: |
-          move build\bin\x64\${{ matrix.configuration }}\boiii.pdb "boiii-reimagined-${{ steps.config-lowercase.outputs.lowercase }}.pdb"
-      
-      - name: Rename binary
-        run: |
-          move build\bin\x64\${{ matrix.configuration }}\boiii.exe "boiii-reimagined-${{ steps.config-lowercase.outputs.lowercase }}.exe"
-      
-      - name: Rename data artifacts
-        run: |
-          move data "data-${{ steps.config-lowercase.outputs.lowercase }}"
+        run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/boiii-reimagined.sln
       
       - name: Upload ${{matrix.configuration}} symbols
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
         uses: actions/upload-artifact@v4.3.3
         with:
-          name: ${{matrix.configuration}} Symbols
+          name: ${{matrix.configuration}} symbols
           path: |
-            boiii-reimagined-${{ steps.config-lowercase.outputs.lowercase }}.pdb
+            build\bin\x64\${{ matrix.configuration }}\boiii-reimagined.pdb
       
       - name: Upload ${{matrix.configuration}} binary
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
         uses: actions/upload-artifact@v4.3.3
         with:
-          name: ${{matrix.configuration}} Binary
+          name: ${{matrix.configuration}} binary
           path: |
-            boiii-reimagined-${{ steps.config-lowercase.outputs.lowercase }}.exe
+            build\bin\x64\${{ matrix.configuration }}\boiii-reimagined.exe
             
       - name: Upload ${{matrix.configuration}} data artifacts
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
@@ -85,7 +67,7 @@ jobs:
         with:
           name: ${{matrix.configuration}} data artifacts
           path: |
-            data-${{ steps.config-lowercase.outputs.lowercase }}/*
+            data/*
             
   deploy:
     name: Deploy artifacts
@@ -93,30 +75,46 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'BiraruStudios' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
     steps:
+      - name: Download Debug symbols
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: Debug symbols
+          path: debug
+        
       - name: Download Debug binaries
         uses: actions/download-artifact@v4.1.7
         with:
-          name: Debug Binary
+          name: Debug binary
+          path: debug
     
       - name: Download Debug data artifacts
         uses: actions/download-artifact@v4.1.7
         with:
           name: Debug data artifacts
-          path: data-debug
+          path: debug/data
+
+      - name: Download Release symbols
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: Release symbols
+          path: release
     
       - name: Download Release binaries
         uses: actions/download-artifact@v4.1.7
         with:
-          name: Release Binary
+          name: Release binary
+          path: release
 
       - name: Download Release data artifacts
         uses: actions/download-artifact@v4.1.7
         with:
           name: Release data artifacts
-          path: data-release
+          path: release/data
 
-      - name: Zips data files
-        run: find . -type d -name "data-*" -exec sh -c 'zip -r "{}.zip" "{}"' \;
+      - name: Zip files
+        run: |
+          zip -r debug.zip debug/*
+          zip -r release.zip release/*
         
       - name: Send Embed
         run: |
@@ -130,7 +128,7 @@ jobs:
               FILE_TABLE+="$FILE | \n"
             done
           else
-            FILE_TABLE="No files attached"
+            FILE_TABLE="No files"
           fi
           
           TIMESTAMP=$(TZ=Asia/Karachi date --iso-8601=seconds)
@@ -156,7 +154,7 @@ jobs:
                 \"description\": \"$DESCRIPTION\",
                 \"fields\": [
                   {
-                    \"name\": \"Files Attached:\",
+                    \"name\": \"Files:\",
                     \"value\": \"\`\`\`$FILE_TABLE\`\`\`\"
                   },
                   {
@@ -180,53 +178,77 @@ jobs:
 
           curl -H "Content-Type: application/json" -X POST -d "$JSON_PAYLOAD" ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
 
-      - name: Upload BOIII Debug binary
+      - name: Upload Debug ZIP
         uses: sinshutu/upload-to-discord@v2.0.0
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
         with:
-          args: boiii-reimagined-debug.exe
+          args: debug.zip
 
-      - name: Upload BOIII Release binary
+      - name: Upload Release ZIP
         uses: sinshutu/upload-to-discord@v2.0.0
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
         with:
-          args: boiii-reimagined-release.exe
-
-      - name: Upload Debug data zip
-        uses: sinshutu/upload-to-discord@v2.0.0
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
-        with:
-          args: data-debug.zip
-
-      - name: Upload Release data zip
-        uses: sinshutu/upload-to-discord@v2.0.0
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
-        with:
-          args: data-release.zip
+          args: release.zip
 
       - name: Prepare cleanup
         run: |
-          echo "" > boiii-reimagined-debug.exe
-          echo "" > boiii-reimagined-release.exe
+          find debug/ -type f -exec sh -c 'echo "" > "$1"' _ {} \;
+          find release/ -type f -exec sh -c 'echo "" > "$1"' _ {} \;
+          echo "" > debug.zip
+          echo "" > release.zip
           
-      - name: Cleanup BOIII Debug
+      - name: Cleanup Debug symbols
         uses: actions/upload-artifact@v4.3.3
         with:
-          name: Debug Binary
+          name: Debug symbols
           retention-days: 1
           path: |
-            boiii-reimagined-debug.exe
+            debug/boiii-reimagined.pdb
+          overwrite: true
+          
+      - name: Cleanup Debug binary
+        uses: actions/upload-artifact@v4.3.3
+        with:
+          name: Debug binary
+          retention-days: 1
+          path: |
+            debug/boiii-reimagined.exe
+          overwrite: true
+          
+      - name: Cleanup Debug data artifacts
+        uses: actions/upload-artifact@v4.3.3
+        with:
+          name: Debug data artifacts
+          retention-days: 1
+          path: |
+            debug/data
+          overwrite: true    
+
+      - name: Cleanup Release symbols
+        uses: actions/upload-artifact@v4.3.3
+        with:
+          name: Release symbols
+          retention-days: 1
+          path: |
+            release/boiii-reimagined.pdb
           overwrite: true
 
-      - name: Cleanup BOIII Release
+      - name: Cleanup Release binary
         uses: actions/upload-artifact@v4.3.3
         with:
-          name: Release Binary
+          name: Release binary
           retention-days: 1
           path: |
-            boiii-reimagined-release.exe
+            release/boiii-reimagined.exe
+          overwrite: true
+          
+      - name: Cleanup Release data artifacts
+        uses: actions/upload-artifact@v4.3.3
+        with:
+          name: Release data artifacts
+          retention-days: 1
+          path: |
+            release/data
           overwrite: true

@@ -19,7 +19,6 @@
 
 namespace updater
 {
-	bool disable_update = true;
 	namespace
 	{
 		std::string get_update_file()
@@ -128,10 +127,6 @@ namespace updater
 
 	void file_updater::run() const
 	{
-		if (updater::disable_update)
-        {
-            return;
-        }
 		const auto files = get_file_infos();
 		if (!files.empty())
 		{
@@ -144,7 +139,7 @@ namespace updater
 			return;
 		}
 
-		this->update_host_binary(outdated_files);
+		//this->update_host_binary(outdated_files);
 		this->update_files(outdated_files);
 
 		std::this_thread::sleep_for(1s);
