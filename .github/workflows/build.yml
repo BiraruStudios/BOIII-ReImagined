@@ -194,10 +194,10 @@ jobs:
 
       - name: Prepare cleanup
         run: |
-          rm -rf debug
-          rm -rf release
-          rm -rf debug.zip
-          rm -rf release.zip
+          rm -rf debug/*
+          rm -rf release/*
+          echo "" > debug.zip
+          echo "" > release.zip
           
       - name: Cleanup Debug symbols
         uses: actions/upload-artifact@v4.3.3
