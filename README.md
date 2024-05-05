@@ -10,6 +10,7 @@
 ## Credits
 
 - Thanks to <a href="https://github.com/shiversoftdev">@shiversoftdev</a> for providing the fixes from his <a href="https://github.com/shiversoftdev/t7patch">community patch</a>
+- Thanks to <a href="https://github.com/momo5502">@momo5502</a> for creating the boiii project
 - Thanks to <a href="https://github.com/Ezz-lol">@Ezz-lol</a> for <a href="https://github.com/Ezz-lol/boiii-free/tree/original">original</a> source
 
 ## Disclaimer
