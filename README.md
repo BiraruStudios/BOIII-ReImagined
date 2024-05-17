@@ -1,4 +1,4 @@
-<img src="src/client/resources/icon.ico" width="150" height="150">
+<img src="src/client/resources/icon.ico" width="150" height="150" alt="Biraru Imagine">
 
 [![build](https://img.shields.io/github/actions/workflow/status/BiraruStudios/BOIII-ReImagined/build.yml?branch=main&label=Build&logo=github)](https://github.com/BiraruStudios/BOIII-ReImagined/actions)
 [![bugs](https://img.shields.io/github/issues/BiraruStudios/BOIII-ReImagined/bug?label=Bugs&logo=github)](https://github.com/BiraruStudios/BOIII-ReImagined/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
