@@ -62,12 +62,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Biraru Studio's"
             VALUE "FileDescription", "TLS index allocation dll"
-            VALUE "FileVersion", FILEVERSION
+            VALUE "FileVersion", "1.0.0"
             VALUE "InternalName", "TLS DLL"
             VALUE "LegalCopyright", "All rights reserved."
             VALUE "OriginalFilename", "tlsdll.dll"
             VALUE "ProductName", "tlsdll"
-            VALUE "ProductVersion", PRODUCTVERSION
+            VALUE "ProductVersion", "1.0.0"
         END
     END
     BLOCK "VarFileInfo"
