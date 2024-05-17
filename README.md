@@ -3,15 +3,16 @@
 [![build](https://img.shields.io/github/actions/workflow/status/BiraruStudios/BOIII-ReImagined/build.yml?branch=main&label=Build&logo=github)](https://github.com/BiraruStudios/BOIII-ReImagined/actions)
 [![bugs](https://img.shields.io/github/issues/BiraruStudios/BOIII-ReImagined/bug?label=Bugs&logo=github)](https://github.com/BiraruStudios/BOIII-ReImagined/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
 [![patreon](https://img.shields.io/badge/Patreon-support-red.svg?logo=patreon)](https://www.patreon.com/Biraru)
-# What is <span style="color: #f97316">B</span><span style="color: #ec511c">O</span><span style="color: #e53f21">I</span><span style="color: #e23623">I</span><span style="color: #dc2626">I</span> <span style="color:white">ReImagined</span>
+# What is <span style="background: linear-gradient(90deg, #f97316, #ec511c, #e53f21, #e23623, #dc2626); -webkit-background-clip: text; color: transparent;">BOIII ReImagined</span>
 
-<span style="color: #f97316">B</span><span style="color: #ec511c">O</span><span style="color: #e53f21">I</span><span style="color: #e23623">I</span><span style="color: #dc2626">I</span> <span style="color: white">ReImagined</span> is a game modification for Call of Duty: Black Ops 3.
+<span style="background: linear-gradient(90deg, #f97316, #ec511c, #e53f21, #e23623, #dc2626); -webkit-background-clip: text; color: transparent;">BOIII ReImagined</span> is a game modification for Call of Duty: Black Ops 3.
 
 ## Credits
 
-- Thanks to <a href="https://github.com/shiversoftdev">@shiversoftdev</a> for providing the fixes from his <a href="https://github.com/shiversoftdev/t7patch">community patch</a>
 - Thanks to <a href="https://github.com/momo5502">@momo5502</a> for creating the boiii project
-- Thanks to <a href="https://github.com/Ezz-lol">@Ezz-lol</a> for archiving <a href="https://github.com/Ezz-lol/boiii-free/tree/original">original</a> source
+- Thanks to <a href="https://github.com/shiversoftdev">@shiversoftdev</a> for providing the fixes from his <a href="https://github.com/shiversoftdev/t7patch">community patch</a>
+- Thanks to <a href="https://github.com/Ezz-lol">Ezz-lol</a> for archiving <a href="https://github.com/Ezz-lol/boiii-free/tree/original">original</a> source
+- Thanks to <a href="https://git.rimmyscorner.com/Rim/t7x">T7X Project</a> for giving me some context on what's happening in the client
 
 ## Disclaimer
 
