@@ -10,6 +10,7 @@ namespace updater
 {
 	void update()
 	{
+		// if (utils::flags::has_flag("update"))
 		if (utils::flags::has_flag("noupdate"))
 		{
 			return;

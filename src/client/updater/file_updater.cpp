@@ -10,12 +10,16 @@
 #include <utils/io.hpp>
 #include <utils/compression.hpp>
 
-#define UPDATE_SERVER "https://updater.xlabs.dev/"
+#define UPDATE_SERVER ""
+//#define UPDATE_SERVER "https://updater.xlabs.dev/"
 
-#define UPDATE_FILE_MAIN UPDATE_SERVER "boiii_reimagined.json"
-#define UPDATE_FOLDER_MAIN UPDATE_SERVER "boiii_reimagined/"
+#define UPDATE_FILE_MAIN UPDATE_SERVER ""
+#define UPDATE_FOLDER_MAIN UPDATE_SERVER ""
+//#define UPDATE_FILE_MAIN UPDATE_SERVER "boiii_reimagined.json"
+//#define UPDATE_FOLDER_MAIN UPDATE_SERVER "boiii_reimagined/"
 
-#define UPDATE_HOST_BINARY "boiii-reimagined.exe"
+#define UPDATE_HOST_BINARY ""
+//#define UPDATE_HOST_BINARY "boiii-reimagined.exe"
 
 namespace updater
 {
