@@ -339,6 +339,5 @@ project "tlsdll"
 
 	resincludedirs {"$(ProjectDir)src"}
 
-
 group "Dependencies"
 	dependencies.projects()
