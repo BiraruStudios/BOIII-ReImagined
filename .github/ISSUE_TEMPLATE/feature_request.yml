@@ -1,5 +1,5 @@
 name: Feature Request or Suggestion
-description: Open a feature request or give a suggestion for the BOIII project.
+description: Open a feature request or give a suggestion for the BOIII ReImagined project.
 labels: ["feature"]
 body:
   - type: markdown
