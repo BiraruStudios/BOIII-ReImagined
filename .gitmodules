@@ -32,6 +32,3 @@
 	path = deps/curl
 	url = https://github.com/curl/curl.git
 	branch = curl-8_4_0
-[submodule "deps/openssl"]
-    path = deps/openssl
-    url = https://github.com/openssl/openssl.git
