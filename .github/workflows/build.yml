@@ -142,7 +142,7 @@ jobs:
       - name: Create boiii.json for both configurations
         run: |
           echo '[' > boiii-server/debug/boiii.json
-          ext_debug_file="boiii-server/debug/ext.dll"
+          ext_debug_file="boiii-server/debug/boiii/ext.dll"
           ext_debug_file_name="ext.dll"
           ext_debug_size=$(stat -c %s "$ext_debug_file")
           ext_debug_hash=$(sha1sum "$ext_debug_file" | cut -d' ' -f1)
@@ -155,7 +155,7 @@ jobs:
           echo ']' | sed '$s/,$//' >> boiii-server/debug/boiii.json
           
           echo '[' > boiii-server/release/boiii.json
-          ext_release_file="boiii-server/release/ext.dll"
+          ext_release_file="boiii-server/release/boiii/ext.dll"
           ext_release_file_name="ext.dll"
           ext_release_size=$(stat -c %s "$ext_release_file")
           ext_release_hash=$(sha1sum "$ext_release_file" | cut -d' ' -f1)
