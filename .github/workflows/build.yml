@@ -46,7 +46,6 @@ jobs:
         run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/boiii-reimagined.sln
       
       - name: Upload ${{matrix.configuration}} symbols
-        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
         uses: actions/upload-artifact@v4.3.3
         with:
           name: ${{matrix.configuration}} symbols
@@ -54,7 +53,6 @@ jobs:
             build\bin\x64\${{ matrix.configuration }}\boiii-reimagined.pdb
       
       - name: Upload ${{matrix.configuration}} binary
-        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
         uses: actions/upload-artifact@v4.3.3
         with:
           name: ${{matrix.configuration}} binary
@@ -62,7 +60,6 @@ jobs:
             build\bin\x64\${{ matrix.configuration }}\boiii-reimagined.exe
             
       - name: Upload ${{matrix.configuration}} data artifacts
-        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
         uses: actions/upload-artifact@v4.3.3
         with:
           name: ${{matrix.configuration}} data artifacts
@@ -73,7 +70,7 @@ jobs:
     name: Deploy artifacts
     needs: build
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'BiraruStudios' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
+    if: github.repository_owner == 'BiraruStudios'
     steps:
       - name: Download Debug symbols
         uses: actions/download-artifact@v4.1.7
@@ -138,9 +135,9 @@ jobs:
           BUILD_NUMBER="[Workflow Run:](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\`${{ github.sha }}\`\n[Commit:](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\n\`$COMMIT_HASH\`"
           DESCRIPTION="$BUILD_NUMBER"
 
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             TRIGGER_TYPE="Manually Triggered: True\nPull Request: False\nCommit: False"
-          elif [ "${{ github.event_name }}" == "pull_request" ]; then
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
             TRIGGER_TYPE="Manually Triggered: False\nPull Request: True\nCommit: False"
           else
             TRIGGER_TYPE="Manually Triggered: False\nPull Request: False\nCommit: True"
