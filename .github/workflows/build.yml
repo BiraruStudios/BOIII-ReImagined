@@ -143,27 +143,27 @@ jobs:
         run: |
           echo '[' > boiii-server/debug/boiii.json
           ext_debug_file="boiii-server/debug/ext.dll"
-          ext_debug_file_name = "ext.dll"
+          ext_debug_file_name="ext.dll"
           ext_debug_size=$(stat -c %s "$ext_debug_file")
           ext_debug_hash=$(sha1sum "$ext_debug_file" | cut -d' ' -f1)
           echo "[\"$ext_debug_file_name\", $ext_debug_size, \"$ext_debug_hash\"]," >> boiii-server/debug/boiii.json
           for file in boiii-server/debug/boiii/data/*; do
           size=$(stat -c %s "$file")
           hash=$(sha1sum "$file" | cut -d' ' -f1)
-          echo " [\"data/$file\", $size, \"$hash\"]," >> boiii-debug.json
+          echo " [\"data/$file\", $size, \"$hash\"]," >> boiii-server/debug/boiii.json
           done
           echo ']' | sed '$s/,$//' >> boiii-server/debug/boiii.json
           
           echo '[' > boiii-server/release/boiii.json
           ext_release_file="boiii-server/release/ext.dll"
-          ext_release_file_name = "ext.dll"
+          ext_release_file_name="ext.dll"
           ext_release_size=$(stat -c %s "$ext_release_file")
           ext_release_hash=$(sha1sum "$ext_release_file" | cut -d' ' -f1)
           echo "[\"$ext_release_file_name\", $ext_release_size, \"$ext_release_hash\"]," >> boiii-server/release/boiii.json
           for file in boiii-server/release/boiii/data/*; do
           size=$(stat -c %s "$file")
           hash=$(sha1sum "$file" | cut -d' ' -f1)
-          echo " [\"data/$file\", $size, \"$hash\"]," >> boiii-release.json
+          echo " [\"data/$file\", $size, \"$hash\"]," >> boiii-server/release/boiii.json
           done
           echo ']' | sed '$s/,$//' >> boiii-server/release/boiii.json
       
