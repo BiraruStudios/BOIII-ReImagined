@@ -9,19 +9,78 @@ charset = utf-8
 brace_style = next_line
 namespace_indentation = all
 cpp_indent_namespace_contents = true
+continuation_indent_size = 4
+tab_width = 4
+max_line_length = 120
 
 # HTML files
 [*.html]
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
 indent_size = 2
+trim_trailing_whitespace = true
+charset = utf-8
+max_line_length = 80
 
 # CSS files
 [*.css]
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
 indent_size = 2
+trim_trailing_whitespace = true
+charset = utf-8
+max_line_length = 80
 
 # JavaScript files
 [*.js]
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
 indent_size = 2
+trim_trailing_whitespace = true
+charset = utf-8
+quote_type = single
+max_line_length = 80
 
 # Markdown files
 [*.md]
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
 indent_size = 2
+trim_trailing_whitespace = true
+charset = utf-8
+max_line_length = 80
+
+# Lua files
+[*.lua]
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+charset = utf-8
+quote_type = single
+max_line_length = 80
+
+# Batch files
+[*.bat]
+end_of_line = crlf
+insert_final_newline = true
+indent_style = tab
+indent_size = 4
+trim_trailing_whitespace = true
+charset = utf-8
+max_line_length = 120
+
+# JSON files
+[*.json]
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+charset = utf-8
+max_line_length = 80

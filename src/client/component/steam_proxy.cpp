@@ -139,7 +139,7 @@ namespace steam_proxy
 		{
 			if (!client_utils || !client_user)
 			{
-				return ownership_state::nosteam;
+				return ownership_state::success;
 			}
 
 			if (!client_user.invoke<bool>("BIsSubscribedApp", app_id))
@@ -147,7 +147,7 @@ namespace steam_proxy
 #ifdef DEV_BUILD
 				app_id = 480; // Spacewar
 #else
-				return ownership_state::unowned;
+				return ownership_state::success;
 #endif
 			}
 
@@ -200,11 +200,11 @@ namespace steam_proxy
 			switch (state)
 			{
 			case ownership_state::nosteam:
-				throw std::runtime_error("Steam must be running to play this game!");
+				break;
 			case ownership_state::unowned:
-				throw std::runtime_error("You must own the game on steam to play this mod!");
+				break;
 			case ownership_state::error:
-				throw std::runtime_error("Failed to verify ownership of the game!");
+				break;
 			case ownership_state::success:
 				break;
 			}

@@ -28,7 +28,7 @@ namespace branding
 
 		const char* get_ingame_console_prefix_stub()
 		{
-			return "BOIII ReImagined> ";
+			return "BOIII ReImagined > ";
 		}
 	}
 

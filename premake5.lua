@@ -98,7 +98,7 @@ newaction {
 		local gitCurrentBranchSuccess = proc:close()
 		if gitCurrentBranchSuccess then
 			-- We got a branch name, check if it is a feature branch
-			if gitCurrentBranchOutput ~= "develop" and gitCurrentBranchOutput ~= "master" and gitCurrentBranchOutput ~= "main" then
+			if gitCurrentBranchOutput ~= "text" and gitCurrentBranchOutput ~= "master" and gitCurrentBranchOutput ~= "main" then
 				version = version .. "-" .. gitCurrentBranchOutput
 			end
 		end
@@ -166,7 +166,7 @@ newaction {
 			end
 
 			if branchName == nil then
-				branchName = "develop"
+				branchName = "test"
 			end
 
 			print("Detected branch: " .. branchName)
@@ -199,8 +199,8 @@ newaction {
 			versionHeader:write("// Version transformed for RC files\n")
 			versionHeader:write("#define VERSION_PRODUCT_RC " .. table.concat(vertonumarr(tagName, revNumber, 3), ",") .. "\n")
 			versionHeader:write("#define VERSION_PRODUCT " .. cstrquote(table.concat(vertonumarr(tagName, revNumber, 3), ".")) .. "\n")
-			versionHeader:write("#define VERSION_FILE_RC " .. table.concat(vertonumarr(tagName, revNumber, 4), ",") .. "\n")
-			versionHeader:write("#define VERSION_FILE " .. cstrquote(table.concat(vertonumarr(tagName, revNumber, 4), ".")) .. "\n")
+			versionHeader:write("#define VERSION_FILE_RC " .. table.concat(vertonumarr(tagName, revNumber, 3), ",") .. "\n")
+			versionHeader:write("#define VERSION_FILE " .. cstrquote(table.concat(vertonumarr(tagName, revNumber, 3), ".")) .. "\n")
 			versionHeader:write("\n")
 			versionHeader:write("// Alias definitions\n")
 			versionHeader:write("#define VERSION GIT_DESCRIBE\n")
@@ -338,7 +338,6 @@ project "tlsdll"
 	links {"common"}
 
 	resincludedirs {"$(ProjectDir)src"}
-
 
 group "Dependencies"
 	dependencies.projects()
