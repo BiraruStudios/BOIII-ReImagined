@@ -146,7 +146,6 @@ namespace client_patches
 			utils::hook::invoke<void>(0x1422A2AF0_g, path, "boiii_reimagined/players");
 		}
 
-		// TODO: Remove me after some time
 		extern "C" void migrate_if_needed()
 		{
 			std::error_code e;
@@ -201,7 +200,7 @@ namespace client_patches
 
 		component()
 		{
-			migrate_if_needed(); // TODO: Remove me after some time
+			migrate_if_needed();
 		}
 
 		void post_unpack() override
