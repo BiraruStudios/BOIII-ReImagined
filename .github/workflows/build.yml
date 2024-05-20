@@ -147,22 +147,27 @@ jobs:
               local search_path=$3
           
               echo '[' > "$json_file"
-              ext_file="$base_path/boiii/ext.dll"
+              
+              ext_file="$base_path/ext.dll"
               ext_file_name="ext.dll"
               ext_size=$(stat -c %s "$ext_file")
               ext_hash=$(sha1sum "$ext_file" | cut -d' ' -f1)
               echo "[\"$ext_file_name\", $ext_size, \"$ext_hash\"]," >> "$json_file"
-          
+              
               find "$search_path" -type f | while read -r file; do
               size=$(stat -c %s "$file")
               hash=$(sha1sum "$file" | cut -d' ' -f1)
-              relative_path=$(echo "$file" | sed "s|$base_path/||")
+              relative_path=$(echo "$file" | sed "s|$base_path/boiii/||")
               echo "[\"$relative_path\", $size, \"$hash\"]," >> "$json_file"
               done
-              echo ']' | sed '$s/,$//' >> "$json_file"
+              
+              sed -i '$ s/,$//' "$json_file"
+              
+              echo ']' >> "$json_file"
           }
           
           process_files "boiii-reimagined-server/debug" "boiii-reimagined-server/debug/boiii.json" "boiii-reimagined-server/debug/boiii/data"
+          
           process_files "boiii-reimagined-server/release" "boiii-reimagined-server/release/boiii.json" "boiii-reimagined-server/release/boiii/data"
       
       - name: Zip files
@@ -256,9 +261,6 @@ jobs:
 
       - name: Prepare cleanup
         run: |
-          find debug/ -type f -exec sh -c 'echo "" > "$1"' _ {} \;
-          find release/ -type f -exec sh -c 'echo "" > "$1"' _ {} \;
-          find boiii-reimagined-server/ -type f -exec sh -c 'echo "" > "$1"' _ {} \;
           echo "" > debug.zip
           echo "" > release.zip
           echo "" > boiii-reimagined-server.zip
