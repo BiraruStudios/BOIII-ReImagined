@@ -127,19 +127,19 @@ jobs:
           name: Release data artifacts
           path: release/data
           
-      - name: Make boiii-server dir
+      - name: Make boiii-reimagined-server dir
         run: |
-          mkdir -p boiii-server/debug/boiii
-          mkdir -p boiii-server/release/boiii
+          mkdir -p boiii-reimagined-server/debug/boiii
+          mkdir -p boiii-reimagined-server/release/boiii
       
-      - name: Move stuff into boiii-server dir
+      - name: Move stuff into boiii-reimagined-server dir
         run: |
-          mv debug/ext.dll boiii-server/debug/boiii
-          mv release/ext.dll boiii-server/release/boiii
-          mv debug/data boiii-server/debug/boiii
-          mv release/data boiii-server/release/boiii
+          mv debug/ext.dll boiii-reimagined-server/debug/boiii
+          mv release/ext.dll boiii-reimagined-server/release/boiii
+          mv debug/data boiii-reimagined-server/debug/boiii
+          mv release/data boiii-reimagined-server/release/boiii
           
-      - name: Create boiii.json for both configurations
+      - name: Create boiii-reimagined.json for both configurations
         run: |
           process_files() {
               local base_path=$1
@@ -147,7 +147,7 @@ jobs:
               local search_path=$3
           
               echo '[' > "$json_file"
-              ext_file="$base_path/ext.dll"
+              ext_file="$base_path/boiii/ext.dll"
               ext_file_name="ext.dll"
               ext_size=$(stat -c %s "$ext_file")
               ext_hash=$(sha1sum "$ext_file" | cut -d' ' -f1)
@@ -162,8 +162,8 @@ jobs:
               echo ']' | sed '$s/,$//' >> "$json_file"
           }
           
-          process_files "boiii-server/debug" "boiii-server/debug/boiii.json" "boiii-server/debug/boiii/data"
-          process_files "boiii-server/release" "boiii-server/release/boiii.json" "boiii-server/release/boiii/data"
+          process_files "boiii-reimagined-server/debug" "boiii-reimagined-server/debug/boiii.json" "boiii-reimagined-server/debug/boiii/data"
+          process_files "boiii-reimagined-server/release" "boiii-reimagined-server/release/boiii.json" "boiii-reimagined-server/release/boiii/data"
       
       - name: Zip files
         run: |
