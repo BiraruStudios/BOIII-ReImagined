@@ -169,7 +169,7 @@ jobs:
         run: |
           zip -r debug.zip debug/*
           zip -r release.zip release/*
-          zip -r boiii-server.zip boiii-server/*
+          zip -r boiii-reimagined-server.zip boiii-reimagined-server/*
         
       - name: Send Embed
         run: |
@@ -252,14 +252,16 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
         with:
-          args: boiii-server.zip
+          args: boiii-reimagined-server.zip
 
       - name: Prepare cleanup
         run: |
           find debug/ -type f -exec sh -c 'echo "" > "$1"' _ {} \;
           find release/ -type f -exec sh -c 'echo "" > "$1"' _ {} \;
+          find boiii-reimagined-server/ -type f -exec sh -c 'echo "" > "$1"' _ {} \;
           echo "" > debug.zip
           echo "" > release.zip
+          echo "" > boiii-reimagined-server.zip
           
       - name: Cleanup Debug symbols
         uses: actions/upload-artifact@v4.3.3
@@ -288,6 +290,15 @@ jobs:
             debug/data
           overwrite: true    
 
+      - name: Cleanup Debug ext
+        uses: actions/upload-artifact@v4.3.3
+        with:
+          name: Debug ext
+          retention-days: 1
+          path: |
+            debug/ext.dll
+          overwrite: true
+      
       - name: Cleanup Release symbols
         uses: actions/upload-artifact@v4.3.3
         with:
@@ -313,4 +324,13 @@ jobs:
           retention-days: 1
           path: |
             release/data
+          overwrite: true
+          
+      - name: Cleanup Release ext
+        uses: actions/upload-artifact@v4.3.3
+        with:
+          name: Release ext
+          retention-days: 1
+          path: |
+            release/ext.dll
           overwrite: true
