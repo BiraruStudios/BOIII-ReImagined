@@ -141,31 +141,29 @@ jobs:
           
       - name: Create boiii.json for both configurations
         run: |
-          echo '[' > boiii-server/debug/boiii.json
-          ext_debug_file="boiii-server/debug/boiii/ext.dll"
-          ext_debug_file_name="ext.dll"
-          ext_debug_size=$(stat -c %s "$ext_debug_file")
-          ext_debug_hash=$(sha1sum "$ext_debug_file" | cut -d' ' -f1)
-          echo "[\"$ext_debug_file_name\", $ext_debug_size, \"$ext_debug_hash\"]," >> boiii-server/debug/boiii.json
-          for file in boiii-server/debug/boiii/data/*; do
-          size=$(stat -c %s "$file")
-          hash=$(sha1sum "$file" | cut -d' ' -f1)
-          echo " [\"data/$file\", $size, \"$hash\"]," >> boiii-server/debug/boiii.json
-          done
-          echo ']' | sed '$s/,$//' >> boiii-server/debug/boiii.json
+          process_files() {
+              local base_path=$1
+              local json_file=$2
+              local search_path=$3
           
-          echo '[' > boiii-server/release/boiii.json
-          ext_release_file="boiii-server/release/boiii/ext.dll"
-          ext_release_file_name="ext.dll"
-          ext_release_size=$(stat -c %s "$ext_release_file")
-          ext_release_hash=$(sha1sum "$ext_release_file" | cut -d' ' -f1)
-          echo "[\"$ext_release_file_name\", $ext_release_size, \"$ext_release_hash\"]," >> boiii-server/release/boiii.json
-          for file in boiii-server/release/boiii/data/*; do
-          size=$(stat -c %s "$file")
-          hash=$(sha1sum "$file" | cut -d' ' -f1)
-          echo " [\"data/$file\", $size, \"$hash\"]," >> boiii-server/release/boiii.json
-          done
-          echo ']' | sed '$s/,$//' >> boiii-server/release/boiii.json
+              echo '[' > "$json_file"
+              ext_file="$base_path/ext.dll"
+              ext_file_name="ext.dll"
+              ext_size=$(stat -c %s "$ext_file")
+              ext_hash=$(sha1sum "$ext_file" | cut -d' ' -f1)
+              echo "[\"$ext_file_name\", $ext_size, \"$ext_hash\"]," >> "$json_file"
+          
+              find "$search_path" -type f | while read -r file; do
+              size=$(stat -c %s "$file")
+              hash=$(sha1sum "$file" | cut -d' ' -f1)
+              relative_path=$(echo "$file" | sed "s|$base_path/||")
+              echo "[\"$relative_path\", $size, \"$hash\"]," >> "$json_file"
+              done
+              echo ']' | sed '$s/,$//' >> "$json_file"
+          }
+          
+          process_files "boiii-server/debug" "boiii-server/debug/boiii.json" "boiii-server/debug/boiii/data"
+          process_files "boiii-server/release" "boiii-server/release/boiii.json" "boiii-server/release/boiii/data"
       
       - name: Zip files
         run: |
