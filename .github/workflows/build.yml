@@ -148,7 +148,7 @@ jobs:
           
               echo '[' > "$json_file"
               
-              ext_file="$base_path/ext.dll"
+              ext_file="$base_path/boiii/ext.dll"
               ext_file_name="ext.dll"
               ext_size=$(stat -c %s "$ext_file")
               ext_hash=$(sha1sum "$ext_file" | cut -d' ' -f1)
