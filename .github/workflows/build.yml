@@ -134,10 +134,10 @@ jobs:
       
       - name: Move stuff into boiii-reimagined-server dir
         run: |
-          mv debug/ext.dll boiii-reimagined-server/debug/boiii
-          mv release/ext.dll boiii-reimagined-server/release/boiii
-          mv debug/data boiii-reimagined-server/debug/boiii
-          mv release/data boiii-reimagined-server/release/boiii
+          cp debug/ext.dll boiii-reimagined-server/debug/boiii
+          cp release/ext.dll boiii-reimagined-server/release/boiii
+          cp -r debug/data boiii-reimagined-server/debug/boiii
+          cp -r release/data boiii-reimagined-server/release/boiii
           
       - name: Create boiii-reimagined.json for both configurations
         run: |
