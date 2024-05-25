@@ -34,7 +34,7 @@ body {
 }
 .background-container:before {
     background: #000;
-    background: url(./boiii.jpeg);
+    background: url(./boiii.jpg);
     background-position: 50%;
     background-repeat: no-repeat;
     background-size: cover;
