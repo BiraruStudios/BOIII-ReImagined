@@ -33,17 +33,6 @@ trim_trailing_whitespace = true
 charset = utf-8
 max_line_length = 80
 
-# JavaScript files
-[*.js]
-end_of_line = lf
-insert_final_newline = true
-indent_style = space
-indent_size = 2
-trim_trailing_whitespace = true
-charset = utf-8
-quote_type = single
-max_line_length = 80
-
 # Markdown files
 [*.md]
 end_of_line = lf

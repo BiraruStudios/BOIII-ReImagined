@@ -139,7 +139,7 @@ namespace steam_proxy
 		{
 			if (!client_utils || !client_user)
 			{
-				return ownership_state::success;
+				return ownership_state::nosteam;
 			}
 
 			if (!client_user.invoke<bool>("BIsSubscribedApp", app_id))
@@ -222,7 +222,8 @@ namespace steam_proxy
 
 		void post_unpack() override
 		{
-			const auto res = start_mod("\xE2\x98\x84\xEF\xB8\x8F" " BOIII Reimagined"s, steam::SteamUtils()->GetAppID());
+			//const auto res = start_mod("\xE2\x98\x84\xEF\xB8\x8F" " BOIII Reimagined"s, steam::SteamUtils()->GetAppID());
+            const auto res = start_mod("\xF0\x9F\x92\x8E" " BOIII Reimagined"s, steam::SteamUtils()->GetAppID());
 			evaluate_ownership_state(res);
 			clean_up_on_error();
 		}

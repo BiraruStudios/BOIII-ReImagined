@@ -46,7 +46,6 @@ jobs:
         run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/boiii-reimagined.sln
       
       - name: Upload ${{matrix.configuration}} symbols
-        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
         uses: actions/upload-artifact@v4.3.3
         with:
           name: ${{matrix.configuration}} symbols
@@ -54,15 +53,20 @@ jobs:
             build\bin\x64\${{ matrix.configuration }}\boiii-reimagined.pdb
       
       - name: Upload ${{matrix.configuration}} binary
-        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
         uses: actions/upload-artifact@v4.3.3
         with:
           name: ${{matrix.configuration}} binary
           path: |
             build\bin\x64\${{ matrix.configuration }}\boiii-reimagined.exe
             
+      - name: Upload ${{matrix.configuration}} ext
+        uses: actions/upload-artifact@v4.3.3
+        with:
+          name: ${{matrix.configuration}} ext
+          path: |
+            ext.dll
+            
       - name: Upload ${{matrix.configuration}} data artifacts
-        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
         uses: actions/upload-artifact@v4.3.3
         with:
           name: ${{matrix.configuration}} data artifacts
@@ -73,7 +77,7 @@ jobs:
     name: Deploy artifacts
     needs: build
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'BiraruStudios' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test')
+    if: github.repository_owner == 'BiraruStudios'
     steps:
       - name: Download Debug symbols
         uses: actions/download-artifact@v4.1.7
@@ -85,6 +89,12 @@ jobs:
         uses: actions/download-artifact@v4.1.7
         with:
           name: Debug binary
+          path: debug
+          
+      - name: Download Debug ext
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: Debug ext
           path: debug
     
       - name: Download Debug data artifacts
@@ -104,17 +114,67 @@ jobs:
         with:
           name: Release binary
           path: release
+          
+      - name: Download Release ext
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: Release ext
+          path: release
 
       - name: Download Release data artifacts
         uses: actions/download-artifact@v4.1.7
         with:
           name: Release data artifacts
           path: release/data
-
+          
+      - name: Make boiii-reimagined-server dir
+        run: |
+          mkdir -p boiii-reimagined-server/debug/boiii
+          mkdir -p boiii-reimagined-server/release/boiii
+      
+      - name: Move stuff into boiii-reimagined-server dir
+        run: |
+          cp debug/ext.dll boiii-reimagined-server/debug/boiii
+          cp release/ext.dll boiii-reimagined-server/release/boiii
+          cp -r debug/data boiii-reimagined-server/debug/boiii
+          cp -r release/data boiii-reimagined-server/release/boiii
+          
+      - name: Create boiii-reimagined.json for both configurations
+        run: |
+          process_files() {
+              local base_path=$1
+              local json_file=$2
+              local search_path=$3
+          
+              echo '[' > "$json_file"
+              
+              ext_file="$base_path/boiii/ext.dll"
+              ext_file_name="ext.dll"
+              ext_size=$(stat -c %s "$ext_file")
+              ext_hash=$(sha1sum "$ext_file" | cut -d' ' -f1)
+              echo "[\"$ext_file_name\", $ext_size, \"$ext_hash\"]," >> "$json_file"
+              
+              find "$search_path" -type f | while read -r file; do
+              size=$(stat -c %s "$file")
+              hash=$(sha1sum "$file" | cut -d' ' -f1)
+              relative_path=$(echo "$file" | sed "s|$base_path/boiii/||")
+              echo "[\"$relative_path\", $size, \"$hash\"]," >> "$json_file"
+              done
+              
+              sed -i '$ s/,$//' "$json_file"
+              
+              echo ']' >> "$json_file"
+          }
+          
+          process_files "boiii-reimagined-server/debug" "boiii-reimagined-server/debug/boiii.json" "boiii-reimagined-server/debug/boiii/data"
+          
+          process_files "boiii-reimagined-server/release" "boiii-reimagined-server/release/boiii.json" "boiii-reimagined-server/release/boiii/data"
+      
       - name: Zip files
         run: |
           zip -r debug.zip debug/*
           zip -r release.zip release/*
+          zip -r boiii-reimagined-server.zip boiii-reimagined-server/*
         
       - name: Send Embed
         run: |
@@ -138,9 +198,9 @@ jobs:
           BUILD_NUMBER="[Workflow Run:](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\`${{ github.sha }}\`\n[Commit:](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\n\`$COMMIT_HASH\`"
           DESCRIPTION="$BUILD_NUMBER"
 
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             TRIGGER_TYPE="Manually Triggered: True\nPull Request: False\nCommit: False"
-          elif [ "${{ github.event_name }}" == "pull_request" ]; then
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
             TRIGGER_TYPE="Manually Triggered: False\nPull Request: True\nCommit: False"
           else
             TRIGGER_TYPE="Manually Triggered: False\nPull Request: False\nCommit: True"
@@ -184,20 +244,26 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
         with:
           args: debug.zip
-
+          
       - name: Upload Release ZIP
         uses: sinshutu/upload-to-discord@v2.0.0
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
         with:
           args: release.zip
+          
+      - name: Upload BOIII Server ZIP
+        uses: sinshutu/upload-to-discord@v2.0.0
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
+        with:
+          args: boiii-reimagined-server.zip
 
       - name: Prepare cleanup
         run: |
-          find debug/ -type f -exec sh -c 'echo "" > "$1"' _ {} \;
-          find release/ -type f -exec sh -c 'echo "" > "$1"' _ {} \;
           echo "" > debug.zip
           echo "" > release.zip
+          echo "" > boiii-reimagined-server.zip
           
       - name: Cleanup Debug symbols
         uses: actions/upload-artifact@v4.3.3
@@ -226,6 +292,15 @@ jobs:
             debug/data
           overwrite: true    
 
+      - name: Cleanup Debug ext
+        uses: actions/upload-artifact@v4.3.3
+        with:
+          name: Debug ext
+          retention-days: 1
+          path: |
+            debug/ext.dll
+          overwrite: true
+      
       - name: Cleanup Release symbols
         uses: actions/upload-artifact@v4.3.3
         with:
@@ -251,4 +326,13 @@ jobs:
           retention-days: 1
           path: |
             release/data
+          overwrite: true
+          
+      - name: Cleanup Release ext
+        uses: actions/upload-artifact@v4.3.3
+        with:
+          name: Release ext
+          retention-days: 1
+          path: |
+            release/ext.dll
           overwrite: true

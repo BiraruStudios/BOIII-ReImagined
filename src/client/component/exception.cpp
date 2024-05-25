@@ -134,7 +134,7 @@ namespace exception
 			};
 
 			line("BOIII ReImagined Crash Dump");
-			line("");
+			line(std::string{});
 			line("Version: "s + VERSION);
 			line("Timestamp: "s + get_timestamp());
 			line(utils::string::va("Exception: 0x%08X", exceptioninfo->ExceptionRecord->ExceptionCode));
@@ -156,7 +156,7 @@ namespace exception
 
 		void write_minidump(const LPEXCEPTION_POINTERS exceptioninfo)
 		{
-			const std::string crash_name = utils::string::va("boiii_reimagined/minidumps/boiii_reimagined-crash-%s.zip",
+			const std::string crash_name = utils::string::va("boiii_reimagined/minidumps/boiii-reimagined-crash-%s.zip",
 			                                                 get_timestamp().data());
 
 			utils::compression::zip::archive zip_file{};
