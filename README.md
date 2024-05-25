@@ -1,7 +1,5 @@
-<div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-  <img src="src/client/resources/icon.ico" style="max-width: 25%; height: auto; margin: 0; padding: 0;" alt="BOIII ReImagined Icon">
-  <h1 style="margin: 0; background: linear-gradient(90deg, #f97316, #ec511c, #e53f21, #e23623, #dc2626); -webkit-background-clip: text; color: transparent;">BOIII ReImagined</h1>
-</div>
+<img src="src/client/resources/icon.ico" style="max-width: 150px; height: auto; margin: 0; padding: 0;" align="center" alt="BOIII ReImagined Icon">
+
 <div align="center">
 
   [![build](https://img.shields.io/github/actions/workflow/status/BiraruStudios/BOIII-ReImagined/build.yml?branch=main&label=Build&logo=github)](https://github.com/BiraruStudios/BOIII-ReImagined/actions)
