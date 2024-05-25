@@ -33,7 +33,7 @@ namespace network
 			const auto offset = cmd_string.size() + 5;
 			if (message->cursize < 0 || static_cast<size_t>(message->cursize) < offset || handler == callbacks.end())
 			{
-				return true;
+				return TRUE;
 			}
 
 			const std::basic_string_view data(message->data + offset, message->cursize - offset);
