@@ -27,7 +27,7 @@ CoD.LobbyButtons.STATS = {
   stringRef = "STATS",
   action = function(self, element, controller, param, menu)
     SetPerControllerTableProperty(controller, "disableGameSettingsOptions", true)
-    OpenPopup(menu, "BoiiiStatsMenu", controller)
+    OpenPopup(menu, "BOIIIReImaginedStatsMenu", controller)
   end,
   customId = "btnMPStats"
 }

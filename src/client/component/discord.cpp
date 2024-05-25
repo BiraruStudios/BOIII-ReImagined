@@ -48,7 +48,7 @@ namespace discord
 			handlers.spectateGame = nullptr;
 			handlers.joinRequest = nullptr;
 
-			Discord_Initialize("1047539933922988112", &handlers, 1, nullptr);
+			Discord_Initialize("1242737353177563187", &handlers, 1, nullptr);
 
 			this->initialized_ = true;
 
