@@ -160,7 +160,7 @@ namespace script
             }
 		}
 
-        auto* asset_header = db_find_x_asset_header_hook.invoke<game::RawFile*>(type, name, error_if_missing, wait_time);
+        game::RawFile* db_find_x_asset_header_stub(const game::XAssetType type, const char* name, const bool error_if_missing, const int wait_time)
 		{
 			auto* asset_header = db_find_x_asset_header_hook.invoke<game::RawFile*>(
 				type, name, error_if_missing, wait_time);

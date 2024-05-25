@@ -51,33 +51,36 @@ namespace dvars_patches
 		}
 	}
 
-	class component final : public generic_component
-	{
-	public:
-		void post_unpack() override
-		{
-			scheduler::once(patch_dvars, scheduler::pipeline::main);
-			scheduler::once(patch_flags, scheduler::pipeline::main);
+    class component final : public generic_component
+    {
+    public:
+        void post_unpack() override
+        {
+            scheduler::once(patch_dvars, scheduler::pipeline::main);
+            scheduler::once(patch_flags, scheduler::pipeline::main);
 
-            if (game::is_client()) this->patch_client();
-            else this->patch_server();
+            if (game::is_client())
+                patch_client();
+            else
+                patch_server();
+        }
 
-            static void patch_client()
-            {
-                // toggle ADS dof based on r_dof_enable
-                utils::hook::jump(0x141116EBB_g, utils::hook::assemble(dof_enabled_stub));
-            }
+    private:
+        static void patch_client()
+        {
+            // toggle ADS dof based on r_dof_enable
+            utils::hook::jump(0x141116EBB_g, utils::hook::assemble(dof_enabled_stub));
+        }
 
-            static void patch_server()
-            {
-                // Set the max value of 'sv_network_fps'
-                utils::hook::set<uint32_t>(0x140534FE7_g, 1000);
+        static void patch_server()
+        {
+            // Set the max value of 'sv_network_fps'
+            utils::hook::set<uint32_t>(0x140534FE7_g, 1000);
 
-                // Set the flag of 'sv_network_fps'
-                utils::hook::set<uint32_t>(0x140534FD8_g, game::DVAR_NONE);
-            }
-		}
-	};
+            // Set the flag of 'sv_network_fps'
+            utils::hook::set<uint32_t>(0x140534FD8_g, game::DVAR_NONE);
+        }
+    };
 }
 
 REGISTER_COMPONENT(dvars_patches::component)

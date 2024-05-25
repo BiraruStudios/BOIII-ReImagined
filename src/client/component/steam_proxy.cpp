@@ -13,8 +13,6 @@
 #include "steam_proxy.hpp"
 #include "scheduler.hpp"
 
-#define NO_CHECK
-
 namespace steam_proxy
 {
 	namespace
