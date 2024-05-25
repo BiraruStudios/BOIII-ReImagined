@@ -1,7 +1,8 @@
 version: 2
 updates:
-- package-ecosystem: gitsubmodule
-  directory: "/"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 15
+  - package-ecosystem: gitsubmodule
+    directory: "/"
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 15
+    target-branch: test
