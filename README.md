@@ -57,5 +57,5 @@ This software has been created purely for the purpose of personal skill developm
 
 ## Feel free to open pull requests
 
-[LEGACY README HERE](LEGACY-README.md)
+[LEGACY README HERE](LEGACY_README.md)
 </div>
