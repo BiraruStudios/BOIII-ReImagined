@@ -12,7 +12,7 @@
 ## Important Note
 
 *  **You <u>***AREN'T***</u> required to own Call of Duty: Black Ops 3 in order to run this client. Steam Ownership Verification has been <u>***removed***</u>.**
-*  **You can view the original branch [here](https://github.com/BiraruStudios/BOIII-ReImagined/tree/original) and the test branch is located [here](https://github.com/BiraruStudios/BOIII-ReImagined/tree/test)**
+* **You can view the original branch [here](https://github.com/BiraruStudios/BOIII-ReImagined/tree/original) and the test branch is located [here](https://github.com/BiraruStudios/BOIII-ReImagined/tree/test)**
 *  **BOIII ReImagined is cross-compatible(for now) with ***any*** client based on the BOIII client, You can play the same servers on BOIII ReImagined and BOIII Client.**
 
 ## Added Features
@@ -54,6 +54,8 @@ This software has been created purely for the purpose of personal skill developm
 * [EZZ Folks](https://github.com/Ezz-lol) - Archiving the [original](https://github.com/Ezz-lol/boiii-free/tree/original) source
 * [Rimmy / Ahrimdon](https://git.rimmyscorner.com/Rim) - [T7x](https://git.rimmyscorner.com/Rim/t7x) project revival and rebranding
 * [AlterWare](https://alterware.dev/) - T7x project
+
+## Feel free to open pull requests
 
 [LEGACY README HERE](LEGACY-README.md)
 </div>
