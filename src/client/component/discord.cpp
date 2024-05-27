@@ -19,11 +19,13 @@ namespace discord
 			ZeroMemory(&discord_presence, sizeof(discord_presence));
 
 			discord_presence.instance = 1;
-			discord_presence.state = "BOIII ReImagined";
+			discord_presence.state = "Playing BO3 Via BOIII ReImagined";
 
 			discord_presence.partySize = 0;
 			discord_presence.partyMax = 0;
-			discord_presence.startTimestamp = 0;
+			discord_presence.startTimestamp = time(0);
+            discord_presence.largeImageKey = "bo3";
+            discord_presence.smallImageKey = "logo";
 
 			Discord_UpdatePresence(&discord_presence);
 		}
@@ -68,6 +70,4 @@ namespace discord
 	};
 }
 
-#ifndef DEV_BUILD
 REGISTER_COMPONENT(discord::component)
-#endif

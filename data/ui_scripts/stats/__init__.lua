@@ -345,7 +345,7 @@ if Dvar.cg_unlockall_loot:get() == true then
 	Engine.SetDvar("ui_enableAllHeroes", 1)
 end
 
-LUI.createMenu.BoiiiStatsMenu = function(controller)
+LUI.createMenu.BOIIIReImaginedStatsMenu = function(controller)
 	local self = CoD.Menu.NewForUIEditor("BOIIIReImaginedStatsMenu")
 	if PreLoadFunc then
 		PreLoadFunc(self, controller)
