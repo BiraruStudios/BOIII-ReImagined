@@ -27,14 +27,6 @@ body {
     background: transparent;
 }
 
-.gradient-text {
-  font-size: 48px;
-  font-weight: bold;
-  background: linear-gradient(90deg, #f97316, #ec511c, #e53f21, #e23623, #dc2626);
-  -webkit-background-clip: text;
-  color: transparent;
-}
-
 .background-container {
     inset: 0;
     position: fixed;
