@@ -18,7 +18,7 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_BUG_REPORT_WEBHOOK }}
         run: |
-          MESSAGE_DESCRIPTION="${GITHUB_EVENT.issue.body} \n [Issue Link](https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }})"
+          MESSAGE_DESCRIPTION="$(echo -e "${GITHUB_EVENT.issue.body}\n[Issue Link](https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}")"
           
           # Get the requester's name and avatar using GitHub API
           REQUESTER_NAME=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/users/${{ github.event.issue.user.login }}" | grep -o '"name": *"[^"]*"' | cut -d '"' -f 4)
