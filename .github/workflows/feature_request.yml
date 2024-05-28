@@ -18,7 +18,7 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_FEATURE_REQUEST_WEBHOOK }}
         run: |
-          MESSAGE_DESCRIPTION="${GITHUB_EVENT.issue.body}"
+          MESSAGE_DESCRIPTION=${GITHUB_EVENT.issue.body}
           MESSAGE_FOOTER="[Feature Request Link](https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }})
 
           # Get the requester's name and avatar using GitHub API
