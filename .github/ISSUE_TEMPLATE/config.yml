@@ -1,5 +1,5 @@
 blank_issues_enabled: true
-#contact_links:
-    #- name: "Community Server (Discord)"
-      #url: https://discord.com/
-      #about: "Join our Discord server to get help from the community with common errors and modding."
+contact_links:
+  - name: "Community Server (Discord)"
+    url: https://discord.gg/KnHDUtnN3y
+    about: "Join our Discord server to get help from the community with common errors and modding."
