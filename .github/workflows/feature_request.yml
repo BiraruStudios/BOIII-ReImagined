@@ -1,0 +1,38 @@
+name: Feature Request Webhook
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  post_webhook:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if issue is a Feature Request
+        id: check_feature_request
+        run: echo "::set-output name=is_feature_request::${{ contains(github.event.issue.labels.*.name, 'feature') }}"
+
+      - name: Send webhook to Discord if it's a Feature Request
+        if: steps.check_feature_request.outputs.is_feature_request == 'true'
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_FEATURE_REQUEST_WEBHOOK }}
+        run: |
+          MESSAGE_DESCRIPTION="${GITHUB_EVENT.issue.body} \n [Feature Request Link](https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }})"
+
+          # Get the requester's name and avatar using GitHub API
+          REQUESTER_NAME=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/users/${{ github.event.issue.user.login }}" | grep -o '"name": *"[^"]*"' | cut -d '"' -f 4)
+          REQUESTER_AVATAR=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/users/${{ github.event.issue.user.login }}" | grep -o '"avatar_url": *"[^"]*"' | cut -d '"' -f 4)
+
+          # Get attachments
+          ATTACHMENTS=""
+          for attachment_url in $(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/attachments" | grep -o '"url": *"[^"]*"' | cut -d '"' -f 4); do
+            ATTACHMENTS="$ATTACHMENTS{\"url\":\"$attachment_url\"},"
+          done
+          ATTACHMENTS=$(echo "$ATTACHMENTS" | sed 's/,$//')
+
+          CONTENT="{\"username\": \"${REQUESTER_NAME}\", \"avatar_url\": \"${REQUESTER_AVATAR}\", \"content\": \"${MESSAGE_DESCRIPTION}\", \"embeds\": null, \"attachments\": [${ATTACHMENTS}], \"thread_name\": \"${GITHUB_EVENT.issue.title}\"}"
+
+          curl -X POST -H "Content-Type: application/json" \
+          -d "$CONTENT" \
+          $DISCORD_WEBHOOK_URL

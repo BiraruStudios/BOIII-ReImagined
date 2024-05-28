@@ -236,26 +236,26 @@ jobs:
             \"username\": \"Builds\"
           }"
 
-          curl -H "Content-Type: application/json" -X POST -d "$JSON_PAYLOAD" ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
+          curl -H "Content-Type: application/json" -X POST -d "$JSON_PAYLOAD" ${{ secrets.DISCORD_BUILDS_WEBHOOK }}
 
       - name: Upload Debug ZIP
         uses: sinshutu/upload-to-discord@v2.0.0
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_WEBHOOK }}
         with:
           args: debug.zip
           
       - name: Upload Release ZIP
         uses: sinshutu/upload-to-discord@v2.0.0
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_WEBHOOK }}
         with:
           args: release.zip
           
       - name: Upload BOIII Server ZIP
         uses: sinshutu/upload-to-discord@v2.0.0
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_BOT_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUILDS_WEBHOOK }}
         with:
           args: boiii-reimagined-server.zip
 

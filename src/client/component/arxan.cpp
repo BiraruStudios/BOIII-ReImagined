@@ -183,13 +183,21 @@ namespace arxan
 		}
 
 
-		HANDLE create_mutex_ex_a_stub(const LPSECURITY_ATTRIBUTES attributes, const LPCSTR name, const DWORD flags,
-		                              const DWORD access)
+		HANDLE create_mutex_ex_a_stub(const LPSECURITY_ATTRIBUTES attributes, const LPCSTR name, const DWORD flags, const DWORD access)
 		{
-			if (name == "$ IDA trusted_idbs"s || name == "$ IDA registry mutex $"s)
-			{
-				return nullptr;
-			}
+            std::vector<std::string> mutexNames = {
+                    "$ IDA trusted_idbs",
+                    "$ IDA registry mutex $",
+                    "x64_dbg"
+            };
+
+            for (const auto& mutexName : mutexNames)
+            {
+                if (name == mutexName)
+                {
+                    return nullptr;
+                }
+            }
 
 			return create_mutex_ex_a_hook.invoke<HANDLE>(attributes, name, flags, access);
 		}
@@ -203,9 +211,6 @@ namespace arxan
 				L"HxD",
 				L"cheatengine",
 				L"Cheat Engine",
-				L"x96dbg",
-				L"x32dbg",
-				L"x64dbg",
 				L"Wireshark",
 				L"Debug",
 				L"DEBUG",
