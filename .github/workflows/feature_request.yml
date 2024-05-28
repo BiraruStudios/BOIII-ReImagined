@@ -18,7 +18,8 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_FEATURE_REQUEST_WEBHOOK }}
         run: |
-          MESSAGE_DESCRIPTION="${GITHUB_EVENT.issue.body}\n[Feature Request Link](https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }})"
+          MESSAGE_DESCRIPTION="${GITHUB_EVENT.issue.body}"
+          MESSAGE_FOOTER="[Feature Request Link](https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }})
 
           # Get the requester's name and avatar using GitHub API
           REQUESTER_NAME=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/users/${{ github.event.issue.user.login }}" | grep -o '"name": *"[^"]*"' | cut -d '"' -f 4)
@@ -31,7 +32,7 @@ jobs:
           done
           ATTACHMENTS=$(echo "$ATTACHMENTS" | sed 's/,$//')
 
-          CONTENT="{\"username\": \"${REQUESTER_NAME}\", \"avatar_url\": \"${REQUESTER_AVATAR}\", \"content\": \"${MESSAGE_DESCRIPTION}\", \"embeds\": null, \"attachments\": [${ATTACHMENTS}], \"thread_name\": \"${GITHUB_EVENT.issue.title}\"}"
+          CONTENT="{\"username\": \"${REQUESTER_NAME}\", \"avatar_url\": \"${REQUESTER_AVATAR}\", \"content\": \"${MESSAGE_DESCRIPTION}\n${MESSAGE_FOOTER}\", \"embeds\": null, \"attachments\": [${ATTACHMENTS}], \"thread_name\": \"${GITHUB_EVENT.issue.title}\"}"
 
           curl -X POST -H "Content-Type: application/json" \
           -d "$CONTENT" \
