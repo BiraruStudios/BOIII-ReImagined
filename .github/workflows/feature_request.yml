@@ -18,7 +18,7 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_FEATURE_REQUEST_WEBHOOK }}
         run: |
-          MESSAGE_DESCRIPTION="${{ github.event.issue.body }}"
+          MESSAGE_DESCRIPTION="${{github.event.issue.body}}"
           MESSAGE_FOOTER="[Feature Request Link](https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }})"
 
           # Get the requester's name and avatar using GitHub API
@@ -32,7 +32,7 @@ jobs:
           done
           ATTACHMENTS=$(echo "$ATTACHMENTS" | sed 's/,$//')
 
-          CONTENT="{\"username\": \"${{REQUESTER_NAME}}\", \"avatar_url\": \"${{REQUESTER_AVATAR}}\", \"content\": \"${{MESSAGE_DESCRIPTION}}\n${{MESSAGE_FOOTER}}\", \"embeds\": null, \"attachments\": [${{ATTACHMENTS}}], \"thread_name\": \"${{github.event.issue.title}}\"}"
+          CONTENT="{\"username\": \"${REQUESTER_NAME}\", \"avatar_url\": \"${REQUESTER_AVATAR}\", \"content\": \"${MESSAGE_DESCRIPTION}\n${MESSAGE_FOOTER}\", \"embeds\": null, \"attachments\": [${ATTACHMENTS}], \"thread_name\": \"${{github.event.issue.title}}\"}"
 
           curl -X POST -H "Content-Type: application/json" \
           -d "$CONTENT" \
