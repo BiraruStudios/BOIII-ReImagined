@@ -211,6 +211,8 @@ namespace arxan
 				L"HxD",
 				L"cheatengine",
 				L"Cheat Engine",
+                L"x96dbg",
+                L"x32dbg",
 				L"Wireshark",
 				L"Debug",
 				L"DEBUG",
