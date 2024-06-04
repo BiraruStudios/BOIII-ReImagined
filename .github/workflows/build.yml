@@ -142,6 +142,8 @@ jobs:
           cp release/ext.dll boiii-reimagined-server/release/boiii
           cp -r debug/data boiii-reimagined-server/debug/boiii
           cp -r release/data boiii-reimagined-server/release/boiii
+          cp -r debug/boiii-reimagined.exe boiii-reimagined-server/debug/boiii
+          cp -r release/boiii-reimagined.exe boiii-reimagined-server/release/boiii
           
       - name: Create boiii-reimagined.json for both configurations
         run: |
