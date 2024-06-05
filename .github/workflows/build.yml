@@ -176,11 +176,6 @@ jobs:
           process_files "boiii-reimagined-server/debug" "boiii-reimagined-server/debug/boiii.json" "boiii-reimagined-server/debug/boiii/data"
           
           process_files "boiii-reimagined-server/release" "boiii-reimagined-server/release/boiii.json" "boiii-reimagined-server/release/boiii/data"
-
-      - name: Beautify boiii.json
-        uses: sergeysova/jq-action@v2
-        with:
-          cmd: 'jq . boiii-reimagined-server/debug/boiii.json | jq . boiii-reimagined-server/release/boiii.json'
       
       - name: Zip files
         run: |
