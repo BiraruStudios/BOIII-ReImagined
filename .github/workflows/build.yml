@@ -159,12 +159,17 @@ jobs:
               ext_size=$(stat -c %s "$ext_file")
               ext_hash=$(sha1sum "$ext_file" | cut -d' ' -f1)
               echo "[\"$ext_file_name\", $ext_size, \"$ext_hash\"]," >> "$json_file"
+          
+              boiii_file="$base_path/boiii/boiii-reimagined.exe"
+              boiii_size=$(stat -c %s "$boiii_file")
+              boiii_hash=$(sha1sum "$boiii_file" | cut -d' ' -f1)
+              echo "[\"boiii-reimagined.exe\", $boiii_size, \"$boiii_hash\"]," >> "$json_file"
               
               find "$search_path" -type f | while read -r file; do
-              size=$(stat -c %s "$file")
-              hash=$(sha1sum "$file" | cut -d' ' -f1)
-              relative_path=$(echo "$file" | sed "s|$base_path/boiii/||")
-              echo "[\"$relative_path\", $size, \"$hash\"]," >> "$json_file"
+                size=$(stat -c %s "$file")
+                hash=$(sha1sum "$file" | cut -d' ' -f1)
+                relative_path=$(echo "$file" | sed "s|$base_path/boiii/||")
+                echo "[\"$relative_path\", $size, \"$hash\"]," >> "$json_file"
               done
               
               sed -i '$ s/,$//' "$json_file"
@@ -175,6 +180,11 @@ jobs:
           process_files "boiii-reimagined-server/debug" "boiii-reimagined-server/debug/boiii.json" "boiii-reimagined-server/debug/boiii/data"
           
           process_files "boiii-reimagined-server/release" "boiii-reimagined-server/release/boiii.json" "boiii-reimagined-server/release/boiii/data"
+
+      - name: Beautify boiii.json
+        uses: sergeysova/jq-action@v2
+        with:
+          cmd: 'jq . boiii-reimagined-server/debug/boiii.json | jq . boiii-reimagined-server/release/boiii.json'
       
       - name: Zip files
         run: |
