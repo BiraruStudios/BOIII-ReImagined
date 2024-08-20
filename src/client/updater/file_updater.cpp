@@ -144,7 +144,7 @@ namespace updater
 		}
 
 		//this->update_host_binary(outdated_files);
-		this->update_files(outdated_files);
+		//this->update_files(outdated_files);
 
 		std::this_thread::sleep_for(1s);
 	}

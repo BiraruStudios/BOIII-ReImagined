@@ -46,7 +46,6 @@ jobs:
         run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/boiii-reimagined.sln
 
       - name: Upload ${{matrix.configuration}} symbols
-        if: github.event_name != 'push'
         uses: actions/upload-artifact@v4.3.3
         with:
           name: ${{matrix.configuration}} symbols
@@ -54,7 +53,6 @@ jobs:
             build\bin\x64\${{ matrix.configuration }}\boiii-reimagined.pdb
 
       - name: Upload ${{matrix.configuration}} binary
-        if: github.event_name != 'push'
         uses: actions/upload-artifact@v4.3.3
         with:
           name: ${{matrix.configuration}} binary
@@ -62,7 +60,6 @@ jobs:
             build\bin\x64\${{ matrix.configuration }}\boiii-reimagined.exe
 
       - name: Upload ${{matrix.configuration}} ext
-        if: github.event_name != 'push'
         uses: actions/upload-artifact@v4.3.3
         with:
           name: ${{matrix.configuration}} ext
@@ -70,7 +67,6 @@ jobs:
             ext.dll
 
       - name: Upload ${{matrix.configuration}} data artifacts
-        if: github.event_name != 'push'
         uses: actions/upload-artifact@v4.3.3
         with:
           name: ${{matrix.configuration}} data artifacts
@@ -81,7 +77,7 @@ jobs:
     name: Deploy artifacts
     needs: build
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'BiraruStudios' && github.event_name != 'push'
+    if: github.repository_owner == 'BiraruStudios'
     steps:
       - name: Download Debug symbols
         uses: actions/download-artifact@v4.1.7
@@ -142,6 +138,8 @@ jobs:
           cp release/ext.dll boiii-reimagined-server/release/boiii
           cp -r debug/data boiii-reimagined-server/debug/boiii
           cp -r release/data boiii-reimagined-server/release/boiii
+          cp -r debug/boiii-reimagined.exe boiii-reimagined-server/debug/boiii
+          cp -r release/boiii-reimagined.exe boiii-reimagined-server/release/boiii
           
       - name: Create boiii-reimagined.json for both configurations
         run: |
@@ -157,12 +155,17 @@ jobs:
               ext_size=$(stat -c %s "$ext_file")
               ext_hash=$(sha1sum "$ext_file" | cut -d' ' -f1)
               echo "[\"$ext_file_name\", $ext_size, \"$ext_hash\"]," >> "$json_file"
+          
+              boiii_file="$base_path/boiii/boiii-reimagined.exe"
+              boiii_size=$(stat -c %s "$boiii_file")
+              boiii_hash=$(sha1sum "$boiii_file" | cut -d' ' -f1)
+              echo "[\"boiii-reimagined.exe\", $boiii_size, \"$boiii_hash\"]," >> "$json_file"
               
               find "$search_path" -type f | while read -r file; do
-              size=$(stat -c %s "$file")
-              hash=$(sha1sum "$file" | cut -d' ' -f1)
-              relative_path=$(echo "$file" | sed "s|$base_path/boiii/||")
-              echo "[\"$relative_path\", $size, \"$hash\"]," >> "$json_file"
+                size=$(stat -c %s "$file")
+                hash=$(sha1sum "$file" | cut -d' ' -f1)
+                relative_path=$(echo "$file" | sed "s|$base_path/boiii/||")
+                echo "[\"$relative_path\", $size, \"$hash\"]," >> "$json_file"
               done
               
               sed -i '$ s/,$//' "$json_file"
