@@ -9,7 +9,7 @@
 [![patreon](https://img.shields.io/badge/Patreon-support-red.svg?logo=patreon)](https://www.patreon.com/Biraru)
 [![buy me a coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-FFEA00?logo=buymeacoffee)](https://buymeacoffee.com/Biraru)
 
-# THIS IS DISCONTINUED. I DONT PLAN ON CONTINUING THIS, VERY UNLIKELY THAT I CONTINUE THIS PROJECT SINCE IT WAS A HOBBY PROJECT. REASON? THE BO3 MODDING COMMUNITY DISCOURAGING ME AND SPREADING RUMOURS ABOUT ME. I hope you guys can understand.
+# THIS IS DISCONTINUED. I DONT PLAN ON CONTINUING THIS, VERY UNLIKELY THAT I CONTINUE THIS PROJECT SINCE IT WAS A HOBBY PROJECT. I hope you guys can understand.
 
 ## Important Note
 
