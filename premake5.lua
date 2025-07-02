@@ -98,7 +98,7 @@ newaction {
 		local gitCurrentBranchSuccess = proc:close()
 		if gitCurrentBranchSuccess then
 			-- We got a branch name, check if it is a feature branch
-			if gitCurrentBranchOutput ~= "develop" and gitCurrentBranchOutput ~= "master" and gitCurrentBranchOutput ~= "main" then
+			if gitCurrentBranchOutput ~= "test" and gitCurrentBranchOutput ~= "master" and gitCurrentBranchOutput ~= "main" then
 				version = version .. "-" .. gitCurrentBranchOutput
 			end
 		end
@@ -166,7 +166,7 @@ newaction {
 			end
 
 			if branchName == nil then
-				branchName = "develop"
+				branchName = "test"
 			end
 
 			print("Detected branch: " .. branchName)
