@@ -1,29 +1,63 @@
-[![build](https://img.shields.io/github/actions/workflow/status/momo5502/boiii/build.yml?branch=main&label=Build&logo=github)](https://github.com/momo5502/boiii/actions)
-[![bugs](https://img.shields.io/github/issues/momo5502/boiii/bug?label=Bugs)](https://github.com/momo5502/boiii/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
-[![github](https://img.shields.io/badge/GitHub-support-c96198.svg?logo=github)](https://github.com/sponsors/momo5502)
-[![patreon](https://img.shields.io/badge/Patreon-support-red.svg?logo=patreon)](https://www.patreon.com/xlabsproject)
+<div align="center">
+<img src="src/client/resources/icon.ico" width="150px" style="margin: 0; padding: 0;" alt="BOIII ReImagined Icon">
 
+<h1 style="margin: 0; padding: 0;">BOIII ReImagined</h1>
 
-# What is BOIII ☄️
+[![build](https://img.shields.io/github/actions/workflow/status/BiraruStudios/BOIII-ReImagined/build.yml?branch=main&label=Build&logo=github)](https://github.com/BiraruStudios/BOIII-ReImagined/actions)
+[![bugs](https://img.shields.io/github/issues/BiraruStudios/BOIII-ReImagined/bug?label=Bugs&logo=github)](https://github.com/BiraruStudios/BOIII-ReImagined/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
 
-BOIII is a game modification for Call of Duty: Black Ops 3.  
-The Steam version of Black Ops 3 is required to be owned and installed for BOIII to work. You can get it from <a href="https://store.steampowered.com/app/311210/Call_of_Duty_Black_Ops_III/">here</a>.
+[![patreon](https://img.shields.io/badge/Patreon-support-red.svg?logo=patreon)](https://www.patreon.com/Biraru)
+[![buy me a coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-FFEA00?logo=buymeacoffee)](https://buymeacoffee.com/Biraru)
 
-<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeSXYzQITJrcjiifN1nqX1fsVE7VwLZ3vl2g&usqp=CAU">
+## Important Note
 
-## Writeups & Articles
+*  **You <u>***AREN'T***</u> required to own Call of Duty: Black Ops 3 in order to run this client. Steam Ownership Verification has been <u>***removed***</u>.**
+*  **BOIII ReImagined is cross-compatible(for now) with ***any*** client based on the BOIII client, You can play the same servers on BOIII ReImagined and BOIII Client.**
 
-- <a href="https://momo5502.com/posts/2022-11-17-reverse-engineering-integrity-checks-in-black-ops-3/">Reverse engineering integrity checks in Black Ops 3</a>
-- <a href="https://techcrunch.com/2023/02/28/gamers-are-fixing-a-video-game-taken-over-by-hackers/">Gamers are fixing a video game ‘taken over’ by hackers</a>
+## Added Features
 
-## Credits
+*  Removed Steam Ownership Verification
+*  Added T7x Patch's
 
-- Thanks to <a href="https://github.com/shiversoftdev">@shiversoftdev</a> for providing the fixes from his <a href="https://github.com/shiversoftdev/t7patch">community patch</a>
+## Repository Contents
+
+* All necessary files to build the project
+* GitHub Actions workflows for CI/CD
+* Original branch containing the original BOIII client code
+
+## Getting Game Files
+
+* You can download the `Call of Duty Black Ops III` from steam directly or torrent them [here](https://git.rimmyscorner.com/Rim/cod-games-download/releases/download/latest/t7_full_game.zip).
+* The DLC torrent is included.
+
+## Installation
+
+See the [Installation Wiki](https://github.com/BiraruStudios/BOIII-ReImagined/wiki/Installation)
+
+## Server Setup
+
+See the [Hosting a Server Wiki](https://github.com/BiraruStudios/BOIII-ReImagined/wiki/Hosting-a-Server)
+
+## Building
+
+See the [Building Wiki](https://github.com/BiraruStudios/BOIII-ReImagined/wiki/Building)
 
 ## Disclaimer
 
-This software has been created purely for the purposes of
-academic research. It is not intended to be used to harm
-others. Project maintainers are not responsible or
-liable for misuse of the software. Use responsibly.
+This software has been created purely for the purpose of personal skill development in coding and academic research. It is intended for educational use only and not for any harmful purposes. I, as the user, acknowledge that the project maintainers are not responsible or liable for any misuse of the software. I commit to using this software responsibly and in accordance with ethical coding practices.
 
+## Credits
+
+* [momo5502](https://github.com/momo5502) - Arxan/Steam research, original developer
+* [EZZ Folks](https://github.com/Ezz-lol) - Archiving the [original](https://github.com/Ezz-lol/boiii-free/tree/original) source
+* [Rimmy / Ahrimdon](https://git.rimmyscorner.com/Rim) - [T7x](https://git.rimmyscorner.com/Rim/t7x) project revival and rebranding
+* [AlterWare](https://alterware.dev/) - T7x project
+
+## Contributions
+
+Feel free to open pull requests!
+
+## Links
+
+[Legacy README](LEGACY_README.md)
+</div>
