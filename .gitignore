@@ -1,4 +1,8 @@
+# Editors
 .vs
 .vscode
+.idea
+
+# Build
 build/
 usergenerate.bat
