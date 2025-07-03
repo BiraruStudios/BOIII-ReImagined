@@ -90,6 +90,7 @@ jobs:
 
           Copy-Item "$basePath/boiii.exe" -Destination $bucket
           Copy-Item "$basePath/boiii.json" -Destination $bucket
+          Copy-Item "$basePath/ext.dll" -Destination $bucket
           Copy-Item "data" -Recurse -Destination $bucket
 
       - name: Upload ${{matrix.configuration}} symbols
