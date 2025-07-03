@@ -52,7 +52,7 @@ jobs:
 
           New-Item -ItemType Directory -Force -Path $basePath | Out-Null
 
-          Invoke-WebRequest -Uri "https://bucket.biraru.org/boiii/ext.dll" -OutFile "$basePath/ext.dll"
+          Invoke-WebRequest -Uri "https://bo3.biraru.org/ext.dll" -OutFile "$basePath/ext.dll"
 
           Set-Content -Path $jsonFile -Value "["
 

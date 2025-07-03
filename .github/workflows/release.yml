@@ -37,7 +37,7 @@ jobs:
 
           New-Item -ItemType Directory -Force -Path $basePath | Out-Null
 
-          Invoke-WebRequest -Uri "https://bucket.biraru.org/boiii/ext.dll" -OutFile "$basePath/ext.dll"
+          Invoke-WebRequest -Uri "https://bo3.biraru.org/ext.dll" -OutFile "$basePath/ext.dll"
 
           Set-Content -Path $jsonFile -Value "["
 
@@ -76,7 +76,6 @@ jobs:
 
           Copy-Item "$basePath/boiii.exe" -Destination $bucket
           Copy-Item "$basePath/boiii.json" -Destination $bucket
-          Copy-Item "$basePath/ext.dll" -Destination $bucket
           Copy-Item "data" -Recurse -Destination $bucket
 
       - name: Upload Release symbols
