@@ -46,34 +46,39 @@ jobs:
 
       - name: Create boiii.json
         run: |
-          base_path=build/bin/x64/${{matrix.configuration}}
-          json_file=$base_path/boiii.json
-          search_path=data
+          $basePath = "build/bin/x64/${{matrix.configuration}}"
+          $jsonFile = "$basePath/boiii.json"
+          $searchPath = "data"
 
-          mkdir -p "$base_path"
-          curl -sSL -o "$base_path/ext.dll" https://bucket.biraru.org/boiii/ext.dll
+          New-Item -ItemType Directory -Force -Path $basePath | Out-Null
 
-          echo '[' > "$json_file"
+          Invoke-WebRequest -Uri "https://bucket.biraru.org/boiii/ext.dll" -OutFile "$basePath/ext.dll"
 
-          ext_file="$base_path/ext.dll"
-          ext_file_name="ext.dll"
-          ext_size=$(stat -c %s "$ext_file")
-          ext_hash=$(sha1sum "$ext_file" | cut -d' ' -f1)
-          echo "[\"$ext_file_name\", $ext_size, \"$ext_hash\"]," >> "$json_file"
+          Set-Content -Path $jsonFile -Value "["
 
-          boiii_file="$base_path/boiii.exe"
-          boiii_size=$(stat -c %s "$boiii_file")
-          boiii_hash=$(sha1sum "$boiii_file" | cut -d' ' -f1)
-          echo "[\"boiii.exe\", $boiii_size, \"$boiii_hash\"]," >> "$json_file"
+          $extFile = "$basePath/ext.dll"
+          $extSize = (Get-Item $extFile).Length
+          $extHash = (Get-FileHash -Path $extFile -Algorithm SHA1).Hash.ToLower()
+          Add-Content -Path $jsonFile -Value "[`"ext.dll`", $extSize, `"$extHash`"],"
 
-          find "$search_path" -type f | while read -r file; do
-            size=$(stat -c %s "$file")
-            hash=$(sha1sum "$file" | cut -d' ' -f1)
-            echo "[\"$file\", $size, \"$hash\"]," >> "$json_file"
-          done
+          $boiiiFile = "$basePath/boiii.exe"
+          $boiiiSize = (Get-Item $boiiiFile).Length
+          $boiiiHash = (Get-FileHash -Path $boiiiFile -Algorithm SHA1).Hash.ToLower()
+          Add-Content -Path $jsonFile -Value "[`"boiii.exe`", $boiiiSize, `"$boiiiHash`"],"
 
-          sed -i '$ s/,$//' "$json_file"
-          echo ']' >> "$json_file"
+          Get-ChildItem -Path $searchPath -Recurse -File | ForEach-Object {
+            $filePath = $_.FullName
+            $size = $_.Length
+            $hash = (Get-FileHash -Path $filePath -Algorithm SHA1).Hash.ToLower()
+            $relativePath = $_.FullName.Replace((Resolve-Path ".\"), "").Replace("\", "/")
+            Add-Content -Path $jsonFile -Value "[`"$relativePath`", $size, `"$hash`"],"
+          }
+
+          $lines = Get-Content $jsonFile
+          $lines[-1] = $lines[-1] -replace ",$"
+          Set-Content $jsonFile $lines
+
+          Add-Content -Path $jsonFile -Value "]"
 
       - name: Upload ${{matrix.configuration}} symbols
         uses: actions/upload-artifact@v4
