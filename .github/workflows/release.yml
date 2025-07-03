@@ -5,14 +5,8 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: Build Release
     runs-on: windows-2022
-    strategy:
-      fail-fast: false
-      matrix:
-        configuration:
-          - Debug
-          - Release
     steps:
       - name: Check out files
         uses: actions/checkout@v4
@@ -31,12 +25,13 @@ jobs:
       - name: Set up problem matching
         uses: ammaraskar/msvc-problem-matcher@master
 
-      - name: Build ${{matrix.configuration}}
-        run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/boiii.sln
+      - name: Build Release
+        run: msbuild /m /v:minimal /p:Configuration=Release /p:Platform=x64 build/boiii.sln
 
       - name: Create boiii.json
+        shell: pwsh
         run: |
-          $basePath = "build/bin/x64/${{matrix.configuration}}"
+          $basePath = "build/bin/x64/Release"
           $jsonFile = "$basePath/boiii.json"
           $searchPath = "data"
 
@@ -72,8 +67,9 @@ jobs:
           Add-Content -Path $jsonFile -Value "]"
 
       - name: Create bucket stuff
+        shell: pwsh
         run: |
-          $basePath = "build/bin/x64/${{matrix.configuration}}"
+          $basePath = "build/bin/x64/Release"
           $bucket = "$basePath/bucket"
 
           New-Item -ItemType Directory -Force -Path $bucket
@@ -83,43 +79,44 @@ jobs:
           Copy-Item "$basePath/ext.dll" -Destination $bucket
           Copy-Item "data" -Recurse -Destination $bucket
 
-      - name: Upload ${{matrix.configuration}} symbols
+      - name: Upload Release symbols
         uses: actions/upload-artifact@v4
         with:
-          name: ${{matrix.configuration}} Symbols
+          name: Release Symbols
           path: |
-            build/bin/x64/${{matrix.configuration}}/boiii.pdb
+            build/bin/x64/Release/boiii.pdb
 
-      - name: Upload ${{matrix.configuration}} binary
+      - name: Upload Release binary
         uses: actions/upload-artifact@v4
         with:
-          name: ${{matrix.configuration}} Binary
+          name: Release Binary
           path: |
-            build/bin/x64/${{matrix.configuration}}/boiii.exe
+            build/bin/x64/Release/boiii.exe
 
-      - name: Upload ${{matrix.configuration}} json
+      - name: Upload Release json
         uses: actions/upload-artifact@v4
         with:
-          name: ${{matrix.configuration}} Json
+          name: Release Json
           path: |
-            build/bin/x64/${{matrix.configuration}}/boiii.json
+            build/bin/x64/Release/boiii.json
 
-      - name: Upload ${{matrix.configuration}} data artifacts
+      - name: Upload Release data artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{matrix.configuration}} Data Artifacts
+          name: Release Data Artifacts
           path: |
             data
 
-      - name: Upload ${{matrix.configuration}} bucket stuff
+      - name: Upload Release bucket stuff
         uses: actions/upload-artifact@v4
         with:
-          name: ${{matrix.configuration}} Bucket Stuff
+          name: Release Bucket Stuff
           path: |
-            build/bin/x64/${{matrix.configuration}}/bucket
+            build/bin/x64/Release/bucket
 
   upload:
-    name: Build
+    name: Upload to R2 bucket
+    needs: build
     runs-on: ubuntu-22.04
     steps:
       - name: Download bucket stuff
