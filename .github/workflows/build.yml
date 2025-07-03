@@ -70,7 +70,8 @@ jobs:
             $filePath = $_.FullName
             $size = $_.Length
             $hash = (Get-FileHash -Path $filePath -Algorithm SHA1).Hash.ToLower()
-            $relativePath = $_.FullName.Replace((Resolve-Path ".\"), "").Replace("\", "/")
+            $baseDir = (Resolve-Path ".\").Path
+            $relativePath = $_.FullName.Replace($baseDir + "\", "").Replace("\", "/")
             Add-Content -Path $jsonFile -Value "[`"$relativePath`", $size, `"$hash`"],"
           }
 
@@ -79,6 +80,17 @@ jobs:
           Set-Content $jsonFile $lines
 
           Add-Content -Path $jsonFile -Value "]"
+
+      - name: Create bucket stuff
+        run: |
+          $basePath = "build/bin/x64/${{matrix.configuration}}"
+          $bucket = "$basePath/bucket"
+
+          New-Item -ItemType Directory -Force -Path $bucket
+
+          Copy-Item "$basePath/boiii.exe" -Destination $bucket
+          Copy-Item "$basePath/boiii.json" -Destination $bucket
+          Copy-Item "data" -Recurse -Destination $bucket
 
       - name: Upload ${{matrix.configuration}} symbols
         uses: actions/upload-artifact@v4
@@ -106,4 +118,11 @@ jobs:
         with:
           name: ${{matrix.configuration}} Data Artifacts
           path: |
-            data/*
+            data
+
+      - name: Upload ${{matrix.configuration}} bucket stuff
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{matrix.configuration}} Bucket Stuff
+          path: |
+            build/bin/x64/${{matrix.configuration}}/bucket
