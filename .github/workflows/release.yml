@@ -1,0 +1,140 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration:
+          - Debug
+          - Release
+    steps:
+      - name: Check out files
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+          # NOTE - If LFS ever starts getting used during builds, switch this to true!
+          lfs: false
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.3.1
+
+      - name: Generate project files
+        run: tools/premake5 vs2022
+
+      - name: Set up problem matching
+        uses: ammaraskar/msvc-problem-matcher@master
+
+      - name: Build ${{matrix.configuration}}
+        run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/boiii.sln
+
+      - name: Create boiii.json
+        run: |
+          $basePath = "build/bin/x64/${{matrix.configuration}}"
+          $jsonFile = "$basePath/boiii.json"
+          $searchPath = "data"
+
+          New-Item -ItemType Directory -Force -Path $basePath | Out-Null
+
+          Invoke-WebRequest -Uri "https://bucket.biraru.org/boiii/ext.dll" -OutFile "$basePath/ext.dll"
+
+          Set-Content -Path $jsonFile -Value "["
+
+          $extFile = "$basePath/ext.dll"
+          $extSize = (Get-Item $extFile).Length
+          $extHash = (Get-FileHash -Path $extFile -Algorithm SHA1).Hash.ToUpper()
+          Add-Content -Path $jsonFile -Value "[`"ext.dll`", $extSize, `"$extHash`"],"
+
+          $boiiiFile = "$basePath/boiii.exe"
+          $boiiiSize = (Get-Item $boiiiFile).Length
+          $boiiiHash = (Get-FileHash -Path $boiiiFile -Algorithm SHA1).Hash.ToUpper()
+          Add-Content -Path $jsonFile -Value "[`"boiii.exe`", $boiiiSize, `"$boiiiHash`"],"
+
+          Get-ChildItem -Path $searchPath -Recurse -File | ForEach-Object {
+            $filePath = $_.FullName
+            $size = $_.Length
+            $hash = (Get-FileHash -Path $filePath -Algorithm SHA1).Hash.ToUpper()
+            $baseDir = (Resolve-Path ".\").Path
+            $relativePath = $_.FullName.Replace($baseDir + "\", "").Replace("\", "/")
+            Add-Content -Path $jsonFile -Value "[`"$relativePath`", $size, `"$hash`"],"
+          }
+
+          $lines = Get-Content $jsonFile
+          $lines[-1] = $lines[-1] -replace ",$"
+          Set-Content $jsonFile $lines
+
+          Add-Content -Path $jsonFile -Value "]"
+
+      - name: Create bucket stuff
+        run: |
+          $basePath = "build/bin/x64/${{matrix.configuration}}"
+          $bucket = "$basePath/bucket"
+
+          New-Item -ItemType Directory -Force -Path $bucket
+
+          Copy-Item "$basePath/boiii.exe" -Destination $bucket
+          Copy-Item "$basePath/boiii.json" -Destination $bucket
+          Copy-Item "$basePath/ext.dll" -Destination $bucket
+          Copy-Item "data" -Recurse -Destination $bucket
+
+      - name: Upload ${{matrix.configuration}} symbols
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{matrix.configuration}} Symbols
+          path: |
+            build/bin/x64/${{matrix.configuration}}/boiii.pdb
+
+      - name: Upload ${{matrix.configuration}} binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{matrix.configuration}} Binary
+          path: |
+            build/bin/x64/${{matrix.configuration}}/boiii.exe
+
+      - name: Upload ${{matrix.configuration}} json
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{matrix.configuration}} Json
+          path: |
+            build/bin/x64/${{matrix.configuration}}/boiii.json
+
+      - name: Upload ${{matrix.configuration}} data artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{matrix.configuration}} Data Artifacts
+          path: |
+            data
+
+      - name: Upload ${{matrix.configuration}} bucket stuff
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{matrix.configuration}} Bucket Stuff
+          path: |
+            build/bin/x64/${{matrix.configuration}}/bucket
+
+  upload:
+    name: Build
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Download bucket stuff
+        uses: actions/download-artifact@v4
+        with:
+          name: Release Bucket Stuff
+          path: ./bucket
+
+      - name: Upload files to Cloudflare R2
+        uses: ryand56/r2-upload-action@v1
+        with:
+          r2-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          r2-access-key-id: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          r2-secret-access-key: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          r2-bucket: ${{ secrets.CLOUDFLARE_R2_BUCKET_NAME }}
+          source-dir: "bucket/"
+          destination-dir: "./"
+          keep-file-fresh: true
