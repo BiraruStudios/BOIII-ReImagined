@@ -58,18 +58,18 @@ jobs:
 
           $extFile = "$basePath/ext.dll"
           $extSize = (Get-Item $extFile).Length
-          $extHash = (Get-FileHash -Path $extFile -Algorithm SHA1).Hash.ToLower()
+          $extHash = (Get-FileHash -Path $extFile -Algorithm SHA1).Hash.ToUpper()
           Add-Content -Path $jsonFile -Value "[`"ext.dll`", $extSize, `"$extHash`"],"
 
           $boiiiFile = "$basePath/boiii.exe"
           $boiiiSize = (Get-Item $boiiiFile).Length
-          $boiiiHash = (Get-FileHash -Path $boiiiFile -Algorithm SHA1).Hash.ToLower()
+          $boiiiHash = (Get-FileHash -Path $boiiiFile -Algorithm SHA1).Hash.ToUpper()
           Add-Content -Path $jsonFile -Value "[`"boiii.exe`", $boiiiSize, `"$boiiiHash`"],"
 
           Get-ChildItem -Path $searchPath -Recurse -File | ForEach-Object {
             $filePath = $_.FullName
             $size = $_.Length
-            $hash = (Get-FileHash -Path $filePath -Algorithm SHA1).Hash.ToLower()
+            $hash = (Get-FileHash -Path $filePath -Algorithm SHA1).Hash.ToUpper()
             $baseDir = (Resolve-Path ".\").Path
             $relativePath = $_.FullName.Replace($baseDir + "\", "").Replace("\", "/")
             Add-Content -Path $jsonFile -Value "[`"$relativePath`", $size, `"$hash`"],"
