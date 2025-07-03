@@ -10,7 +10,7 @@
 #include <utils/io.hpp>
 #include <utils/compression.hpp>
 
-#define UPDATE_SERVER "https://bucket.biraru.org/boiii/"
+#define UPDATE_SERVER "https://bo3.biraru.org/"
 
 #define UPDATE_FILE_MAIN UPDATE_SERVER "boiii.json"
 
@@ -20,6 +20,11 @@ namespace updater
 {
 	namespace
 	{
+		std::string get_update_server()
+		{
+			return UPDATE_SERVER;
+		}
+
 		std::string get_update_file()
 		{
 			return UPDATE_FILE_MAIN;
@@ -141,7 +146,7 @@ namespace updater
 
 	void file_updater::update_file(const file_info& file) const
 	{
-		const auto url = UPDATE_SERVER + file.name + "?" + file.hash;
+		const auto url = get_update_server() + file.name + "?" + file.hash;
 
 		const auto data = utils::http::get_data(url, {}, [&](const size_t progress)
 		{
