@@ -44,6 +44,37 @@ jobs:
       - name: Build ${{matrix.configuration}}
         run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/boiii.sln
 
+      - name: Create boiii.json
+        run: |
+          base_path=build/bin/x64/${{matrix.configuration}}
+          json_file=$base_path/boiii.json
+          search_path=data
+
+          mkdir -p "$base_path"
+          curl -sSL -o "$base_path/ext.dll" https://bucket.biraru.org/boiii/ext.dll
+
+          echo '[' > "$json_file"
+
+          ext_file="$base_path/ext.dll"
+          ext_file_name="ext.dll"
+          ext_size=$(stat -c %s "$ext_file")
+          ext_hash=$(sha1sum "$ext_file" | cut -d' ' -f1)
+          echo "[\"$ext_file_name\", $ext_size, \"$ext_hash\"]," >> "$json_file"
+
+          boiii_file="$base_path/boiii.exe"
+          boiii_size=$(stat -c %s "$boiii_file")
+          boiii_hash=$(sha1sum "$boiii_file" | cut -d' ' -f1)
+          echo "[\"boiii.exe\", $boiii_size, \"$boiii_hash\"]," >> "$json_file"
+
+          find "$search_path" -type f | while read -r file; do
+            size=$(stat -c %s "$file")
+            hash=$(sha1sum "$file" | cut -d' ' -f1)
+            echo "[\"$file\", $size, \"$hash\"]," >> "$json_file"
+          done
+
+          sed -i '$ s/,$//' "$json_file"
+          echo ']' >> "$json_file"
+
       - name: Upload ${{matrix.configuration}} symbols
         uses: actions/upload-artifact@v4
         with:
@@ -58,9 +89,16 @@ jobs:
           path: |
             build/bin/x64/${{matrix.configuration}}/boiii.exe
 
+      - name: Upload ${{matrix.configuration}} json
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{matrix.configuration}} Json
+          path: |
+            build/bin/x64/${{matrix.configuration}}/boiii.json
+
       - name: Upload ${{matrix.configuration}} data artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{matrix.configuration}} data artifacts
+          name: ${{matrix.configuration}} Data Artifacts
           path: |
             data/*
