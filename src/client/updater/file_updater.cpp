@@ -13,7 +13,6 @@
 #define UPDATE_SERVER "https://bucket.biraru.org/boiii/"
 
 #define UPDATE_FILE_MAIN UPDATE_SERVER "boiii.json"
-#define UPDATE_FOLDER_MAIN UPDATE_SERVER "boiii/"
 
 #define UPDATE_HOST_BINARY "boiii.exe"
 
@@ -24,11 +23,6 @@ namespace updater
 		std::string get_update_file()
 		{
 			return UPDATE_FILE_MAIN;
-		}
-
-		std::string get_update_folder()
-		{
-			return UPDATE_FOLDER_MAIN;
 		}
 
 		std::vector<file_info> parse_file_infos(const std::string& json)
@@ -147,7 +141,7 @@ namespace updater
 
 	void file_updater::update_file(const file_info& file) const
 	{
-		const auto url = get_update_folder() + file.name + "?" + file.hash;
+		const auto url = UPDATE_SERVER + file.name + "?" + file.hash;
 
 		const auto data = utils::http::get_data(url, {}, [&](const size_t progress)
 		{
