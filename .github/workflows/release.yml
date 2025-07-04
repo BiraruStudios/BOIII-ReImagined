@@ -47,9 +47,9 @@ jobs:
           Add-Content -Path $jsonFile -Value "[`"ext.dll`", $extSize, `"$extHash`"],"
 
           $boiiiReimaginedFile = "$basePath/boiii-reimagined.exe"
-          $boiii-reimaginedSize = (Get-Item $boiiiReimaginedFile).Length
-          $boiii-reimaginedHash = (Get-FileHash -Path $boiiiReimaginedFile -Algorithm SHA1).Hash.ToUpper()
-          Add-Content -Path $jsonFile -Value "[`"boiii-reimagined.exe`", $boiii-reimaginedSize, `"$boiii-reimaginedHash`"],"
+          $boiiiReimaginedSize = (Get-Item $boiiiReimaginedFile).Length
+          $boiiiReimaginedHash = (Get-FileHash -Path $boiiiReimaginedFile -Algorithm SHA1).Hash.ToUpper()
+          Add-Content -Path $jsonFile -Value "[`"boiii-reimagined.exe`", $boiiiReimaginedSize, `"$boiiiReimaginedHash`"],"
 
           Get-ChildItem -Path $searchPath -Recurse -File | ForEach-Object {
             $filePath = $_.FullName
