@@ -134,12 +134,12 @@ namespace script
 			const utils::nt::library host{};
 
 			const auto data_folder = game::get_appdata_path() / "data";
-			const auto boiii-reimagined_folder = host.get_folder() / "boiii-reimagined";
+			const auto boiii_reimagined_folder = host.get_folder() / "boiii-reimagined";
 
-			const auto load = [&data_folder, &boiii-reimagined_folder](const std::filesystem::path& folder, const bool is_custom)
+			const auto load = [&data_folder, &boiii_reimagined_folder](const std::filesystem::path& folder, const bool is_custom)
 			{
 				load_scripts_folder((data_folder / folder).string(), is_custom);
-				load_scripts_folder((boiii-reimagined_folder / folder).string(), is_custom);
+				load_scripts_folder((boiii_reimagined_folder / folder).string(), is_custom);
 			};
 
 			// scripts folder is for overriding stock scripts the game uses
