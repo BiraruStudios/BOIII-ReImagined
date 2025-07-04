@@ -225,7 +225,7 @@ newaction {
 
 dependencies.load()
 
-workspace "boiii"
+workspace "boiii-reimagined"
 	startproject "client"
 	location "./build"
 	objdir "%{wks.location}/obj"
@@ -293,7 +293,7 @@ project "client"
 	kind "WindowedApp"
 	language "C++"
 
-	targetname "boiii"
+	targetname "boiii-reimagined"
 
 	pchheader "std_include.hpp"
 	pchsource "src/client/std_include.cpp"

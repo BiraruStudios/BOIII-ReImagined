@@ -133,8 +133,8 @@ namespace console
 
 			char text[CONSOLE_BUFFER_SIZE]{0};
 
-			const auto* class_name = "BOIII WinConsole";
-			const auto* window_name = game::is_server() ? "BOIII Server" : "BOIII Console";
+			const auto* class_name = "BOIII ReImagined WinConsole";
+			const auto* window_name = game::is_server() ? "BOIII ReImagined Server" : "BOIII ReImagined Console";
 
 			WNDCLASSA wnd_class{};
 			wnd_class.style = 0;

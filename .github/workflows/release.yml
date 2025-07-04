@@ -26,13 +26,13 @@ jobs:
         uses: ammaraskar/msvc-problem-matcher@master
 
       - name: Build Release
-        run: msbuild /m /v:minimal /p:Configuration=Release /p:Platform=x64 build/boiii.sln
+        run: msbuild /m /v:minimal /p:Configuration=Release /p:Platform=x64 build/boiii-reimagined.sln
 
-      - name: Create boiii.json
+      - name: Create files.json
         shell: pwsh
         run: |
           $basePath = "build/bin/x64/Release"
-          $jsonFile = "$basePath/boiii.json"
+          $jsonFile = "$basePath/files.json"
           $searchPath = "data"
 
           New-Item -ItemType Directory -Force -Path $basePath | Out-Null
@@ -46,10 +46,10 @@ jobs:
           $extHash = (Get-FileHash -Path $extFile -Algorithm SHA1).Hash.ToUpper()
           Add-Content -Path $jsonFile -Value "[`"ext.dll`", $extSize, `"$extHash`"],"
 
-          $boiiiFile = "$basePath/boiii.exe"
-          $boiiiSize = (Get-Item $boiiiFile).Length
-          $boiiiHash = (Get-FileHash -Path $boiiiFile -Algorithm SHA1).Hash.ToUpper()
-          Add-Content -Path $jsonFile -Value "[`"boiii.exe`", $boiiiSize, `"$boiiiHash`"],"
+          $boiii-reimaginedFile = "$basePath/boiii-reimagined.exe"
+          $boiii-reimaginedSize = (Get-Item $boiii-reimaginedFile).Length
+          $boiii-reimaginedHash = (Get-FileHash -Path $boiii-reimaginedFile -Algorithm SHA1).Hash.ToUpper()
+          Add-Content -Path $jsonFile -Value "[`"boiii-reimagined.exe`", $boiii-reimaginedSize, `"$boiii-reimaginedHash`"],"
 
           Get-ChildItem -Path $searchPath -Recurse -File | ForEach-Object {
             $filePath = $_.FullName
@@ -74,8 +74,8 @@ jobs:
 
           New-Item -ItemType Directory -Force -Path $bucket
 
-          Copy-Item "$basePath/boiii.exe" -Destination $bucket
-          Copy-Item "$basePath/boiii.json" -Destination $bucket
+          Copy-Item "$basePath/boiii-reimagined.exe" -Destination $bucket
+          Copy-Item "$basePath/files.json" -Destination $bucket
           Copy-Item "data" -Recurse -Destination $bucket
 
       - name: Upload Release symbols
@@ -83,21 +83,21 @@ jobs:
         with:
           name: Release Symbols
           path: |
-            build/bin/x64/Release/boiii.pdb
+            build/bin/x64/Release/boiii-reimagined.pdb
 
       - name: Upload Release binary
         uses: actions/upload-artifact@v4
         with:
           name: Release Binary
           path: |
-            build/bin/x64/Release/boiii.exe
+            build/bin/x64/Release/boiii-reimagined.exe
 
       - name: Upload Release json
         uses: actions/upload-artifact@v4
         with:
           name: Release Json
           path: |
-            build/bin/x64/Release/boiii.json
+            build/bin/x64/Release/files.json
 
       - name: Upload Release data artifacts
         uses: actions/upload-artifact@v4

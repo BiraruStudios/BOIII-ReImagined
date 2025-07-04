@@ -12,9 +12,9 @@
 
 #define UPDATE_SERVER "https://bo3.biraru.org/"
 
-#define UPDATE_FILE_MAIN UPDATE_SERVER "boiii.json"
+#define UPDATE_FILE_MAIN UPDATE_SERVER "files.json"
 
-#define UPDATE_HOST_BINARY "boiii.exe"
+#define UPDATE_HOST_BINARY "boiii-reimagined.exe"
 
 namespace updater
 {

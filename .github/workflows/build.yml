@@ -42,12 +42,12 @@ jobs:
         uses: ammaraskar/msvc-problem-matcher@master
 
       - name: Build ${{matrix.configuration}}
-        run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/boiii.sln
+        run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/boiii-reimagined.sln
 
-      - name: Create boiii.json
+      - name: Create boiii-reimagined.json
         run: |
           $basePath = "build/bin/x64/${{matrix.configuration}}"
-          $jsonFile = "$basePath/boiii.json"
+          $jsonFile = "$basePath/files.json"
           $searchPath = "data"
 
           New-Item -ItemType Directory -Force -Path $basePath | Out-Null
@@ -61,10 +61,10 @@ jobs:
           $extHash = (Get-FileHash -Path $extFile -Algorithm SHA1).Hash.ToUpper()
           Add-Content -Path $jsonFile -Value "[`"ext.dll`", $extSize, `"$extHash`"],"
 
-          $boiiiFile = "$basePath/boiii.exe"
-          $boiiiSize = (Get-Item $boiiiFile).Length
-          $boiiiHash = (Get-FileHash -Path $boiiiFile -Algorithm SHA1).Hash.ToUpper()
-          Add-Content -Path $jsonFile -Value "[`"boiii.exe`", $boiiiSize, `"$boiiiHash`"],"
+          $boiii-reimaginedFile = "$basePath/boiii-reimagined.exe"
+          $boiii-reimaginedSize = (Get-Item $boiii-reimaginedFile).Length
+          $boiii-reimaginedHash = (Get-FileHash -Path $boiii-reimaginedFile -Algorithm SHA1).Hash.ToUpper()
+          Add-Content -Path $jsonFile -Value "[`"boiii-reimagined.exe`", $boiii-reimaginedSize, `"$boiii-reimaginedHash`"],"
 
           Get-ChildItem -Path $searchPath -Recurse -File | ForEach-Object {
             $filePath = $_.FullName
@@ -88,8 +88,8 @@ jobs:
 
           New-Item -ItemType Directory -Force -Path $bucket
 
-          Copy-Item "$basePath/boiii.exe" -Destination $bucket
-          Copy-Item "$basePath/boiii.json" -Destination $bucket
+          Copy-Item "$basePath/boiii-reimagined.exe" -Destination $bucket
+          Copy-Item "$basePath/files.json" -Destination $bucket
           Copy-Item "$basePath/ext.dll" -Destination $bucket
           Copy-Item "data" -Recurse -Destination $bucket
 
@@ -98,21 +98,21 @@ jobs:
         with:
           name: ${{matrix.configuration}} Symbols
           path: |
-            build/bin/x64/${{matrix.configuration}}/boiii.pdb
+            build/bin/x64/${{matrix.configuration}}/boiii-reimagined.pdb
 
       - name: Upload ${{matrix.configuration}} binary
         uses: actions/upload-artifact@v4
         with:
           name: ${{matrix.configuration}} Binary
           path: |
-            build/bin/x64/${{matrix.configuration}}/boiii.exe
+            build/bin/x64/${{matrix.configuration}}/boiii-reimagined.exe
 
       - name: Upload ${{matrix.configuration}} json
         uses: actions/upload-artifact@v4
         with:
           name: ${{matrix.configuration}} Json
           path: |
-            build/bin/x64/${{matrix.configuration}}/boiii.json
+            build/bin/x64/${{matrix.configuration}}/files.json
 
       - name: Upload ${{matrix.configuration}} data artifacts
         uses: actions/upload-artifact@v4
