@@ -77,12 +77,6 @@ newoption {
 	description = "Enable development builds of the client."
 }
 
-newoption {
-	trigger = "no-check",
-	description = "Disable ownership checks."
-}
-
-
 newaction {
 	trigger = "version",
 	description = "Returns the version string for the current commit of the source code.",
@@ -248,10 +242,6 @@ workspace "boiii-reimagined"
 
 	if _OPTIONS["dev-build"] then
 		defines {"DEV_BUILD"}
-	end
-	
-	if _OPTIONS["no-check"] then
-		defines {"NO_CHECK"}
 	end
 
 	if os.getenv("CI") then
