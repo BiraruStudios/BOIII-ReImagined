@@ -62,17 +62,17 @@ jobs:
 
           Invoke-WebRequest -Uri "https://bo3.biraru.org/ext.dll" -OutFile "$basePath/ext.dll"
 
-          Set-Content -Path $jsonFile -Value "["
+          $entries = @()
 
           $extFile = "$basePath/ext.dll"
           $extSize = (Get-Item $extFile).Length
           $extHash = (Get-FileHash -Path $extFile -Algorithm SHA1).Hash.ToUpper()
-          Add-Content -Path $jsonFile -Value "[`"ext.dll`", $extSize, `"$extHash`"],"
+          $entries += @{ name = "ext.dll"; size = $extSize; hash = $extHash }
 
-          $boiiiReimaginedFile = "$basePath/boiii-reimagined.exe"
-          $boiiiReimaginedSize = (Get-Item $boiiiReimaginedFile).Length
-          $boiiiReimaginedHash = (Get-FileHash -Path $boiiiReimaginedFile -Algorithm SHA1).Hash.ToUpper()
-          Add-Content -Path $jsonFile -Value "[`"boiii-reimagined.exe`", $boiiiReimaginedSize, `"$boiiiReimaginedHash`"],"
+          $exeFile = "$basePath/boiii-reimagined.exe"
+          $exeSize = (Get-Item $exeFile).Length
+          $exeHash = (Get-FileHash -Path $exeFile -Algorithm SHA1).Hash.ToUpper()
+          $entries += @{ name = "boiii-reimagined.exe"; size = $exeSize; hash = $exeHash }
 
           Get-ChildItem -Path $searchPath -Recurse -File | ForEach-Object {
             $filePath = $_.FullName
@@ -80,14 +80,11 @@ jobs:
             $hash = (Get-FileHash -Path $filePath -Algorithm SHA1).Hash.ToUpper()
             $baseDir = (Resolve-Path ".\").Path
             $relativePath = $_.FullName.Replace($baseDir + "\", "").Replace("\", "/")
-            Add-Content -Path $jsonFile -Value "[`"$relativePath`", $size, `"$hash`"],"
+            $entries += @{ name = $relativePath; size = $size; hash = $hash }
           }
 
-          $lines = Get-Content $jsonFile
-          $lines[-1] = $lines[-1] -replace ",$"
-          Set-Content $jsonFile $lines
-
-          Add-Content -Path $jsonFile -Value "]"
+          $json = $entries | ConvertTo-Json -Depth 2
+          Set-Content -Path $jsonFile -Value $json
 
       - name: Create bucket stuff
         run: |
