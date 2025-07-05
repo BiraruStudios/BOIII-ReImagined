@@ -213,15 +213,22 @@ namespace updater
 				MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL
 			);
 
+			std::ofstream logFile("launch.log", std::ios::app);
+
 			if (result == IDYES)
 			{
+				logFile << "yes launch" << std::endl;
 				utils::nt::relaunch_self();
 			}
 			else
 			{
+				logFile << "no :( launch" << std::endl;
 				utils::nt::terminate();
 			}
 		}
+
+		std::ofstream logFile("launch2.log", std::ios::app);
+		logFile << "launch" << std::endl;
 
 		throw update_cancelled();
 	}
