@@ -1,3 +1,5 @@
+import "cmake"
+
 gitVersioningCommand = "git describe --tags --dirty --always"
 gitCurrentBranchCommand = "git symbolic-ref -q --short HEAD"
 
