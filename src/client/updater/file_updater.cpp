@@ -206,7 +206,17 @@ namespace updater
 
 		if (!utils::flags::has_flag("norelaunch"))
 		{
-			utils::nt::relaunch_self();
+			int result = MessageBoxA(
+				nullptr,
+				"Do you want to restart or close this application?",
+				"BOIII ReImagined Updater - Update Complete",
+				MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL
+			);
+
+			if (result == IDYES)
+			{
+				utils::nt::relaunch_self();
+			}
 		}
 
 		throw update_cancelled();
