@@ -11,8 +11,10 @@ namespace utils::debug {
 
     static std::string timestamp() {
         const auto now = std::time(nullptr);
+        std::tm timeInfo{};
+        localtime_s(&timeInfo, &now);
         std::ostringstream oss;
-        oss << "[" << std::put_time(std::localtime(&now), "%Y-%m-%d %H:%M:%S") << "] ";
+        oss << "[" << std::put_time(&timeInfo, "%Y-%m-%d %H:%M:%S") << "] ";
         return oss.str();
     }
 
