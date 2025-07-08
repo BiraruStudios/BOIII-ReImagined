@@ -42,6 +42,46 @@ namespace steam_proxy
 			error,
 		};
 
+		decltype(&MessageBoxA) originalMessageBoxA = nullptr;
+
+		int WINAPI HookedMessageBoxA(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType)
+		{
+			if (std::string(lpText) == "Steam must be running and you must own Black Ops 3 on Steam to play this mod!")
+			{
+				return IDOK;
+			}
+
+			return originalMessageBoxA(hWnd, lpText, lpCaption, uType);
+		}
+
+		void hook_messageboxa()
+		{
+			const bool hookCreated = MH_CreateHook(
+				&MessageBoxA,
+				&HookedMessageBoxA,
+				reinterpret_cast<LPVOID*>(&originalMessageBoxA)
+			) == MH_OK;
+			if (!hookCreated)
+				return;
+
+			const bool hookEnabled = MH_EnableHook(&MessageBoxA) == MH_OK;
+			if (!hookEnabled)
+				return;
+		}
+
+		void unhook_messageboxa()
+		{
+			const bool hookDisabled = MH_DisableHook(&MessageBoxA) == MH_OK;
+			if (!hookDisabled)
+				return;
+
+			const bool hookRemoved = MH_RemoveHook(&MessageBoxA) == MH_OK;
+			if (!hookRemoved)
+				return;
+
+			originalMessageBoxA = nullptr;
+		}
+
 		bool is_disabled()
 		{
 			static const auto disabled = utils::flags::has_flag("nosteam");
@@ -215,6 +255,7 @@ namespace steam_proxy
 	{
 		void post_load() override
 		{
+			hook_messageboxa();
 			load_client();
 			perform_cleanup_if_needed();
 		}
@@ -228,6 +269,8 @@ namespace steam_proxy
 
 		void pre_destroy() override
 		{
+			unhook_messageboxa();
+
 			if (steam_client)
 			{
 				if (global_user)
