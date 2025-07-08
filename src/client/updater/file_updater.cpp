@@ -289,7 +289,7 @@ namespace updater
 
 	bool file_updater::is_outdated_file(const file_info& file) const
 	{
-#if !defined(NDEBUG) || !defined(CI)
+#if !defined(NDEBUG)
 		if (file.name == UPDATE_HOST_BINARY && !utils::flags::has_flag("update"))
 		{
 			return false;

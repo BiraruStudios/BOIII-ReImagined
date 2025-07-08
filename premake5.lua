@@ -246,10 +246,6 @@ workspace "boiii-reimagined"
 		defines {"DEV_BUILD"}
 	end
 
-	if os.getenv("CI") then
-		defines {"CI"}
-	end
-
 	flags {"NoIncrementalLink", "NoMinimalRebuild", "MultiProcessorCompile", "No64BitChecks"}
 
 	filter "platforms:x64"
