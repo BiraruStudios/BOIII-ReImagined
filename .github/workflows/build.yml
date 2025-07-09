@@ -52,7 +52,7 @@ jobs:
       - name: Build ${{matrix.configuration}}
         run: msbuild /m /v:minimal /p:Configuration=${{matrix.configuration}} /p:Platform=x64 build/boiii-reimagined.sln
 
-      - name: Create boiii-reimagined.json
+      - name: Create files.json
         run: |
           $basePath = "build/bin/x64/${{matrix.configuration}}"
           $jsonFile = "$basePath/files.json"
