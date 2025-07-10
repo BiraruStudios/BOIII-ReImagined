@@ -38,7 +38,7 @@ jobs:
       - name: Generate project files
         run: |
           if ($env:configuration -eq "Debug") {
-            tools/premake5 vs2022 --dev-build
+            tools/premake5 --dev-build vs2022
           } else {
             tools/premake5 vs2022
           }
