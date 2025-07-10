@@ -11,6 +11,4 @@ namespace utils::debug
     bool log(double value);
     bool log(const std::ostringstream& stream);
     void flush();
-
-    void set_log_file(const std::string& path);
 }
