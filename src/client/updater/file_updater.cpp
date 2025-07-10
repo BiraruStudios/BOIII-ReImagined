@@ -214,7 +214,7 @@ namespace updater
 			int result = MessageBoxA(
 				nullptr,
 				"Do you want to restart or close this application?",
-				"BOIII ReImagined Updater - Update Complete",
+				"BOIII ReImagined - Update Complete",
 				MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL
 			);
 
