@@ -156,7 +156,7 @@ namespace exception
 
 		void write_minidump(const LPEXCEPTION_POINTERS exceptioninfo)
 		{
-			const std::string crash_name = utils::string::va("minidumps/boiii-reimagined-crash-%s.zip",
+			const std::string crash_name = utils::string::va("boiii-reimagined/minidumps/crash-%s.zip",
 			                                                 get_timestamp().data());
 
 			utils::compression::zip::archive zip_file{};
