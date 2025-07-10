@@ -71,7 +71,7 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "CompanyName", "Biraru Studio's"
-            VALUE "FileDescription", "A custom client for Call of Duty: Black Ops III with enhanced modding support, offline play, and quality-of-life improvements."
+            VALUE "FileDescription", "BOIII ReImagined"
             VALUE "FileVersion", VERSION_FILE
             VALUE "InternalName", "BOIII_ReImagined"
             VALUE "LegalCopyright", "Copyright (C) 2025 Biraru Studio's. All rights reserved."
