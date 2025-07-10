@@ -70,7 +70,7 @@ namespace game
 
 	std::filesystem::path get_appdata_path()
 	{
-		static const auto appdata_path = []
+		static const auto appdata_path = []() -> std::filesystem::path
 		{
 			PWSTR path;
 			if (FAILED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &path)))
@@ -83,8 +83,7 @@ namespace game
 				CoTaskMemFree(path);
 			});
 
-			static auto appdata = std::filesystem::path(path) / "BOIII ReImagined";
-			return appdata;
+			return std::filesystem::path(path) / L"BOIII ReImagined";
 		}();
 
 		return appdata_path;
