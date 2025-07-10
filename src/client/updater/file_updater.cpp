@@ -11,8 +11,9 @@
 #include <utils/compression.hpp>
 
 #define UPDATE_SERVER "https://bo3.biraru.org/"
+#define DEBUG_UPDATE_SERVER UPDATE_SERVER "debug/"
 
-#define UPDATE_FILE_MAIN UPDATE_SERVER "files.json"
+#define UPDATE_FILE_MAIN "files.json"
 
 #define UPDATE_HOST_BINARY "boiii-reimagined.exe"
 
@@ -22,12 +23,16 @@ namespace updater
 	{
 		std::string get_update_server()
 		{
+#ifndef NDEBUG
+			return DEBUG_UPDATE_SERVER;
+#else
 			return UPDATE_SERVER;
+#endif
 		}
 
 		std::string get_update_file()
 		{
-			return UPDATE_FILE_MAIN;
+			return get_update_server() + UPDATE_FILE_MAIN;
 		}
 
 		std::vector<file_info> parse_file_infos(const std::string& json)
@@ -289,8 +294,8 @@ namespace updater
 
 	bool file_updater::is_outdated_file(const file_info& file) const
 	{
-#if !defined(NDEBUG)
-		if (file.name == UPDATE_HOST_BINARY && !utils::flags::has_flag("update"))
+#ifndef NDEBUG
+		if (file.name == UPDATE_HOST_BINARY && utils::flags::has_flag("nohostupdate"))
 		{
 			return false;
 		}
