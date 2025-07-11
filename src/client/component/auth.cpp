@@ -98,7 +98,7 @@ namespace auth
 		{
 			static const auto is_first = []
 			{
-				static utils::nt::handle mutex = CreateMutexA(nullptr, FALSE, "boiii-reimagined_mutex");
+				static utils::nt::handle mutex = CreateMutexA(nullptr, FALSE, "boiii-reimagined-mutex");
 				return mutex && GetLastError() != ERROR_ALREADY_EXISTS;
 			}();
 
