@@ -26,7 +26,7 @@ body:
       label: BOIII ReImagined Version
       description: "What version of BOIII ReImagined are you reporting this bug for?"
       options:
-        - v0.0.1 (Latest)
+        - v1.0.0 (Latest)
     validations:
       required: true
   - type: dropdown
