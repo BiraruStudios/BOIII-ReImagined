@@ -11,6 +11,7 @@
 #include <utils/compression.hpp>
 
 #define UPDATE_SERVER "https://bo3.biraru.org/"
+#define RELEASE_UPDATE_SERVER UPDATE_SERVER "release/"
 #define DEBUG_UPDATE_SERVER UPDATE_SERVER "debug/"
 
 #define UPDATE_FILE_MAIN "files.json"
@@ -23,10 +24,10 @@ namespace updater
 	{
 		std::string get_update_server()
 		{
-#ifndef NDEBUG
-			return DEBUG_UPDATE_SERVER;
+#ifdef NDEBUG
+			return RELEASE_UPDATE_SERVER;
 #else
-			return UPDATE_SERVER;
+			return DEBUG_UPDATE_SERVER;
 #endif
 		}
 
