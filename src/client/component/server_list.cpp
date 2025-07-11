@@ -91,9 +91,9 @@ namespace server_list
 			}
 		}
 
-		const char* get_favorite_servers_file_path()
+		std::filesystem::path get_favorite_servers_file_path()
 		{
-			return "boiii-reimagined/players/user/favorite_servers.txt";
+			return game::get_boiii_path() / "players/user/favorite_servers.txt";
 		}
 
 		void write_favorite_servers()
@@ -112,7 +112,7 @@ namespace server_list
 
 		void read_favorite_servers()
 		{
-			const auto* path = get_favorite_servers_file_path();
+			const auto path = get_favorite_servers_file_path();
 			if (!utils::io::file_exists(path))
 			{
 				return;

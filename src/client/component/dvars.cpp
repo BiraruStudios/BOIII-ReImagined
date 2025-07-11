@@ -102,9 +102,9 @@ namespace dvars
 			}
 		}
 
-		std::string get_config_file_path()
+		std::filesystem::path get_config_file_path()
 		{
-			return "boiii-reimagined/players/user/config.cfg";
+			return game::get_boiii_path() / "players";
 		}
 
 		bool is_archive_dvar(const game::dvar_t* dvar)
@@ -113,7 +113,7 @@ namespace dvars
 			{
 				return false;
 			}
-			
+
 			return (dvar->flags & game::DVAR_ARCHIVE);
 		}
 
@@ -170,7 +170,7 @@ namespace dvars
 
 		void read_archive_dvars()
 		{
-			const std::string path = get_config_file_path();
+			const auto path = get_config_file_path();
 
 			if (!utils::io::file_exists(path))
 			{

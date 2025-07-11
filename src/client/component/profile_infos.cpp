@@ -25,7 +25,8 @@ namespace profile_infos
 		std::optional<profile_info> load_profile_info()
 		{
 			std::string data{};
-			if (!utils::io::read_file("boiii-reimagined/players/user/profile_info", &data))
+
+			if (!utils::io::read_file(game::get_boiii_path() / "players/user/profile_info", &data))
 			{
 				return {};
 			}
@@ -237,7 +238,8 @@ namespace profile_infos
 		data.append(reinterpret_cast<const char*>(&info.version), sizeof(info.version));
 		data.append(info.ddl);
 
-		utils::io::write_file("boiii-reimagined/players/user/profile_info", data);
+		std::string path = (game::get_boiii_path() / "players/user/profile_info").string();
+		utils::io::write_file(path, data);
 	}
 
 	struct component final : generic_component

@@ -35,7 +35,7 @@ namespace bots
 			};
 
 			std::string buffer;
-			if (!utils::io::read_file("boiii-reimagined/bots.txt", &buffer) || buffer.empty())
+			if (!utils::io::read_file(game::get_boiii_path() / "bots.txt", &buffer) || buffer.empty())
 			{
 				return bot_names;
 			}

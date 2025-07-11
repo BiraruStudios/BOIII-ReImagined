@@ -19,28 +19,10 @@ namespace utils::properties
 		typedef rapidjson::EncodedOutputStream<rapidjson::UTF8<>, rapidjson::FileWriteStream> OutputStream;
 		typedef rapidjson::EncodedInputStream<rapidjson::UTF8<>, rapidjson::FileReadStream> InputStream;
 
-		std::filesystem::path get_properties_folder()
-		{
-			static auto props = get_appdata_path() / "user";
-			return props;
-		}
-
 		std::filesystem::path get_properties_file()
 		{
-			static auto props = []
-			{
-				auto path = std::filesystem::path("boiii-reimagined/players/properties.json");
-				const auto legacy_path = get_properties_folder() / "properties.json";
-
-				if (io::file_exists(legacy_path) && !io::file_exists(path))
-				{
-					std::error_code e;
-					std::filesystem::copy(legacy_path, path, std::filesystem::copy_options::skip_existing, e);
-				}
-
-				return path;
-			}();
-			return props;
+			static auto file = get_boiii_path() / "players/properties.json";
+			return file;
 		}
 
 		rapidjson::Document load_properties()
@@ -87,7 +69,7 @@ namespace utils::properties
 			char write_buffer[256]{0}; // Raw buffer for writing
 
 			const std::wstring& props = get_properties_file();
-			io::create_directory(get_properties_folder());
+			io::create_directory(get_properties_file().parent_path());
 
 			FILE* fp;
 			auto err = _wfopen_s(&fp, props.data(), L"wb");
@@ -114,19 +96,33 @@ namespace utils::properties
 
 	std::filesystem::path get_appdata_path()
 	{
-		PWSTR path;
-		if (!SUCCEEDED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &path)))
+		static const auto appdata_path = []() -> std::filesystem::path
 		{
-			throw std::runtime_error("Failed to read APPDATA path!");
-		}
+			PWSTR path;
+			if (FAILED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &path)))
+			{
+				throw std::runtime_error("Failed to read APPDATA path!");
+			}
 
-		auto _ = utils::finally([&path]
+			auto _ = utils::finally([&path]
+			{
+				CoTaskMemFree(path);
+			});
+
+			return std::filesystem::path(path) / L"BOIII ReImagined";
+		}();
+
+		return appdata_path;
+	}
+
+	std::filesystem::path get_boiii_path()
+	{
+		static const auto boiii_path = []() -> std::filesystem::path
 		{
-			CoTaskMemFree(path);
-		});
+			return nt::library{}.get_folder() / "boiii_reimagined";
+		}();
 
-		static auto appdata = std::filesystem::path(path) / "BOIII ReImagined";
-		return appdata;
+		return boiii_path;
 	}
 
 	std::unique_lock<named_mutex> lock()

@@ -24,6 +24,6 @@ namespace demonware
 		void get_files(service_server* server, byte_buffer* buffer) const;
 		void unk12(service_server* server, byte_buffer* buffer) const;
 
-		static std::string get_user_file_path(const std::string& name);
+		static std::filesystem::path get_user_file_path(const std::string& name);
 	};
 }

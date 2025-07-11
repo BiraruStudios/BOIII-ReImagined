@@ -127,23 +127,27 @@ namespace client_patches
 		game::fileHandle_t fs_f_open_file_write_to_dir_stub(const char* filename, [[maybe_unused]] const char* dir,
 		                                                    const char* os_base_path)
 		{
-			return game::FS_FOpenFileWriteToDir(filename, "boiii-reimagined/players", os_base_path);
+			std::string path = (game::get_boiii_path() / "players").string();
+			return game::FS_FOpenFileWriteToDir(filename, path.c_str(), os_base_path);
 		}
 
 		game::fileHandle_t fs_f_open_file_read_from_dir_stub(const char* filename, [[maybe_unused]] const char* dir,
 		                                                     const char* os_base_path)
 		{
-			return game::FS_FOpenFileReadFromDir(filename, "boiii-reimagined/players", os_base_path);
+			std::string path = (game::get_boiii_path() / "players").string();
+			return game::FS_FOpenFileReadFromDir(filename, path.c_str(), os_base_path);
 		}
 
 		int i_stricmp_stub(const char* s0, [[maybe_unused]] const char* s1)
 		{
-			return game::I_stricmp(s0, "boiii-reimagined/players");
+			std::string path = (game::get_boiii_path() / "players").string();
+			return game::I_stricmp(s0, path.c_str());
 		}
 
 		void fs_add_game_directory_stub(const char* path, [[maybe_unused]] const char* dir)
 		{
-			utils::hook::invoke<void>(0x1422A2AF0_g, path, "boiii-reimagined/players");
+			std::string boiii_path = (game::get_boiii_path() / "players").string();
+			utils::hook::invoke<void>(0x1422A2AF0_g, path, boiii_path.c_str());
 		}
 
 		void patch_players_folder_name()

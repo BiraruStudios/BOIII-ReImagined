@@ -8,6 +8,7 @@
 namespace utils::properties
 {
 	std::filesystem::path get_appdata_path();
+	std::filesystem::path get_boiii_path();
 
 	std::unique_lock<named_mutex> lock();
 

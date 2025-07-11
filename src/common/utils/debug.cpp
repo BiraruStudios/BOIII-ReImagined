@@ -7,12 +7,11 @@
 #include <filesystem>
 
 #include "nt.hpp"
+#include "properties.hpp"
 
 namespace utils::debug {
     static std::string get_log_file_path() {
-        const utils::nt::library host{};
-
-        const auto preferred_dir = host.get_folder() / "boiii-reimagined";
+        const auto preferred_dir = properties::get_boiii_path();
         const auto preferred_log = preferred_dir / "debug.log";
         const auto fallback_log = "debug.log";
 
