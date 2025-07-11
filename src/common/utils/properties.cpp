@@ -116,13 +116,8 @@ namespace utils::properties
 	}
 
 	std::filesystem::path get_boiii_path()
-	{
-		static const auto boiii_path = []() -> std::filesystem::path
-		{
-			return nt::library{}.get_folder() / "boiii_reimagined";
-		}();
-
-		return boiii_path;
+    {
+		return get_appdata_path();
 	}
 
 	std::unique_lock<named_mutex> lock()

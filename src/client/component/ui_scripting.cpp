@@ -214,7 +214,7 @@ namespace ui_scripting
 
 			const utils::nt::library host{};
 			const auto folder = game::is_server() ? "lobby_scripts/" : "ui_scripts/";
-			load_scripts((game::get_appdata_path() / "data" / folder).string());
+			load_scripts((game::get_core_path() / "data" / folder).string());
 			load_scripts((game::get_boiii_path() / folder).string());
 		}
 
@@ -250,7 +250,7 @@ namespace ui_scripting
 				const utils::nt::library host{};
 				doneFirstSnapshot = false;
 
-				load_local_script_files((game::get_appdata_path() / "data/ui_scripts/").string());
+				load_local_script_files((game::get_core_path() / "data/ui_scripts/").string());
 				load_local_script_files((game::get_boiii_path() / "ui_script/").string());
 				return;
 			}

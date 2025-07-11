@@ -46,6 +46,6 @@ namespace launcher
 
 	std::filesystem::path get_launcher_ui_file()
 	{
-		return game::get_appdata_path() / "data/launcher/main.html";
+		return game::get_core_path() / "data/launcher/main.html";
 	}
 }

@@ -89,14 +89,13 @@ namespace game
 		return appdata_path;
 	}
 
+	std::filesystem::path get_core_path()
+	{
+		return get_appdata_path() / "core";
+	}
 
 	std::filesystem::path get_boiii_path()
 	{
-		static const auto boiii_path = []() -> std::filesystem::path
-		{
-			return get_host_library().get_folder() / "boiii_reimagined";
-		}();
-
-		return boiii_path;
+		return get_appdata_path();
 	}
 }
