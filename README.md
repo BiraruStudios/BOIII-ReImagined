@@ -4,7 +4,7 @@
 <h1 style="margin: 0; padding: 0;">BOIII ReImagined</h1>
 
 [![build](https://img.shields.io/github/actions/workflow/status/BiraruStudios/BOIII-ReImagined/build.yml?branch=main&label=Build&logo=github)](https://github.com/BiraruStudios/BOIII-ReImagined/actions)
-[![bugs](https://img.shields.io/github/issues/BiraruStudios/BOIII-ReImagined/bug?label=Bugs&logo=github)](https://github.com/BiraruStudios/BOIII-ReImagined/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
+[![bugs](https://img.shields.io/github/issues/BiraruStudios/BOIII-ReImagined/bug?label=Bugs&logo=github)](https://github.com/BiraruStudios/BOIII-ReImagined/issues?q=sort%3Aupdated-desc+is%3Aissue+is%3Aopen+%28label%3Abug+OR+type%3ABug%29)
 
 [![patreon](https://img.shields.io/badge/Patreon-support-red.svg?logo=patreon)](https://www.patreon.com/Biraru)
 [![buy me a coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-FFEA00?logo=buymeacoffee)](https://buymeacoffee.com/Biraru)
