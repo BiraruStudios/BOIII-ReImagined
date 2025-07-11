@@ -196,10 +196,14 @@ newaction {
 			versionHeader:write("#define VERSION_PRODUCT_RC " .. table.concat(vertonumarr(tagName, revNumber, 3), ",") .. "\n")
 			versionHeader:write("#define VERSION_PRODUCT " .. cstrquote(table.concat(vertonumarr(tagName, revNumber, 3), ".")) .. "\n")
 			versionHeader:write("#define VERSION_FILE_RC " .. table.concat(vertonumarr(tagName, revNumber, 4), ",") .. "\n")
-			versionHeader:write("#define VERSION_FILE " .. cstrquote(table.concat(vertonumarr(tagName, revNumber, 4), ".")) .. "\n")
+            do
+            	local versionParts = vertonumarr(tagName, revNumber, 4)
+            	local fileVersionStr = string.format("%d.%d.%d-%d", versionParts[1], versionParts[2], versionParts[3], versionParts[4])
+            	versionHeader:write("#define VERSION_FILE " .. cstrquote(fileVersionStr) .. "\n")
+            end
 			versionHeader:write("\n")
 			versionHeader:write("// Alias definitions\n")
-			versionHeader:write("#define VERSION GIT_DESCRIBE\n")
+			versionHeader:write("#define VERSION VERSION_FILE\n")
 			versionHeader:write("#define SHORTVERSION VERSION_PRODUCT\n")
 			versionHeader:close()
 			local versionHeader = assert(io.open(wks.location .. "/src/version.hpp", "w"))
