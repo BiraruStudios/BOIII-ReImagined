@@ -23,14 +23,24 @@ namespace utils::flags
 
 		std::unordered_set<std::string> flags{};
 
-		for (auto i = 0; i < num_args && argv; ++i)
+		for (int i = 0; i < num_args && argv; ++i)
 		{
 			std::wstring wide_flag(argv[i]);
-			if (wide_flag[0] == L'-')
+
+			if (wide_flag.rfind(L"--", 0) == 0)
 			{
-				wide_flag.erase(wide_flag.begin());
-				flags.emplace(string::to_lower(string::convert(wide_flag)));
+				wide_flag.erase(0, 2);
 			}
+			else if (wide_flag.rfind(L"-", 0) == 0)
+			{
+				wide_flag.erase(0, 1);
+			}
+			else
+			{
+				continue;
+			}
+
+			flags.emplace(string::to_lower(string::convert(wide_flag)));
 		}
 
 		return flags;
