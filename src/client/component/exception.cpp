@@ -68,10 +68,22 @@ namespace exception
 
 		void display_error_dialog()
 		{
-			const std::string error_str = utils::string::va("Fatal error (0x%08X) at 0x%p (0x%p).\n"
-			                                                "A minidump has been written.\n",
-			                                                exception_data.code, exception_data.address,
-				                                            game::derelocate(reinterpret_cast<uint64_t>(exception_data.address)));
+			std::size_t address = game::derelocate(reinterpret_cast<uint64_t>(exception_data.address));
+			std::map<std::pair<DWORD, std::size_t>, std::string> known_errors = {
+				{ { EXCEPTION_ACCESS_VIOLATION, 0x142276E79 }, "Restarting your system is the only known way to temporarily fix this." }
+			};
+
+			std::string error_str = utils::string::va("Fatal error (0x%08X) at 0x%p (0x%p).\nA minidump has been written.\n",
+				exception_data.code, exception_data.address, address);
+
+			for (const auto& [exception, msg] : known_errors) {
+				if ((exception.first == exception_data.code && exception.second == address))
+				{
+					continue;
+				}
+
+				error_str += std::format("\nThis is a known issue. {}\n", msg);
+			}
 
 			utils::thread::suspend_other_threads();
 			show_mouse_cursor();
