@@ -11,7 +11,7 @@ namespace extension
 		component()
 		{
 			create_config_file_if_not_exists();
-			this->extension_ = utils::nt::library::load(game::get_core_path() / "ext.dll");
+			this->extension_ = utils::nt::library::load(game::get_appdata_path() / "ext.dll");
 		}
 
 		~component() override

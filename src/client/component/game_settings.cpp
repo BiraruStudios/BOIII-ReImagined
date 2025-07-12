@@ -113,7 +113,7 @@ namespace gamesettings
 		{
 			const utils::nt::library host{};
 
-			search_game_settings_folder((game::get_core_path() / "data/gamesettings").string());
+			search_game_settings_folder((game::get_appdata_path() / "data/gamesettings").string());
 			search_game_settings_folder((game::get_boiii_path() / "gamesettings").string());
 		}
 	}

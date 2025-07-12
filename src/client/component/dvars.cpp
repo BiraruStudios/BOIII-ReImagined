@@ -52,7 +52,7 @@ namespace dvars
 
 		void read_dvar_name_hashes_data(std::unordered_map<std::uint32_t, std::string>& map)
 		{
-			const auto path = game::get_core_path() / "data/lookup_tables/dvar_list.txt";
+			const auto path = game::get_appdata_path() / "data/lookup_tables/dvar_list.txt";
 			std::string data;
 
 			if (!utils::io::read_file(path, &data))
@@ -104,7 +104,7 @@ namespace dvars
 
 		std::filesystem::path get_config_file_path()
 		{
-			return game::get_boiii_path() / "players";
+			return game::get_boiii_path() / "players/user/config.cfg";
 		}
 
 		bool is_archive_dvar(const game::dvar_t* dvar)

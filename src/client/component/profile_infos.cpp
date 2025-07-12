@@ -25,7 +25,6 @@ namespace profile_infos
 		std::optional<profile_info> load_profile_info()
 		{
 			std::string data{};
-
 			if (!utils::io::read_file(game::get_boiii_path() / "players/user/profile_info", &data))
 			{
 				return {};

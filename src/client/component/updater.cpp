@@ -17,7 +17,7 @@ namespace updater
 
 		try
 		{
-			run(game::get_core_path());
+			run(game::get_appdata_path());
 		}
 		catch (update_cancelled&)
 		{

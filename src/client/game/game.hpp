@@ -107,7 +107,7 @@ namespace game
 	};
 
 	std::filesystem::path get_appdata_path();
-	std::filesystem::path get_core_path();
+	std::string get_boiii_folder_name();
 	std::filesystem::path get_boiii_path();
 }
 
