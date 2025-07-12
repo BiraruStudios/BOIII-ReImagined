@@ -150,20 +150,6 @@ namespace updater
 			return;
 		}
 
-		{
-			int result = MessageBoxA(
-				nullptr,
-				"An update is available for BOIII ReImagined.\nWould you like to download and install it now?",
-				"BOIII ReImagined - Update Available",
-				MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL
-			);
-
-			if (result == IDNO)
-			{
-				return;
-			}
-		}
-
 		this->update_host_binary(outdated_files);
 		this->update_files(outdated_files);
 
@@ -212,6 +198,20 @@ namespace updater
 		if (!host_file)
 		{
 			return;
+		}
+
+		{
+			int result = MessageBoxA(
+				nullptr,
+				"An update is available for BOIII ReImagined.\nWould you like to download and install it now?",
+				"BOIII ReImagined - Update Available",
+				MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL
+			);
+
+			if (result == IDNO)
+			{
+				return;
+			}
 		}
 
 		try
