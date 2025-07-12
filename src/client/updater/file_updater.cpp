@@ -151,7 +151,19 @@ namespace updater
 		}
 
 		this->update_host_binary(outdated_files);
-		this->update_files(outdated_files);
+
+		std::vector<file_info> filtered_files;
+		std::ranges::copy_if(outdated_files, std::back_inserter(filtered_files),
+							 [](const file_info& file)
+							 {
+								 return file.name != UPDATE_HOST_BINARY;
+							 });
+		if (filtered_files.empty())
+		{
+			return;
+		}
+
+		this->update_files(filtered_files);
 
 		std::this_thread::sleep_for(1s);
 	}
