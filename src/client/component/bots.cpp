@@ -22,6 +22,7 @@ namespace bots {
         std::vector<bot_name> load_bots_names() {
             std::vector<bot_name> bot_names =
             {
+                {"Biraru", "BOIII"},
                 {"momo5502", "IW5x"},
                 {"Jasmin", "<3"},
                 {"Dss0", "IW3x"},
