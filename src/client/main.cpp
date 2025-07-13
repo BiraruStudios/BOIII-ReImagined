@@ -221,7 +221,10 @@ int main() {
     }
 
     FARPROC entry_point{};
-    srand(uint32_t(time(nullptr)) ^ ~(GetTickCount() * GetCurrentProcessId()));
+    const auto tick64 = GetTickCount64();
+    const auto pid = GetCurrentProcessId();
+
+    srand(static_cast<uint32_t>(time(nullptr)) ^ static_cast<uint32_t>(~(tick64 * pid)));
 
     enable_dpi_awareness(); {
         auto premature_shutdown = true;
@@ -302,6 +305,6 @@ int main() {
     return static_cast<int>(entry_point());
 }
 
-int __stdcall WinMain(HINSTANCE, HINSTANCE, PSTR, int) {
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     return main();
 }
