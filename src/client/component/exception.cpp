@@ -70,7 +70,7 @@ namespace exception {
                 exception_data.code, exception_data.address, address);
 
             for (const auto &[exception, msg]: known_errors) {
-                if ((exception.first == exception_data.code && exception.second == address)) {
+                if (!(exception.first == exception_data.code && exception.second == address)) {
                     continue;
                 }
 
