@@ -13,7 +13,7 @@
 
 #include "game/game.hpp"
 #include "launcher/launcher.hpp"
-#include "component/updater.hpp"
+#include "updater/updater.hpp"
 
 namespace {
     volatile bool g_call_tls_callbacks = false;
