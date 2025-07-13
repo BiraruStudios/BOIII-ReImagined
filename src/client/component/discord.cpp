@@ -16,10 +16,13 @@ namespace discord {
             ZeroMemory(&discord_presence, sizeof(discord_presence));
 
             discord_presence.instance = 1;
+            discord_presence.state = "Playing Call of Duty Black Ops 3 Via BOIII ReImagined";
 
             discord_presence.partySize = 0;
             discord_presence.partyMax = 0;
             discord_presence.startTimestamp = 0;
+            discord_presence.largeImageKey = "bo3";
+            discord_presence.smallImageKey = "logo";
 
             Discord_UpdatePresence(&discord_presence);
         }
