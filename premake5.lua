@@ -196,11 +196,17 @@ newaction {
 			versionHeader:write("#define VERSION_PRODUCT_RC " .. table.concat(vertonumarr(tagName, revNumber, 3), ",") .. "\n")
 			versionHeader:write("#define VERSION_PRODUCT " .. cstrquote(table.concat(vertonumarr(tagName, revNumber, 3), ".")) .. "\n")
 			versionHeader:write("#define VERSION_FILE_RC " .. table.concat(vertonumarr(tagName, revNumber, 4), ",") .. "\n")
-            do
-            	local versionParts = vertonumarr(tagName, revNumber, 4)
-            	local fileVersionStr = string.format("%d.%d.%d-%d", versionParts[1], versionParts[2], versionParts[3], versionParts[4])
-            	versionHeader:write("#define VERSION_FILE " .. cstrquote(fileVersionStr) .. "\n")
+
+            local versionParts = vertonumarr(tagName, revNumber, 4)
+            local fileVersionStr
+
+            if revDirty == 1 then
+                fileVersionStr = string.format("%d.%d.%d-%d", versionParts[1], versionParts[2], versionParts[3], versionParts[4])
+            else
+                fileVersionStr = string.format("%d.%d.%d", versionParts[1], versionParts[2], versionParts[3])
             end
+
+            versionHeader:write("#define VERSION_FILE " .. cstrquote(fileVersionStr) .. "\n")
 			versionHeader:write("\n")
 			versionHeader:write("// Alias definitions\n")
 			versionHeader:write("#define VERSION VERSION_FILE\n")
