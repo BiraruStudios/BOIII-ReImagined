@@ -4,138 +4,119 @@
 #include <vector>
 #include <stdexcept>
 
-namespace utils
-{
-	class byte_buffer
-	{
-	public:
-		byte_buffer();
-		byte_buffer(std::string buffer);
+namespace utils {
+    class byte_buffer {
+    public:
+        byte_buffer();
 
-		template <typename T>
-		byte_buffer(const std::basic_string_view<T>& buffer)
-			: byte_buffer(std::string(reinterpret_cast<const char*>(buffer.data()), buffer.size() * sizeof(T)))
-		{
-		}
+        byte_buffer(std::string buffer);
 
-		void write(const void* buffer, size_t length);
+        template<typename T>
+        byte_buffer(const std::basic_string_view<T> &buffer)
+            : byte_buffer(std::string(reinterpret_cast<const char *>(buffer.data()), buffer.size() * sizeof(T))) {
+        }
 
-		void write(const char* text)
-		{
-			this->write(text, strlen(text));
-		}
+        void write(const void *buffer, size_t length);
 
-		void write_string(const char* str, const size_t length)
-		{
-			this->write<uint32_t>(static_cast<uint32_t>(length));
-			this->write(str, length);
-		}
+        void write(const char *text) {
+            this->write(text, strlen(text));
+        }
 
-		void write_string(const std::string& str)
-		{
-			this->write_string(str.data(), str.size());
-		}
+        void write_string(const char *str, const size_t length) {
+            this->write<uint32_t>(static_cast<uint32_t>(length));
+            this->write(str, length);
+        }
 
-		void write_string(const char* str)
-		{
-			this->write_string(str, strlen(str));
-		}
+        void write_string(const std::string &str) {
+            this->write_string(str.data(), str.size());
+        }
 
-		template <typename T>
-		void write(const T& object)
-		{
-			this->write(&object, sizeof(object));
-		}
+        void write_string(const char *str) {
+            this->write_string(str, strlen(str));
+        }
 
-		template<>
-		void write<byte_buffer>(const byte_buffer& object)
-		{
-			const auto& buffer = object.get_buffer();
-			this->write(buffer.data(), buffer.size());
-		}
+        template<typename T>
+        void write(const T &object) {
+            this->write(&object, sizeof(object));
+        }
 
-		template <typename T>
-		void write(const std::vector<T>& vec)
-		{
-			this->write(vec.data(), vec.size() * sizeof(T));
-		}
+        template<>
+        void write<byte_buffer>(const byte_buffer &object) {
+            const auto &buffer = object.get_buffer();
+            this->write(buffer.data(), buffer.size());
+        }
 
-		template <typename T>
-		void write_vector(const std::vector<T>& vec)
-		{
-			this->write(static_cast<uint32_t>(vec.size()));
-			this->write(vec);
-		}
+        template<typename T>
+        void write(const std::vector<T> &vec) {
+            this->write(vec.data(), vec.size() * sizeof(T));
+        }
 
-		const std::string& get_buffer() const
-		{
-			return this->buffer_;
-		}
+        template<typename T>
+        void write_vector(const std::vector<T> &vec) {
+            this->write(static_cast<uint32_t>(vec.size()));
+            this->write(vec);
+        }
 
-		std::string move_buffer()
-		{
-			return std::move(this->buffer_);
-		}
+        const std::string &get_buffer() const {
+            return this->buffer_;
+        }
 
-		void read(void* data, size_t length);
+        std::string move_buffer() {
+            return std::move(this->buffer_);
+        }
 
-		template <typename T>
-		T read()
-		{
-			T object{};
-			this->read(&object, sizeof(object));
-			return object;
-		}
+        void read(void *data, size_t length);
 
-		template <typename T>
-		std::vector<T> read_vector()
-		{
-			std::vector<T> result{};
-			const auto size = this->read<uint32_t>();
-			const auto totalSize = size * sizeof(T);
+        template<typename T>
+        T read() {
+            T object{};
+            this->read(&object, sizeof(object));
+            return object;
+        }
 
-			if (this->offset_ + totalSize > this->buffer_.size())
-			{
-				throw std::runtime_error("Out of bounds read from byte buffer");
-			}
+        template<typename T>
+        std::vector<T> read_vector() {
+            std::vector<T> result{};
+            const auto size = this->read<uint32_t>();
+            const auto totalSize = size * sizeof(T);
 
-			result.resize(size);
-			this->read(result.data(), totalSize);
+            if (this->offset_ + totalSize > this->buffer_.size()) {
+                throw std::runtime_error("Out of bounds read from byte buffer");
+            }
 
-			return result;
-		}
+            result.resize(size);
+            this->read(result.data(), totalSize);
 
-		std::string read_string()
-		{
-			std::string result{};
-			const auto size = this->read<uint32_t>();
+            return result;
+        }
 
-			if (this->offset_ + size > this->buffer_.size())
-			{
-				throw std::runtime_error("Out of bounds read from byte buffer");
-			}
+        std::string read_string() {
+            std::string result{};
+            const auto size = this->read<uint32_t>();
 
-			result.resize(size);
-			this->read(result.data(), size);
+            if (this->offset_ + size > this->buffer_.size()) {
+                throw std::runtime_error("Out of bounds read from byte buffer");
+            }
 
-			return result;
-		}
+            result.resize(size);
+            this->read(result.data(), size);
 
-		size_t get_remaining_size() const
-		{
-			return this->buffer_.size() - offset_;
-		}
+            return result;
+        }
 
-		std::string get_remaining_data()
-		{
-			return this->read_data(this->get_remaining_size());
-		}
+        size_t get_remaining_size() const {
+            return this->buffer_.size() - offset_;
+        }
 
-		std::string read_data(size_t length);
+        std::string get_remaining_data() {
+            return this->read_data(this->get_remaining_size());
+        }
 
-	private:
-		bool writing_{false};
-		size_t offset_{0};
-		std::string buffer_{};
-	};
+        std::string read_data(size_t length);
+
+    private:
+        bool writing_{false};
+        size_t offset_{0};
+        std::string buffer_{};
+    };
 }

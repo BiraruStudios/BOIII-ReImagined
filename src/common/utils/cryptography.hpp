@@ -3,119 +3,126 @@
 #include <string>
 #include <tomcrypt.h>
 
-namespace utils::cryptography
-{
-	namespace ecc
-	{
-		class key final
-		{
-		public:
-			key();
-			~key();
+namespace utils::cryptography {
+    namespace ecc {
+        class key final {
+        public:
+            key();
 
-			key(key&& obj) noexcept;
-			key(const key& obj);
-			key& operator=(key&& obj) noexcept;
-			key& operator=(const key& obj);
+            ~key();
 
-			bool is_valid() const;
+            key(key &&obj) noexcept;
 
-			ecc_key& get();
-			const ecc_key& get() const;
+            key(const key &obj);
 
-			std::string get_public_key() const;
+            key &operator=(key &&obj) noexcept;
 
-			void set(const std::string& pub_key_buffer);
+            key &operator=(const key &obj);
 
-			void deserialize(const std::string& key);
+            bool is_valid() const;
 
-			std::string serialize(int type = PK_PRIVATE) const;
+            ecc_key &get();
 
-			std::string get_openssl() const;
-			void set_openssl(const std::string& key);
+            const ecc_key &get() const;
 
-			void free();
+            std::string get_public_key() const;
 
-			bool operator==(key& key) const;
+            void set(const std::string &pub_key_buffer);
 
-			uint64_t get_hash() const;
+            void deserialize(const std::string &key);
 
-		private:
-			ecc_key key_storage_{};
-		};
+            std::string serialize(int type = PK_PRIVATE) const;
 
-		key generate_key(int bits);
-		key generate_key(int bits, const std::string& entropy);
-		std::string sign_message(const key& key, const std::string& message);
-		bool verify_message(const key& key, const std::string& message, const std::string& signature);
+            std::string get_openssl() const;
 
-		bool encrypt(const key& key, std::string& data);
-		bool decrypt(const key& key, std::string& data);
-	}
+            void set_openssl(const std::string &key);
 
-	namespace rsa
-	{
-		std::string encrypt(const std::string& data, const std::string& hash, const std::string& key);
-	}
+            void free();
 
-	namespace des3
-	{
-		std::string encrypt(const std::string& data, const std::string& iv, const std::string& key);
-		std::string decrypt(const std::string& data, const std::string& iv, const std::string& key);
-	}
+            bool operator==(key &key) const;
 
-	namespace tiger
-	{
-		std::string compute(const std::string& data, bool hex = false);
-		std::string compute(const uint8_t* data, size_t length, bool hex = false);
-	}
+            uint64_t get_hash() const;
 
-	namespace aes
-	{
-		std::string encrypt(const std::string& data, const std::string& iv, const std::string& key);
-		std::string decrypt(const std::string& data, const std::string& iv, const std::string& key);
-	}
+        private:
+            ecc_key key_storage_{};
+        };
 
-	namespace hmac_sha1
-	{
-		std::string compute(const std::string& data, const std::string& key);
-	}
+        key generate_key(int bits);
 
-	namespace sha1
-	{
-		std::string compute(const std::string& data, bool hex = false);
-		std::string compute(const uint8_t* data, size_t length, bool hex = false);
-	}
+        key generate_key(int bits, const std::string &entropy);
 
-	namespace sha256
-	{
-		std::string compute(const std::string& data, bool hex = false);
-		std::string compute(const uint8_t* data, size_t length, bool hex = false);
-	}
+        std::string sign_message(const key &key, const std::string &message);
 
-	namespace sha512
-	{
-		std::string compute(const std::string& data, bool hex = false);
-		std::string compute(const uint8_t* data, size_t length, bool hex = false);
-	}
+        bool verify_message(const key &key, const std::string &message, const std::string &signature);
 
-	namespace base64
-	{
-		std::string encode(const uint8_t* data, size_t len);
-		std::string encode(const std::string& data);
-		std::string decode(const std::string& data);
-	}
+        bool encrypt(const key &key, std::string &data);
 
-	namespace jenkins_one_at_a_time
-	{
-		unsigned int compute(const std::string& data);
-		unsigned int compute(const char* key, size_t len);
-	};
+        bool decrypt(const key &key, std::string &data);
+    }
 
-	namespace random
-	{
-		uint32_t get_integer();
-		std::string get_challenge();
-		void get_data(void* data, size_t size);
-	}
+    namespace rsa {
+        std::string encrypt(const std::string &data, const std::string &hash, const std::string &key);
+    }
+
+    namespace des3 {
+        std::string encrypt(const std::string &data, const std::string &iv, const std::string &key);
+
+        std::string decrypt(const std::string &data, const std::string &iv, const std::string &key);
+    }
+
+    namespace tiger {
+        std::string compute(const std::string &data, bool hex = false);
+
+        std::string compute(const uint8_t *data, size_t length, bool hex = false);
+    }
+
+    namespace aes {
+        std::string encrypt(const std::string &data, const std::string &iv, const std::string &key);
+
+        std::string decrypt(const std::string &data, const std::string &iv, const std::string &key);
+    }
+
+    namespace hmac_sha1 {
+        std::string compute(const std::string &data, const std::string &key);
+    }
+
+    namespace sha1 {
+        std::string compute(const std::string &data, bool hex = false);
+
+        std::string compute(const uint8_t *data, size_t length, bool hex = false);
+    }
+
+    namespace sha256 {
+        std::string compute(const std::string &data, bool hex = false);
+
+        std::string compute(const uint8_t *data, size_t length, bool hex = false);
+    }
+
+    namespace sha512 {
+        std::string compute(const std::string &data, bool hex = false);
+
+        std::string compute(const uint8_t *data, size_t length, bool hex = false);
+    }
+
+    namespace base64 {
+        std::string encode(const uint8_t *data, size_t len);
+
+        std::string encode(const std::string &data);
+
+        std::string decode(const std::string &data);
+    }
+
+    namespace jenkins_one_at_a_time {
+        unsigned int compute(const std::string &data);
+
+        unsigned int compute(const char *key, size_t len);
+    };
+
+    namespace random {
+        uint32_t get_integer();
+
+        std::string get_challenge();
+
+        void get_data(void *data, size_t size);
+    }
 }

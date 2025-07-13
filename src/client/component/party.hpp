@@ -3,14 +3,14 @@
 
 #include "game/game.hpp"
 
-namespace party
-{
-	using query_callback_func = void(bool success, const game::netadr_t& host, const ::utils::info_string& info, uint32_t ping);
-	using query_callback = std::function<query_callback_func>;
+namespace party {
+    using query_callback_func = void(bool success, const game::netadr_t &host, const ::utils::info_string &info,
+                                     uint32_t ping);
+    using query_callback = std::function<query_callback_func>;
 
-	void query_server(const game::netadr_t& host, query_callback callback);
+    void query_server(const game::netadr_t &host, query_callback callback);
 
-	game::netadr_t get_connected_server();
+    game::netadr_t get_connected_server();
 
-	bool is_host(const game::netadr_t& addr);
+    bool is_host(const game::netadr_t &addr);
 }

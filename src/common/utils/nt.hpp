@@ -16,242 +16,233 @@
 #include <functional>
 #include <filesystem>
 
-namespace utils::nt
-{
-	class library final
-	{
-	public:
-		static library load(const char* name);
-		static library load(const std::string& name);
-		static library load(const std::filesystem::path& path);
-		static library get_by_address(const void* address);
+namespace utils::nt {
+    class library final {
+    public:
+        static library load(const char *name);
 
-		library();
-		explicit library(const std::string& name);
-		explicit library(HMODULE handle);
+        static library load(const std::string &name);
 
-		library(const library& a) : module_(a.module_)
-		{
-		}
+        static library load(const std::filesystem::path &path);
 
-		bool operator!=(const library& obj) const { return !(*this == obj); };
-		bool operator==(const library& obj) const;
+        static library get_by_address(const void *address);
 
-		operator bool() const;
-		operator HMODULE() const;
+        library();
 
-		void unprotect() const;
-		[[nodiscard]] void* get_entry_point() const;
-		[[nodiscard]] size_t get_relative_entry_point() const;
+        explicit library(const std::string &name);
 
-		[[nodiscard]] bool is_valid() const;
-		[[nodiscard]] std::string get_name() const;
-		[[nodiscard]] std::filesystem::path get_path() const;
-		[[nodiscard]] std::filesystem::path get_folder() const;
-		[[nodiscard]] std::uint8_t* get_ptr() const;
-		void free();
+        explicit library(HMODULE handle);
 
-		[[nodiscard]] HMODULE get_handle() const;
+        library(const library &a) : module_(a.module_) {
+        }
 
-		template <typename T>
-		[[nodiscard]] T get_proc(const char* process) const
-		{
-			if (!this->is_valid()) T{};
-			return reinterpret_cast<T>(GetProcAddress(this->module_, process));
-		}
+        bool operator!=(const library &obj) const { return !(*this == obj); };
 
-		template <typename T>
-		[[nodiscard]] T get_proc(const std::string& process) const
-		{
-			return get_proc<T>(process.data());
-		}
+        bool operator==(const library &obj) const;
 
-		template <typename T>
-		[[nodiscard]] std::function<T> get(const std::string& process) const
-		{
-			if (!this->is_valid()) return std::function<T>();
-			return static_cast<T*>(this->get_proc<void*>(process));
-		}
+        operator bool() const;
 
-		template <typename T, typename... Args>
-		T invoke(const std::string& process, Args ... args) const
-		{
-			auto method = this->get<T(__cdecl)(Args ...)>(process);
-			if (method) return method(args...);
-			return T();
-		}
+        operator HMODULE() const;
 
-		template <typename T, typename... Args>
-		T invoke_pascal(const std::string& process, Args ... args) const
-		{
-			auto method = this->get<T(__stdcall)(Args ...)>(process);
-			if (method) return method(args...);
-			return T();
-		}
+        void unprotect() const;
 
-		template <typename T, typename... Args>
-		T invoke_this(const std::string& process, void* this_ptr, Args ... args) const
-		{
-			auto method = this->get<T(__thiscall)(void*, Args ...)>(this_ptr, process);
-			if (method) return method(args...);
-			return T();
-		}
+        [[nodiscard]] void *get_entry_point() const;
 
-		[[nodiscard]] std::vector<PIMAGE_SECTION_HEADER> get_section_headers() const;
+        [[nodiscard]] size_t get_relative_entry_point() const;
 
-		[[nodiscard]] PIMAGE_NT_HEADERS get_nt_headers() const;
-		[[nodiscard]] PIMAGE_DOS_HEADER get_dos_header() const;
-		[[nodiscard]] PIMAGE_OPTIONAL_HEADER get_optional_header() const;
+        [[nodiscard]] bool is_valid() const;
 
-		[[nodiscard]] void** get_iat_entry(const std::string& module_name, std::string proc_name) const;
-		[[nodiscard]] void** get_iat_entry(const std::string& module_name, const char* proc_name) const;
+        [[nodiscard]] std::string get_name() const;
 
-	private:
-		HMODULE module_;
-	};
+        [[nodiscard]] std::filesystem::path get_path() const;
 
-	template <HANDLE InvalidHandle = nullptr>
-	class handle
-	{
-	public:
-		handle() = default;
+        [[nodiscard]] std::filesystem::path get_folder() const;
 
-		handle(const HANDLE h)
-			: handle_(h)
-		{
-		}
+        [[nodiscard]] std::uint8_t *get_ptr() const;
 
-		~handle()
-		{
-			if (*this)
-			{
-				CloseHandle(this->handle_);
-				this->handle_ = InvalidHandle;
-			}
-		}
+        void free();
 
-		handle(const handle&) = delete;
-		handle& operator=(const handle&) = delete;
+        [[nodiscard]] HMODULE get_handle() const;
 
-		handle(handle&& obj) noexcept
-			: handle()
-		{
-			this->operator=(std::move(obj));
-		}
+        template<typename T>
+        [[nodiscard]] T get_proc(const char *process) const {
+            if (!this->is_valid()) T{};
+            return reinterpret_cast<T>(GetProcAddress(this->module_, process));
+        }
 
-		handle& operator=(handle&& obj) noexcept
-		{
-			if (this != &obj)
-			{
-				this->~handle();
-				this->handle_ = obj.handle_;
-				obj.handle_ = InvalidHandle;
-			}
+        template<typename T>
+        [[nodiscard]] T get_proc(const std::string &process) const {
+            return get_proc<T>(process.data());
+        }
 
-			return *this;
-		}
+        template<typename T>
+        [[nodiscard]] std::function<T> get(const std::string &process) const {
+            if (!this->is_valid()) return std::function<T>();
+            return static_cast<T *>(this->get_proc<void *>(process));
+        }
 
-		handle& operator=(HANDLE h) noexcept
-		{
-			this->~handle();
-			this->handle_ = h;
+        template<typename T, typename... Args>
+        T invoke(const std::string &process, Args... args) const {
+            auto method = this->get<T(__cdecl)(Args...)>(process);
+            if (method) return method(args...);
+            return T();
+        }
 
-			return *this;
-		}
+        template<typename T, typename... Args>
+        T invoke_pascal(const std::string &process, Args... args) const {
+            auto method = this->get<T(__stdcall)(Args...)>(process);
+            if (method) return method(args...);
+            return T();
+        }
 
-		operator bool() const
-		{
-			return this->handle_ != InvalidHandle;
-		}
+        template<typename T, typename... Args>
+        T invoke_this(const std::string &process, void *this_ptr, Args... args) const {
+            auto method = this->get<T(__thiscall)(void *, Args...)>(this_ptr, process);
+            if (method) return method(args...);
+            return T();
+        }
 
-		operator HANDLE() const
-		{
-			return this->handle_;
-		}
+        [[nodiscard]] std::vector<PIMAGE_SECTION_HEADER> get_section_headers() const;
 
-	private:
-		HANDLE handle_{InvalidHandle};
-	};
+        [[nodiscard]] PIMAGE_NT_HEADERS get_nt_headers() const;
+
+        [[nodiscard]] PIMAGE_DOS_HEADER get_dos_header() const;
+
+        [[nodiscard]] PIMAGE_OPTIONAL_HEADER get_optional_header() const;
+
+        [[nodiscard]] void **get_iat_entry(const std::string &module_name, std::string proc_name) const;
+
+        [[nodiscard]] void **get_iat_entry(const std::string &module_name, const char *proc_name) const;
+
+    private:
+        HMODULE module_;
+    };
+
+    template<HANDLE InvalidHandle = nullptr>
+    class handle {
+    public:
+        handle() = default;
+
+        handle(const HANDLE h)
+            : handle_(h) {
+        }
+
+        ~handle() {
+            if (*this) {
+                CloseHandle(this->handle_);
+                this->handle_ = InvalidHandle;
+            }
+        }
+
+        handle(const handle &) = delete;
+
+        handle &operator=(const handle &) = delete;
+
+        handle(handle &&obj) noexcept
+            : handle() {
+            this->operator=(std::move(obj));
+        }
+
+        handle &operator=(handle &&obj) noexcept {
+            if (this != &obj) {
+                this->~handle();
+                this->handle_ = obj.handle_;
+                obj.handle_ = InvalidHandle;
+            }
+
+            return *this;
+        }
+
+        handle &operator=(HANDLE h) noexcept {
+            this->~handle();
+            this->handle_ = h;
+
+            return *this;
+        }
+
+        operator bool() const {
+            return this->handle_ != InvalidHandle;
+        }
+
+        operator HANDLE() const {
+            return this->handle_;
+        }
+
+    private:
+        HANDLE handle_{InvalidHandle};
+    };
 
 
-	class registry_key
-	{
-	public:
-		registry_key() = default;
+    class registry_key {
+    public:
+        registry_key() = default;
 
-		registry_key(HKEY key)
-			: key_(key)
-		{
-		}
+        registry_key(HKEY key)
+            : key_(key) {
+        }
 
-		registry_key(const registry_key&) = delete;
-		registry_key& operator=(const registry_key&) = delete;
+        registry_key(const registry_key &) = delete;
 
-		registry_key(registry_key&& obj) noexcept
-			: registry_key()
-		{
-			this->operator=(std::move(obj));
-		}
+        registry_key &operator=(const registry_key &) = delete;
 
-		registry_key& operator=(registry_key&& obj) noexcept
-		{
-			if (this != obj.GetRef())
-			{
-				this->~registry_key();
-				this->key_ = obj.key_;
-				obj.key_ = nullptr;
-			}
+        registry_key(registry_key &&obj) noexcept
+            : registry_key() {
+            this->operator=(std::move(obj));
+        }
 
-			return *this;
-		}
+        registry_key &operator=(registry_key &&obj) noexcept {
+            if (this != obj.GetRef()) {
+                this->~registry_key();
+                this->key_ = obj.key_;
+                obj.key_ = nullptr;
+            }
 
-		~registry_key()
-		{
-			if (this->key_)
-			{
-				RegCloseKey(this->key_);
-			}
-		}
+            return *this;
+        }
 
-		operator HKEY() const
-		{
-			return this->key_;
-		}
+        ~registry_key() {
+            if (this->key_) {
+                RegCloseKey(this->key_);
+            }
+        }
 
-		operator bool() const
-		{
-			return this->key_ != nullptr;
-		}
+        operator HKEY() const {
+            return this->key_;
+        }
 
-		HKEY* operator&()
-		{
-			return &this->key_;
-		}
+        operator bool() const {
+            return this->key_ != nullptr;
+        }
 
-		registry_key* GetRef()
-		{
-			return this;
-		}
+        HKEY *operator&() {
+            return &this->key_;
+        }
 
-		const registry_key* GetRef() const
-		{
-			return this;
-		}
+        registry_key *GetRef() {
+            return this;
+        }
 
-	private:
-		HKEY key_{};
-	};
+        const registry_key *GetRef() const {
+            return this;
+        }
 
-	registry_key open_or_create_registry_key(const HKEY base, const std::string& input);
+    private:
+        HKEY key_{};
+    };
 
-	bool is_wine();
-	bool is_shutdown_in_progress();
+    registry_key open_or_create_registry_key(const HKEY base, const std::string &input);
 
-	__declspec(noreturn) void raise_hard_exception();
-	std::string load_resource(int id);
+    bool is_wine();
 
-	void relaunch_self();
-	__declspec(noreturn) void terminate(uint32_t code = 0);
+    bool is_shutdown_in_progress();
 
-	std::string get_user_name();
+    __declspec(noreturn) void raise_hard_exception();
+
+    std::string load_resource(int id);
+
+    void relaunch_self();
+
+    __declspec(noreturn) void terminate(uint32_t code = 0);
+
+    std::string get_user_name();
 }

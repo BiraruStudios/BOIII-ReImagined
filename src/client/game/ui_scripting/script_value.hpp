@@ -3,250 +3,233 @@
 
 #include <utils/string.hpp>
 
-namespace ui_scripting
-{
-	class lightuserdata;
-	class userdata_value;
-	class userdata;
-	class table_value;
-	class table;
-	class function;
-	class script_value;
+namespace ui_scripting {
+    class lightuserdata;
+    class userdata_value;
+    class userdata;
+    class table_value;
+    class table;
+    class function;
+    class script_value;
 
-	template <typename T>
-	std::string get_typename()
-	{
-		auto& info = typeid(T);
+    template<typename T>
+    std::string get_typename() {
+        auto &info = typeid(T);
 
-		if (info == typeid(std::string) ||
-			info == typeid(const char*))
-		{
-			return "string";
-		}
+        if (info == typeid(std::string) ||
+            info == typeid(const char *)) {
+            return "string";
+        }
 
-		if (info == typeid(lightuserdata))
-		{
-			return "lightuserdata";
-		}
+        if (info == typeid(lightuserdata)) {
+            return "lightuserdata";
+        }
 
-		if (info == typeid(userdata))
-		{
-			return "userdata";
-		}
+        if (info == typeid(userdata)) {
+            return "userdata";
+        }
 
-		if (info == typeid(table))
-		{
-			return "table";
-		}
+        if (info == typeid(table)) {
+            return "table";
+        }
 
-		if (info == typeid(function))
-		{
-			return "function";
-		}
+        if (info == typeid(function)) {
+            return "function";
+        }
 
-		if (info == typeid(int) ||
-			info == typeid(float) ||
-			info == typeid(unsigned int))
-		{
-			return "number";
-		}
+        if (info == typeid(int) ||
+            info == typeid(float) ||
+            info == typeid(unsigned int)) {
+            return "number";
+        }
 
-		if (info == typeid(bool))
-		{
-			return "boolean";
-		}
+        if (info == typeid(bool)) {
+            return "boolean";
+        }
 
-		return info.name();
-	}
+        return info.name();
+    }
 
-	class hks_object
-	{
-	public:
-		hks_object() = default;
-		hks_object(const game::hks::HksObject& value);
-		hks_object(const hks_object& other) noexcept;
-		hks_object(hks_object&& other) noexcept;
+    class hks_object {
+    public:
+        hks_object() = default;
 
-		hks_object& operator=(const hks_object& other) noexcept;
-		hks_object& operator=(hks_object&& other) noexcept;
+        hks_object(const game::hks::HksObject &value);
 
-		~hks_object();
+        hks_object(const hks_object &other) noexcept;
 
-		const game::hks::HksObject& get() const;
+        hks_object(hks_object &&other) noexcept;
 
-	private:
-		void assign(const game::hks::HksObject& value);
-		void release();
+        hks_object &operator=(const hks_object &other) noexcept;
 
-		game::hks::HksObject value_{game::hks::TNONE, {}};
-		int ref_{};
-	};
+        hks_object &operator=(hks_object &&other) noexcept;
 
-	using arguments = std::vector<script_value>;
-	using event_arguments = std::unordered_map<std::string, script_value>;
+        ~hks_object();
 
-	class script_value
-	{
-	public:
-		script_value() = default;
-		script_value(const game::hks::HksObject& value);
+        const game::hks::HksObject &get() const;
 
-		script_value(int value);
-		script_value(unsigned int value);
-		script_value(bool value);
+    private:
+        void assign(const game::hks::HksObject &value);
 
-		script_value(float value);
-		script_value(double value);
+        void release();
 
-		script_value(const char* value, std::size_t len);
-		script_value(const char* value);
-		script_value(const std::string& value);
+        game::hks::HksObject value_{game::hks::TNONE, {}};
+        int ref_{};
+    };
 
-		script_value(const lightuserdata& value);
-		script_value(const userdata& value);
-		script_value(const table& value);
-		script_value(const function& value);
+    using arguments = std::vector<script_value>;
+    using event_arguments = std::unordered_map<std::string, script_value>;
 
-		template <template<class, class> class C, class T, typename TableType = table>
-		script_value(const C<T, std::allocator<T>>& container)
-		{
-			TableType table_{};
-			int index = 1;
+    class script_value {
+    public:
+        script_value() = default;
 
-			for (const auto& value : container)
-			{
-				table_.set(index++, value);
-			}
+        script_value(const game::hks::HksObject &value);
 
-			game::hks::HksObject obj{};
-			obj.t = game::hks::TTABLE;
-			obj.v.ptr = table_.ptr;
+        script_value(int value);
 
-			this->value_ = obj;
-		}
+        script_value(unsigned int value);
 
-		template <typename F>
-		script_value(F f)
-			: script_value(function(f))
-		{
-		}
+        script_value(bool value);
 
-		bool operator==(const script_value& other) const;
+        script_value(float value);
 
-		[[maybe_unused]] arguments operator()() const;
-		[[maybe_unused]] arguments operator()(const arguments& arguments) const;
+        script_value(double value);
 
-		template <class ...T>
-		[[maybe_unused]] arguments operator()(T ... arguments) const
-		{
-			return this->as<function>().call({arguments...});
-		}
+        script_value(const char *value, std::size_t len);
 
-		template <size_t Size>
-		table_value operator[](const char (&key)[Size]) const
-		{
-			return {this->as<table>(), key};
-		}
+        script_value(const char *value);
 
-		template <typename T = script_value>
-		table_value operator[](const T& key) const
-		{
-			return {this->as<table>(), key};
-		}
+        script_value(const std::string &value);
 
-		template <typename T>
-		[[nodiscard]] bool is() const;
+        script_value(const lightuserdata &value);
 
-		template <typename T>
-		T as() const
-		{
-			if (!this->is<T>())
-			{
-				const auto hks_typename = game::hks::s_compilerTypeName[this->get_raw().t + 2];
-				const auto typename_ = get_typename<T>();
+        script_value(const userdata &value);
 
-				throw std::runtime_error(utils::string::va("%s expected, got %s", typename_.data(), hks_typename));
-			}
+        script_value(const table &value);
 
-			return get<T>();
-		}
+        script_value(const function &value);
 
-		template <typename T>
-		operator T() const
-		{
-			return this->as<T>();
-		}
+        template<template<class, class> class C, class T, typename TableType = table>
+        script_value(const C<T, std::allocator<T> > &container) {
+            TableType table_{};
+            int index = 1;
 
-		[[nodiscard]] const game::hks::HksObject& get_raw() const;
+            for (const auto &value: container) {
+                table_.set(index++, value);
+            }
 
-		hks_object value_{};
+            game::hks::HksObject obj{};
+            obj.t = game::hks::TTABLE;
+            obj.v.ptr = table_.ptr;
 
-	private:
-		template <typename T>
-		T get() const;
-	};
+            this->value_ = obj;
+        }
 
-	class variadic_args : public arguments
-	{
-	};
+        template<typename F>
+        script_value(F f)
+            : script_value(function(f)) {
+        }
 
-	class function_argument
-	{
-	public:
-		function_argument(const arguments& args, const script_value& value, const int index);
+        bool operator==(const script_value &other) const;
 
-		template <typename T>
-		T as() const
-		{
-			try
-			{
-				return this->value_.as<T>();
-			}
-			catch (const std::exception& e)
-			{
-				throw std::runtime_error(utils::string::va("bad argument #%d (%s)", this->index_ + 1, e.what()));
-			}
-		}
+        [[maybe_unused]] arguments operator()() const;
 
-		template <>
-		variadic_args as() const
-		{
-			variadic_args args{};
-			for (auto i = this->index_; i < this->values_.size(); i++)
-			{
-				args.push_back(this->values_[i]);
-			}
-			return args;
-		}
+        [[maybe_unused]] arguments operator()(const arguments &arguments) const;
 
-		template <typename T>
-		operator T() const
-		{
-			return this->as<T>();
-		}
+        template<class... T>
+        [[maybe_unused]] arguments operator()(T... arguments) const {
+            return this->as<function>().call({arguments...});
+        }
 
-	private:
-		arguments values_{};
-		script_value value_{};
-		int index_{};
-	};
+        template<size_t Size>
+        table_value operator[](const char (&key)[Size]) const {
+            return {this->as<table>(), key};
+        }
 
-	class function_arguments
-	{
-	public:
-		function_arguments(const arguments& values);
+        template<typename T = script_value>
+        table_value operator[](const T &key) const {
+            return {this->as<table>(), key};
+        }
 
-		function_argument operator[](const int index) const
-		{
-			if (static_cast<std::size_t>(index) >= values_.size())
-			{
-				return {values_, {}, index};
-			}
+        template<typename T>
+        [[nodiscard]] bool is() const;
 
-			return {values_, values_[index], index};
-		}
+        template<typename T>
+        T as() const {
+            if (!this->is<T>()) {
+                const auto hks_typename = game::hks::s_compilerTypeName[this->get_raw().t + 2];
+                const auto typename_ = get_typename<T>();
 
-	private:
-		arguments values_{};
-	};
+                throw std::runtime_error(utils::string::va("%s expected, got %s", typename_.data(), hks_typename));
+            }
+
+            return get<T>();
+        }
+
+        template<typename T>
+        operator T() const {
+            return this->as<T>();
+        }
+
+        [[nodiscard]] const game::hks::HksObject &get_raw() const;
+
+        hks_object value_{};
+
+    private:
+        template<typename T>
+        T get() const;
+    };
+
+    class variadic_args : public arguments {
+    };
+
+    class function_argument {
+    public:
+        function_argument(const arguments &args, const script_value &value, const int index);
+
+        template<typename T>
+        T as() const {
+            try {
+                return this->value_.as<T>();
+            } catch (const std::exception &e) {
+                throw std::runtime_error(utils::string::va("bad argument #%d (%s)", this->index_ + 1, e.what()));
+            }
+        }
+
+        template<>
+        variadic_args as() const {
+            variadic_args args{};
+            for (auto i = this->index_; i < this->values_.size(); i++) {
+                args.push_back(this->values_[i]);
+            }
+            return args;
+        }
+
+        template<typename T>
+        operator T() const {
+            return this->as<T>();
+        }
+
+    private:
+        arguments values_{};
+        script_value value_{};
+        int index_{};
+    };
+
+    class function_arguments {
+    public:
+        function_arguments(const arguments &values);
+
+        function_argument operator[](const int index) const {
+            if (static_cast<std::size_t>(index) >= values_.size()) {
+                return {values_, {}, index};
+            }
+
+            return {values_, values_[index], index};
+        }
+
+    private:
+        arguments values_{};
+    };
 }

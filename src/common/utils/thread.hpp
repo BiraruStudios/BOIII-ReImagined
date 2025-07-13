@@ -2,46 +2,45 @@
 #include <thread>
 #include "nt.hpp"
 
-namespace utils::thread
-{
-	bool set_name(HANDLE t, const std::string& name);
-	bool set_name(DWORD id, const std::string& name);
-	bool set_name(std::thread& t, const std::string& name);
-	bool set_name(const std::string& name);
+namespace utils::thread {
+    bool set_name(HANDLE t, const std::string &name);
 
-	template <typename ...Args>
-	std::thread create_named_thread(const std::string& name, Args&&... args)
-	{
-		auto t = std::thread(std::forward<Args>(args)...);
-		set_name(t, name);
-		return t;
-	}
+    bool set_name(DWORD id, const std::string &name);
 
-	class handle
-	{
-	public:
-		handle(const DWORD thread_id, const DWORD access = THREAD_ALL_ACCESS)
-			: handle_(OpenThread(access, FALSE, thread_id))
-		{
-		}
+    bool set_name(std::thread &t, const std::string &name);
 
-		operator bool() const
-		{
-			return this->handle_;
-		}
+    bool set_name(const std::string &name);
 
-		operator HANDLE() const
-		{
-			return this->handle_;
-		}
+    template<typename... Args>
+    std::thread create_named_thread(const std::string &name, Args &&... args) {
+        auto t = std::thread(std::forward<Args>(args)...);
+        set_name(t, name);
+        return t;
+    }
 
-	private:
-		nt::handle<> handle_{};
-	};
+    class handle {
+    public:
+        handle(const DWORD thread_id, const DWORD access = THREAD_ALL_ACCESS)
+            : handle_(OpenThread(access, FALSE, thread_id)) {
+        }
 
-	std::vector<DWORD> get_thread_ids();
-	void for_each_thread(const std::function<void(HANDLE)>& callback, DWORD access = THREAD_ALL_ACCESS);
+        operator bool() const {
+            return this->handle_;
+        }
 
-	void suspend_other_threads();
-	void resume_other_threads();
+        operator HANDLE() const {
+            return this->handle_;
+        }
+
+    private:
+        nt::handle<> handle_{};
+    };
+
+    std::vector<DWORD> get_thread_ids();
+
+    void for_each_thread(const std::function<void(HANDLE)> &callback, DWORD access = THREAD_ALL_ACCESS);
+
+    void suspend_other_threads();
+
+    void resume_other_threads();
 }

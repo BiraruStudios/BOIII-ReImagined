@@ -4,158 +4,139 @@
 #include "byte_buffer.hpp"
 #include "data_types.hpp"
 
-namespace demonware
-{
-	class reply
-	{
-	public:
-		reply() = default;
+namespace demonware {
+    class reply {
+    public:
+        reply() = default;
 
-		reply(reply&&) = delete;
-		reply(const reply&) = delete;
-		reply& operator=(reply&&) = delete;
-		reply& operator=(const reply&) = delete;
+        reply(reply &&) = delete;
 
-		virtual ~reply() = default;
-		virtual std::string data() = 0;
-	};
+        reply(const reply &) = delete;
 
-	class raw_reply : public reply
-	{
-	protected:
-		std::string buffer_;
+        reply &operator=(reply &&) = delete;
 
-	public:
-		raw_reply() = default;
+        reply &operator=(const reply &) = delete;
 
-		explicit raw_reply(std::string data) : buffer_(std::move(data))
-		{
-		}
+        virtual ~reply() = default;
 
-		std::string data() override
-		{
-			return this->buffer_;
-		}
-	};
+        virtual std::string data() = 0;
+    };
 
-	class typed_reply : public raw_reply
-	{
-	public:
-		typed_reply(const uint8_t _type) : type_(_type)
-		{
-		}
+    class raw_reply : public reply {
+    protected:
+        std::string buffer_;
 
-	protected:
-		uint8_t type() const { return this->type_; }
+    public:
+        raw_reply() = default;
 
-	private:
-		uint8_t type_;
-	};
+        explicit raw_reply(std::string data) : buffer_(std::move(data)) {
+        }
 
-	class encrypted_reply final : public typed_reply
-	{
-	public:
-		encrypted_reply(const uint8_t type, bit_buffer* bbuffer) : typed_reply(type)
-		{
-			this->buffer_.append(bbuffer->get_buffer());
-		}
+        std::string data() override {
+            return this->buffer_;
+        }
+    };
 
-		encrypted_reply(const uint8_t type, byte_buffer* bbuffer) : typed_reply(type)
-		{
-			this->buffer_.append(bbuffer->get_buffer());
-		}
+    class typed_reply : public raw_reply {
+    public:
+        typed_reply(const uint8_t _type) : type_(_type) {
+        }
 
-		std::string data() override;
-	};
+    protected:
+        uint8_t type() const { return this->type_; }
 
-	class unencrypted_reply final : public typed_reply
-	{
-	public:
-		unencrypted_reply(const uint8_t _type, bit_buffer* bbuffer) : typed_reply(_type)
-		{
-			this->buffer_.append(bbuffer->get_buffer());
-		}
+    private:
+        uint8_t type_;
+    };
 
-		unencrypted_reply(const uint8_t _type, byte_buffer* bbuffer) : typed_reply(_type)
-		{
-			this->buffer_.append(bbuffer->get_buffer());
-		}
+    class encrypted_reply final : public typed_reply {
+    public:
+        encrypted_reply(const uint8_t type, bit_buffer *bbuffer) : typed_reply(type) {
+            this->buffer_.append(bbuffer->get_buffer());
+        }
 
-		std::string data() override;
-	};
+        encrypted_reply(const uint8_t type, byte_buffer *bbuffer) : typed_reply(type) {
+            this->buffer_.append(bbuffer->get_buffer());
+        }
 
-	class service_server;
+        std::string data() override;
+    };
 
-	class remote_reply final
-	{
-	public:
-		remote_reply(service_server* server, uint8_t _type) : type_(_type), server_(server)
-		{
-		}
+    class unencrypted_reply final : public typed_reply {
+    public:
+        unencrypted_reply(const uint8_t _type, bit_buffer *bbuffer) : typed_reply(_type) {
+            this->buffer_.append(bbuffer->get_buffer());
+        }
 
-		void send(bit_buffer* buffer, bool encrypted);
-		void send(byte_buffer* buffer, bool encrypted);
+        unencrypted_reply(const uint8_t _type, byte_buffer *bbuffer) : typed_reply(_type) {
+            this->buffer_.append(bbuffer->get_buffer());
+        }
 
-		uint8_t type() const { return this->type_; }
+        std::string data() override;
+    };
 
-	private:
-		uint8_t type_;
-		service_server* server_;
-	};
+    class service_server;
 
-	class service_reply final
-	{
-	public:
-		service_reply(service_server* _server, const uint8_t _type, const uint32_t _error)
-			: type_(_type), error_(_error), reply_(_server, 1)
-		{
-		}
+    class remote_reply final {
+    public:
+        remote_reply(service_server *server, uint8_t _type) : type_(_type), server_(server) {
+        }
 
-		uint64_t send()
-		{
-			static uint64_t id = 0x0000000000000000;
-			const auto transaction_id = ++id;
+        void send(bit_buffer *buffer, bool encrypted);
 
-			byte_buffer buffer;
-			buffer.write_uint64(transaction_id);
-			buffer.write_uint32(this->error_);
-			buffer.write_ubyte(this->type_);
+        void send(byte_buffer *buffer, bool encrypted);
 
-			if (!this->error_)
-			{
-				buffer.write_uint32(static_cast<uint32_t>(this->objects_.size()));
-				if (!this->objects_.empty())
-				{
-					buffer.write_uint32(static_cast<uint32_t>(this->objects_.size()));
+        uint8_t type() const { return this->type_; }
 
-					for (auto& object : this->objects_)
-					{
-						object->serialize(&buffer);
-					}
+    private:
+        uint8_t type_;
+        service_server *server_;
+    };
 
-					this->objects_.clear();
-				}
-			}
-			else
-			{
-				buffer.write_uint64(transaction_id);
-			}
+    class service_reply final {
+    public:
+        service_reply(service_server *_server, const uint8_t _type, const uint32_t _error)
+            : type_(_type), error_(_error), reply_(_server, 1) {
+        }
 
-			this->reply_.send(&buffer, true);
-			return transaction_id;
-		}
+        uint64_t send() {
+            static uint64_t id = 0x0000000000000000;
+            const auto transaction_id = ++id;
 
-		template<typename T>
-		void add(std::unique_ptr<T>& object)
-		{
-			static_assert(std::is_base_of_v<bdTaskResult, T>);
-			this->objects_.emplace_back(std::move(object));
-		}
+            byte_buffer buffer;
+            buffer.write_uint64(transaction_id);
+            buffer.write_uint32(this->error_);
+            buffer.write_ubyte(this->type_);
 
-	private:
-		uint8_t type_;
-		uint32_t error_;
-		remote_reply reply_;
-		std::vector<std::unique_ptr<bdTaskResult>> objects_;
-	};
+            if (!this->error_) {
+                buffer.write_uint32(static_cast<uint32_t>(this->objects_.size()));
+                if (!this->objects_.empty()) {
+                    buffer.write_uint32(static_cast<uint32_t>(this->objects_.size()));
+
+                    for (auto &object: this->objects_) {
+                        object->serialize(&buffer);
+                    }
+
+                    this->objects_.clear();
+                }
+            } else {
+                buffer.write_uint64(transaction_id);
+            }
+
+            this->reply_.send(&buffer, true);
+            return transaction_id;
+        }
+
+        template<typename T>
+        void add(std::unique_ptr<T> &object) {
+            static_assert(std::is_base_of_v<bdTaskResult, T>);
+            this->objects_.emplace_back(std::move(object));
+        }
+
+    private:
+        uint8_t type_;
+        uint32_t error_;
+        remote_reply reply_;
+        std::vector<std::unique_ptr<bdTaskResult> > objects_;
+    };
 }

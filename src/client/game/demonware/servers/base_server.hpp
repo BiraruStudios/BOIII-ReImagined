@@ -1,30 +1,31 @@
 #pragma once
 
-namespace demonware
-{
-	class base_server
-	{
-	public:
-		using stream_queue = std::queue<char>;
-		using data_queue = std::queue<std::string>;
+namespace demonware {
+    class base_server {
+    public:
+        using stream_queue = std::queue<char>;
+        using data_queue = std::queue<std::string>;
 
-		base_server(std::string name);
+        base_server(std::string name);
 
-		base_server(base_server&&) = delete;
-		base_server(const base_server&) = delete;
-		base_server& operator=(base_server&&) = delete;
-		base_server& operator=(const base_server&) = delete;
+        base_server(base_server &&) = delete;
 
-		virtual ~base_server() = default;
+        base_server(const base_server &) = delete;
 
-		const std::string& get_name() const;
+        base_server &operator=(base_server &&) = delete;
 
-		uint32_t get_address() const;
+        base_server &operator=(const base_server &) = delete;
 
-		virtual void frame() = 0;
+        virtual ~base_server() = default;
 
-	private:
-		std::string name_;
-		std::uint32_t address_ = 0;
-	};
+        const std::string &get_name() const;
+
+        uint32_t get_address() const;
+
+        virtual void frame() = 0;
+
+    private:
+        std::string name_;
+        std::uint32_t address_ = 0;
+    };
 }

@@ -2,31 +2,36 @@
 
 #pragma once
 
-class html_argument final
-{
+class html_argument final {
 public:
-	html_argument() = default;
-	html_argument(VARIANT* val);
-	html_argument(CComVariant val);
+    html_argument() = default;
 
-	bool is_empty() const;
+    html_argument(VARIANT *val);
 
-	bool is_string() const;
-	bool is_number() const;
-	bool is_bool() const;
+    html_argument(CComVariant val);
 
-	std::string get_string() const;
-	int get_number() const;
-	bool get_bool() const;
+    bool is_empty() const;
 
-	const CComVariant& get() const
-	{
-		return this->value_;
-	}
+    bool is_string() const;
 
-	void copy_to(VARIANT& var) const;
-	void move_to(VARIANT* var);
+    bool is_number() const;
+
+    bool is_bool() const;
+
+    std::string get_string() const;
+
+    int get_number() const;
+
+    bool get_bool() const;
+
+    const CComVariant &get() const {
+        return this->value_;
+    }
+
+    void copy_to(VARIANT &var) const;
+
+    void move_to(VARIANT *var);
 
 private:
-	CComVariant value_{};
+    CComVariant value_{};
 };

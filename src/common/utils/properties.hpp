@@ -5,15 +5,16 @@
 #include <optional>
 #include <filesystem>
 
-namespace utils::properties
-{
-	std::filesystem::path get_appdata_path();
-	std::string get_boiii_folder_name();
-	std::filesystem::path get_boiii_path();
+namespace utils::properties {
+    std::filesystem::path get_appdata_path();
 
-	std::unique_lock<named_mutex> lock();
+    std::string get_boiii_folder_name();
 
-	std::optional<std::string> load(const std::string& name);
+    std::filesystem::path get_boiii_path();
 
-	void store(const std::string& name, const std::string& value);
+    std::unique_lock<named_mutex> lock();
+
+    std::optional<std::string> load(const std::string &name);
+
+    void store(const std::string &name, const std::string &value);
 }

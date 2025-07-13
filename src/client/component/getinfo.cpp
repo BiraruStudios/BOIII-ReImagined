@@ -15,108 +15,92 @@
 
 #include "game/utils.hpp"
 
-namespace getinfo
-{
-	int get_max_client_count()
-	{
-		return game::get_dvar_int("com_maxclients");
-	}
+namespace getinfo {
+    int get_max_client_count() {
+        return game::get_dvar_int("com_maxclients");
+    }
 
-	template <typename T>
-	int get_client_count(T* client_states)
-	{
-		if (!client_states)
-		{
-			return 0;
-		}
+    template<typename T>
+    int get_client_count(T *client_states) {
+        if (!client_states) {
+            return 0;
+        }
 
-		int count = 0;
-		for (int i = 0; i < get_max_client_count(); ++i)
-		{
-			if (client_states[i].client_state > 0)
-			{
-				++count;
-			}
-		}
+        int count = 0;
+        for (int i = 0; i < get_max_client_count(); ++i) {
+            if (client_states[i].client_state > 0) {
+                ++count;
+            }
+        }
 
-		return count;
-	}
+        return count;
+    }
 
-	size_t get_client_count()
-	{
-		size_t count = 0;
-		game::foreach_connected_client([&count](const game::client_s&)
-		{
-			++count;
-		});
+    size_t get_client_count() {
+        size_t count = 0;
+        game::foreach_connected_client([&count](const game::client_s &) {
+            ++count;
+        });
 
-		return count;
-	}
+        return count;
+    }
 
-	size_t get_bot_count()
-	{
-		size_t count = 0;
+    size_t get_bot_count() {
+        size_t count = 0;
 
-		game::foreach_connected_client([&count](const game::client_s&, const size_t index)
-		{
-			if (game::SV_IsTestClient(static_cast<int>(index)))
-			{
-				++count;
-			}
-		});
+        game::foreach_connected_client([&count](const game::client_s &, const size_t index) {
+            if (game::SV_IsTestClient(static_cast<int>(index))) {
+                ++count;
+            }
+        });
 
-		return count;
-	}
+        return count;
+    }
 
-	int get_assigned_team()
-	{
-		return (rand() % 2) + 1;
-	}
+    int get_assigned_team() {
+        return (rand() % 2) + 1;
+    }
 
-	bool is_host()
-	{
-		return game::SV_Loaded() && (game::is_server() || !game::Com_IsRunningUILevel());
-	}
+    bool is_host() {
+        return game::SV_Loaded() && (game::is_server() || !game::Com_IsRunningUILevel());
+    }
 
-	struct component final : generic_component
-	{
-		void post_unpack() override
-		{
-			//utils::hook::jump(game::select(0x142254EF0, 0x140537730), get_assigned_team);
+    struct component final : generic_component {
+        void post_unpack() override {
+            //utils::hook::jump(game::select(0x142254EF0, 0x140537730), get_assigned_team);
 
-			network::on("getInfo", [](const game::netadr_t& target, const network::data_view& data)
-			{
-				utils::info_string info{};
-				info.set("challenge", std::string{ data.begin(), data.end() });
-				info.set("gamename", "T7");
-				info.set("hostname",
-				         game::get_dvar_string(game::is_server() ? "live_steam_server_name" : "sv_hostname"));
-				info.set("gametype", game::get_dvar_string("g_gametype"));
-				//info.set("sv_motd", get_dvar_string("sv_motd"));
-				info.set("description",
-				         game::is_server() ? game::get_dvar_string("live_steam_server_description") : "");
-				info.set("xuid", utils::string::va("%llX", steam::SteamUser()->GetSteamID().bits));
-				info.set("mapname", game::get_dvar_string("mapname"));
-				info.set("isPrivate", game::get_dvar_string("g_password").empty() ? "0" : "1");
-				info.set("clients", std::to_string(get_client_count()));
-				info.set("bots", std::to_string(get_bot_count()));
-				info.set("sv_maxclients", std::to_string(get_max_client_count()));
-				info.set("protocol", std::to_string(PROTOCOL));
-				info.set("sub_protocol", std::to_string(SUB_PROTOCOL));
-				info.set("playmode", std::to_string(game::Com_SessionMode_GetMode()));
-				info.set("gamemode", std::to_string(game::Com_SessionMode_GetGameMode()));
-				info.set("sv_running", std::to_string(game::is_server_running()));
-				info.set("dedicated", game::is_server() ? "1" : "0");
-				info.set("hc", std::to_string(game::Com_GametypeSettings_GetUInt("hardcoremode", false)));
-				info.set("modName", workshop::get_mod_resized_name());
-				info.set("modId", workshop::get_mod_publisher_id());
-				info.set("rounds_played", std::to_string(*game::level_rounds_played));
-				info.set("shortversion", SHORTVERSION);
+            network::on("getInfo", [](const game::netadr_t &target, const network::data_view &data) {
+                utils::info_string info{};
+                info.set("challenge", std::string{data.begin(), data.end()});
+                info.set("gamename", "T7");
+                info.set("hostname",
+                         game::get_dvar_string(game::is_server() ? "live_steam_server_name" : "sv_hostname"));
+                info.set("gametype", game::get_dvar_string("g_gametype"));
+                //info.set("sv_motd", get_dvar_string("sv_motd"));
+                info.set("description",
+                         game::is_server() ? game::get_dvar_string("live_steam_server_description") : "");
+                info.set("xuid", utils::string::va("%llX", steam::SteamUser()->GetSteamID().bits));
+                info.set("mapname", game::get_dvar_string("mapname"));
+                info.set("isPrivate", game::get_dvar_string("g_password").empty() ? "0" : "1");
+                info.set("clients", std::to_string(get_client_count()));
+                info.set("bots", std::to_string(get_bot_count()));
+                info.set("sv_maxclients", std::to_string(get_max_client_count()));
+                info.set("protocol", std::to_string(PROTOCOL));
+                info.set("sub_protocol", std::to_string(SUB_PROTOCOL));
+                info.set("playmode", std::to_string(game::Com_SessionMode_GetMode()));
+                info.set("gamemode", std::to_string(game::Com_SessionMode_GetGameMode()));
+                info.set("sv_running", std::to_string(game::is_server_running()));
+                info.set("dedicated", game::is_server() ? "1" : "0");
+                info.set("hc", std::to_string(game::Com_GametypeSettings_GetUInt("hardcoremode", false)));
+                info.set("modName", workshop::get_mod_resized_name());
+                info.set("modId", workshop::get_mod_publisher_id());
+                info.set("rounds_played", std::to_string(*game::level_rounds_played));
+                info.set("shortversion", SHORTVERSION);
 
-				network::send(target, "infoResponse", info.build(), '\n');
-			});
-		}
-	};
+                network::send(target, "infoResponse", info.build(), '\n');
+            });
+        }
+    };
 }
 
 REGISTER_COMPONENT(getinfo::component)

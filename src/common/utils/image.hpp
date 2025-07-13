@@ -3,87 +3,75 @@
 #include <string>
 #include "nt.hpp"
 
-namespace utils::image
-{
-	struct image
-	{
-		size_t width;
-		size_t height;
-		std::string data;
-	};
+namespace utils::image {
+    struct image {
+        size_t width;
+        size_t height;
+        std::string data;
+    };
 
-	class object
-	{
-	public:
-		object() = default;
+    class object {
+    public:
+        object() = default;
 
-		object(const HGDIOBJ h)
-			: handle_(h)
-		{
-		}
+        object(const HGDIOBJ h)
+            : handle_(h) {
+        }
 
-		~object()
-		{
-			if (*this)
-			{
-				DeleteObject(this->handle_);
-				this->handle_ = nullptr;
-			}
-		}
+        ~object() {
+            if (*this) {
+                DeleteObject(this->handle_);
+                this->handle_ = nullptr;
+            }
+        }
 
-		object(const object&) = delete;
-		object& operator=(const object&) = delete;
+        object(const object &) = delete;
 
-		object(object&& obj) noexcept
-			: object()
-		{
-			this->operator=(std::move(obj));
-		}
+        object &operator=(const object &) = delete;
 
-		object& operator=(object&& obj) noexcept
-		{
-			if (this != &obj)
-			{
-				this->~object();
-				this->handle_ = obj.handle_;
-				obj.handle_ = nullptr;
-			}
+        object(object &&obj) noexcept
+            : object() {
+            this->operator=(std::move(obj));
+        }
 
-			return *this;
-		}
+        object &operator=(object &&obj) noexcept {
+            if (this != &obj) {
+                this->~object();
+                this->handle_ = obj.handle_;
+                obj.handle_ = nullptr;
+            }
 
-		object& operator=(HANDLE h) noexcept
-		{
-			this->~object();
-			this->handle_ = h;
+            return *this;
+        }
 
-			return *this;
-		}
+        object &operator=(HANDLE h) noexcept {
+            this->~object();
+            this->handle_ = h;
 
-		HGDIOBJ get() const
-		{
-			return this->handle_;
-		}
+            return *this;
+        }
 
-		operator bool() const
-		{
-			return this->handle_ != nullptr;
-		}
+        HGDIOBJ get() const {
+            return this->handle_;
+        }
 
-		operator HGDIOBJ() const
-		{
-			return this->handle_;
-		}
+        operator bool() const {
+            return this->handle_ != nullptr;
+        }
 
-		operator LPARAM() const
-		{
-			return reinterpret_cast<LPARAM>(this->handle_);
-		}
+        operator HGDIOBJ() const {
+            return this->handle_;
+        }
 
-	private:
-		HGDIOBJ handle_{nullptr};
-	};
+        operator LPARAM() const {
+            return reinterpret_cast<LPARAM>(this->handle_);
+        }
 
-	image load_image(const std::string& data);
-	object create_bitmap(const image& img);
+    private:
+        HGDIOBJ handle_{nullptr};
+    };
+
+    image load_image(const std::string &data);
+
+    object create_bitmap(const image &img);
 }
