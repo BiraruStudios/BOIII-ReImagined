@@ -26,7 +26,8 @@ body:
       label: BOIII ReImagined Version
       description: "What version of BOIII ReImagined are you reporting this bug for?"
       options:
-        - v1.0.0 (Latest)
+        - v1.1.0 (Latest)
+        - v1.0.0
     validations:
       required: true
   - type: dropdown
@@ -71,13 +72,13 @@ body:
 
         1. 
         2. 
-        3. 
+        3.
       placeholder: |
         <!-- NOTE: If this bug occurs while running a mod, please specify the mod name and version number. If the bug occurs on a specific map(s) or gamemode(s), please indicate which ones. -->
         
         1. 
         2. 
-        3. 
+        3.
     validations:
       required: true
   - type: textarea
